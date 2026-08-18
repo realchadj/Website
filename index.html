@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instant Quote</title>
+  <meta name="description" content="Price your analytical testing instantly and submit samples online — no waiting on a callback.">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129514;</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="brand-mark">M</span><span id="lab-name">Midwest Biolabs</span></div>
+    <div class="topbar-note">Pricing updated for the current season</div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Know what your testing costs before you pack the box.</h1>
+  <p>Select your analyses, tell us how many samples you have, and your price appears
+     immediately. Submit the request online and ship the same day — no quote request
+     form, no two-day wait for a callback.</p>
+  <ul class="hero-points">
+    <li>Instant, itemised pricing</li>
+    <li>Volume discounts applied automatically</li>
+    <li>Printable quote &amp; chain of custody</li>
+    <li>Rush turnaround available</li>
+  </ul>
+</div>
+
+<main class="shell">
+
+  <div>
+    <!-- 1 · analyses ------------------------------------------------------ -->
+    <section class="card">
+      <div class="card-head">
+        <h2><span class="step">1</span>Choose your analyses</h2>
+      </div>
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <p class="blurb" id="cat-blurb"></p>
+      <div class="tests" id="tests"></div>
+    </section>
+
+    <!-- 2 · samples & turnaround ------------------------------------------ -->
+    <section class="card">
+      <div class="card-head">
+        <h2><span class="step">2</span>Samples and turnaround</h2>
+        <p>Discounts apply automatically as your sample count grows.</p>
+      </div>
+      <div class="card-body">
+        <div class="field-row" style="margin-bottom:16px">
+          <label for="samples">How many samples?</label>
+          <input type="number" id="samples" min="1" max="9999" value="1" inputmode="numeric">
+        </div>
+        <div class="radios" id="turnaround"></div>
+      </div>
+    </section>
+
+    <!-- 3 · add-ons -------------------------------------------------------- -->
+    <section class="card">
+      <div class="card-head">
+        <h2><span class="step">3</span>Options</h2>
+        <p>Everything here is optional — untick what you don't need.</p>
+      </div>
+      <div class="card-body"><div class="radios" id="addons"></div></div>
+    </section>
+
+    <!-- 4 · contact -------------------------------------------------------- -->
+    <section class="card" id="form">
+      <div class="card-head">
+        <h2><span class="step">4</span>Where should results go?</h2>
+        <p>We only need enough to send your report and reach you with questions.</p>
+      </div>
+      <div class="card-body">
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-name">Your name <span class="req">*</span></label>
+            <input type="text" id="f-name" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="f-company">Company or farm</label>
+            <input type="text" id="f-company" autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="f-email">Email <span class="req">*</span></label>
+            <input type="email" id="f-email" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="f-matrix">Sample matrix</label>
+            <input type="text" id="f-matrix" placeholder="e.g. corn silage, well water, topsoil">
+          </div>
+          <div class="field">
+            <label for="f-project">Project or PO number</label>
+            <input type="text" id="f-project">
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="f-notes">Anything we should know?</label>
+          <textarea id="f-notes" placeholder="Sampling date, suspected issue, regulatory programme, deadline…"></textarea>
+        </div>
+        <p class="error" id="form-error" role="alert"></p>
+      </div>
+    </section>
+
+    <!-- confirmation ------------------------------------------------------- -->
+    <section class="confirm" id="confirm" hidden>
+      <h2>Request ready — reference <span class="confirm-ref" id="confirm-ref"></span></h2>
+      <p id="confirm-status"></p>
+      <p><strong>Total: <span id="confirm-total"></span></strong> — keep a copy for your records.</p>
+      <textarea id="confirm-text" readonly aria-label="Your submission summary"></textarea>
+      <div class="confirm-actions">
+        <a class="btn btn-primary btn-sm" id="confirm-mail" href="#">Send by email</a>
+        <button class="btn btn-ghost btn-sm" id="confirm-copy" type="button">Copy to clipboard</button>
+        <button class="btn btn-ghost btn-sm" id="confirm-download" type="button">Download as text</button>
+        <button class="btn btn-ghost btn-sm" id="confirm-json" type="button">Download as JSON</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- running quote -------------------------------------------------------- -->
+  <aside>
+    <section class="card quote">
+      <div class="quote-total">
+        <span>Your estimate</span>
+        <strong id="total">$0.00</strong>
+      </div>
+      <small id="per-sample"></small>
+      <div id="quote-lines"></div>
+      <p id="nudge"></p>
+      <div class="meta-row">
+        <span>Estimated turnaround</span>
+        <strong id="tat-summary">—</strong>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="submit" type="button" disabled>Submit samples</button>
+        <button class="btn btn-ghost" id="print" type="button" disabled>Print quote &amp; chain of custody</button>
+        <button class="linkish" id="clear" type="button">Clear selected tests</button>
+      </div>
+    </section>
+  </aside>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <span>Estimates are binding for 30 days and exclude applicable taxes.</span>
+    <span>Prices shown are per sample unless noted.</span>
+  </div>
+</footer>
+
+<div id="print-area"></div>
+
+<script src="assets/catalog.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
