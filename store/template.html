@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instant Quote — source licence</title>
+<meta name="description" content="A working instant-quote and sample-intake tool for analytical labs. Full source, paid in Bitcoin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f7f4; --surface:#fff; --surface-2:#eef1ec; --ink:#101815; --ink-2:#4e5c55;
+  --ink-3:#86948c; --line:#dde3dd; --accent:#1b5e4a; --accent-2:#e6efe9; --accent-ink:#fff;
+  --warn:#8a5a0b; --warn-bg:#fbf3e4; --danger:#9c3320; --ok:#1b5e4a;
+  --display:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --sans:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --shadow:0 1px 2px rgba(16,24,21,.06),0 10px 30px rgba(16,24,21,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1311; --surface:#141c19; --surface-2:#1a2420; --ink:#e6ede8; --ink-2:#9fada6;
+  --ink-3:#6b7a72; --line:#253029; --accent:#4fb58c; --accent-2:#14261e; --accent-ink:#06120d;
+  --warn:#e0a544; --warn-bg:#241c0e; --danger:#dd8168; --ok:#4fb58c;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 30px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#0d1311; --surface:#141c19; --surface-2:#1a2420; --ink:#e6ede8; --ink-2:#9fada6;
+  --ink-3:#6b7a72; --line:#253029; --accent:#4fb58c; --accent-2:#14261e; --accent-ink:#06120d;
+  --warn:#e0a544; --warn-bg:#241c0e; --danger:#dd8168; --ok:#4fb58c;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;text-wrap:balance;margin:0}
+a{color:var(--accent)}
+
+.masthead{border-bottom:1px solid var(--line);background:var(--surface)}
+.masthead .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 22px}
+.logo{font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:9px}
+.logo i{width:28px;height:28px;border-radius:7px;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-style:normal;font-size:14px}
+.masthead small{color:var(--ink-3);font-size:13px}
+
+.hero{padding:52px 0 30px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 12px}
+.hero h1{font-size:clamp(30px,4.6vw,44px);line-height:1.1;margin-bottom:14px}
+.hero .lede{font-size:18px;color:var(--ink-2);max-width:62ch;margin:0}
+.hero-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:22px 0 0}
+.hero-cta span{color:var(--ink-3);font-size:13.5px}
+.hero-cta .btn{text-decoration:none;width:auto;flex:0 0 auto;padding-left:22px;padding-right:22px}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:26px;align-items:start;padding-bottom:70px}
+@media (max-width:880px){.cols{grid-template-columns:minmax(0,1fr)}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+.panel+.panel{margin-top:18px}
+.panel-h{padding:18px 20px 0}
+.panel-h h2{font-size:17px;margin-bottom:3px}
+.panel-h p{margin:0;color:var(--ink-2);font-size:14px}
+.panel-b{padding:15px 20px 20px}
+
+.feat{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.feat li{display:flex;gap:11px;font-size:14.5px;color:var(--ink-2)}
+.feat b{color:var(--ink);font-weight:600}
+.feat i{flex:none;width:18px;height:18px;margin-top:2px;border-radius:5px;background:var(--accent-2);
+  color:var(--accent);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700}
+
+.manifest{width:100%;border-collapse:collapse;font-size:13.5px}
+.manifest td{padding:7px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+.manifest td:first-child{font-family:var(--mono);white-space:nowrap;padding-right:16px;color:var(--ink)}
+.manifest tr:last-child td{border-bottom:0}
+.manifest span{color:var(--ink-2)}
+
+/* -------- checkout -------- */
+.buy{position:sticky;top:20px}
+.price{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  padding:18px 20px;border-bottom:1px solid var(--line)}
+.price .amt{font-family:var(--display);font-weight:700;font-size:33px;letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums}
+.price small{color:var(--ink-2);font-size:13.5px;font-weight:600}
+.rate{padding:10px 20px 0;color:var(--ink-3);font-size:12.5px;font-variant-numeric:tabular-nums}
+
+.btn{font:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:12px 16px;border-radius:9px;
+  border:1px solid transparent;width:100%;text-align:center;display:block;text-decoration:none}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover:not(:disabled){filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover:not(:disabled){border-color:var(--ink-3)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-sm{font-size:13.5px;padding:9px 13px}
+.stack{display:grid;gap:9px;padding:15px 20px 19px}
+
+.pay-row{display:grid;gap:5px;margin-bottom:14px}
+.pay-row label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.copyfield{display:flex;gap:7px}
+.copyfield input{font:inherit;font-family:var(--mono);font-size:12.5px;flex:1;min-width:0;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 10px;color:var(--ink)}
+.copyfield button{flex:none;width:auto}
+
+.status{display:flex;gap:11px;align-items:flex-start;padding:12px 13px;border-radius:9px;
+  font-size:13.5px;margin-bottom:14px;background:var(--warn-bg);color:var(--warn)}
+.status.ok{background:var(--accent-2);color:var(--ok)}
+.status.bad{background:var(--surface-2);color:var(--danger)}
+.status .dot{flex:none;width:9px;height:9px;border-radius:50%;background:currentColor;margin-top:6px}
+.status.waiting .dot{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.status.waiting .dot{animation:none}}
+
+.fineprint{padding:0 20px 18px;color:var(--ink-3);font-size:12.5px}
+.fineprint p{margin:0 0 7px}
+
+.delivered{border-color:var(--accent)}
+.delivered .panel-h h2{color:var(--accent)}
+#src{width:100%;min-height:180px;font-family:var(--mono);font-size:11px;background:var(--surface-2);
+  color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:10px}
+
+.foot{border-top:1px solid var(--line);background:var(--surface);padding:22px 0;color:var(--ink-3);font-size:12.5px}
+.foot .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+[hidden]{display:none !important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="logo"><i>Q</i> Instant Quote</span>
+    <small>Source licence · pay in Bitcoin</small>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <p class="eyebrow">For analytical &amp; testing laboratories</p>
+    <h1>Stop losing jobs to whoever answered the quote email first.</h1>
+    <p class="lede">A working instant-quote and sample-intake page for your lab. Customers pick
+      their analyses, enter a sample count, and see itemised pricing in seconds — then submit
+      the request and print a quote with a chain-of-custody form attached. You get the full
+      source. No subscription, no account, no dependencies.</p>
+    <p class="hero-cta"><a class="btn btn-ghost" href="demo/">Try the working demo →</a>
+      <span>The demo is the product. Nothing is held back.</span></p>
+  </section>
+
+  <div class="cols">
+    <div>
+      <section class="panel">
+        <div class="panel-h"><h2>What it does</h2></div>
+        <div class="panel-b">
+          <ul class="feat">
+            <li><i>1</i><span><b>Prices instantly.</b> Every line itemised — testing, rush
+              surcharge, volume discount, add-ons — so the number is legible, not a mystery.</span></li>
+            <li><i>2</i><span><b>Pushes order size up.</b> Near a discount tier, the page says so:
+              “Add 9 more samples to reach 10+ and save 10%.”</span></li>
+            <li><i>3</i><span><b>Prints the paperwork.</b> One page carries the quote and the
+              chain-of-custody form, sharing a reference number with the email you receive.</span></li>
+            <li><i>4</i><span><b>Takes the submission.</b> Contact details, sample matrix, project
+              number and notes, delivered to your inbox or your endpoint.</span></li>
+            <li><i>5</i><span><b>Remembers.</b> A customer who leaves to go count samples comes
+              back to their draft intact.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-h"><h2>What you receive</h2>
+          <p>Delivered on this page the moment payment is seen on-chain.</p></div>
+        <div class="panel-b">
+          <table class="manifest">
+            <tr><td>index.html</td><td><span>The page.</span></td></tr>
+            <tr><td>assets/catalog.js</td><td><span>Every test, price, discount tier and add-on.
+              The only file you edit to make it yours.</span></td></tr>
+            <tr><td>assets/app.js</td><td><span>Quote engine, submission handling, printable
+              quote and chain of custody.</span></td></tr>
+            <tr><td>assets/styles.css</td><td><span>Light theme, dark theme, print stylesheet.</span></td></tr>
+            <tr><td>standalone.html</td><td><span>The whole tool inlined into one file with no
+              dependencies — email it or drop it on any host.</span></td></tr>
+            <tr><td>test.mjs</td><td><span>22 browser checks covering pricing arithmetic,
+              validation, submission, persistence and mobile layout.</span></td></tr>
+            <tr><td>README.md</td><td><span>Setup, deployment and the three things to change
+              before you go live.</span></td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-h"><h2>Honest limits</h2>
+          <p>Things you should know before paying, not after.</p></div>
+        <div class="panel-b">
+          <ul class="feat">
+            <li><i>·</i><span>The shipped prices are <b>market-typical placeholders</b>, not yours.
+              Budget ten minutes to put your real pricing in.</span></li>
+            <li><i>·</i><span>It <b>quotes, it does not charge.</b> There is no card processing
+              in the tool. A Stripe Payment Link is the shortest path if you want one.</span></li>
+            <li><i>·</i><span>The method references are correct for the analyses listed, but
+              <b>only publish what you are accredited to run.</b></span></li>
+            <li><i>·</i><span>Submissions default to opening the customer's mail client. For a
+              guaranteed record, point it at a form endpoint — five minutes, free tier.</span></li>
+            <li><i>·</i><span><b>Bitcoin payments are final.</b> There is no refund mechanism
+              here. Buy it only if the above sounds like what you want.</span></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ---------------------------------------------------------- checkout -->
+    <aside>
+      <section class="panel buy">
+        <div class="price">
+          <div><span class="amt" id="usd">$—</span> <small>one-time</small></div>
+        </div>
+        <p class="rate" id="rate">Fetching the Bitcoin rate…</p>
+
+        <div class="stack" id="stage-idle">
+          <button class="btn btn-primary" id="start" type="button" disabled>Pay with Bitcoin</button>
+          <p class="fineprint" style="padding:0;margin:0">Full source. Yours to modify and use on
+            as many of your own lab's sites as you like.</p>
+        </div>
+
+        <div class="panel-b" id="stage-pay" hidden>
+          <div class="status waiting" id="status">
+            <span class="dot"></span>
+            <span id="status-text">Send the exact amount below. This page watches the chain and
+              unlocks your download automatically.</span>
+          </div>
+
+          <div class="pay-row">
+            <label for="amt-btc">Amount — send exactly this</label>
+            <div class="copyfield">
+              <input id="amt-btc" readonly>
+              <button class="btn btn-ghost btn-sm" data-copy="amt-btc" type="button">Copy</button>
+            </div>
+          </div>
+
+          <div class="pay-row">
+            <label for="addr">To this address</label>
+            <div class="copyfield">
+              <input id="addr" readonly>
+              <button class="btn btn-ghost btn-sm" data-copy="addr" type="button">Copy</button>
+            </div>
+          </div>
+
+          <a class="btn btn-primary btn-sm" id="wallet" href="#" style="margin-bottom:9px">Open in wallet</a>
+          <button class="btn btn-ghost btn-sm" id="recheck" type="button">Check now</button>
+
+          <p class="fineprint" style="padding:14px 0 0">
+            <span id="expiry"></span>
+            The amount ends in unique digits so your payment can be told apart from anyone
+            else's. Send that exact figure — a rounded amount cannot be matched to your order.
+          </p>
+        </div>
+
+        <div class="panel-b" id="stage-manual" hidden>
+          <div class="status bad"><span class="dot"></span>
+            <span>This page can't reach the Bitcoin network from your browser right now, so it
+              can't confirm payment automatically.</span></div>
+          <p class="fineprint" style="padding:0">Email the seller with your transaction ID and
+            they'll send the files directly. Don't pay until you've heard back.</p>
+        </div>
+      </section>
+
+      <section class="panel delivered" id="stage-done" hidden>
+        <div class="panel-h"><h2>Payment received — here are your files</h2>
+          <p id="done-note"></p></div>
+        <div class="panel-b">
+          <button class="btn btn-primary btn-sm" id="dl-zip" type="button">
+            Download the package (.zip, __ZIP_KB__ KB)</button>
+          <button class="btn btn-ghost btn-sm" id="dl-one" type="button" style="margin-top:9px">
+            Download standalone.html only</button>
+          <p class="fineprint" style="padding:12px 0 0">Save these now — this page holds your
+            files in the browser, not on a server. Your receipt is transaction
+            <span class="mono" id="txid"></span>.</p>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Payment goes directly to the seller's Bitcoin address. This page never holds funds.</span>
+    <span id="foot-price"></span>
+  </div>
+</footer>
+
+<script id="product-payload" type="application/octet-stream">__PRODUCT_B64__</script>
+<script id="standalone-payload" type="application/octet-stream">__STANDALONE_B64__</script>
+<script>
+/* ---------------------------------------------------------------------------
+   Bitcoin checkout — no processor, no account, no server.
+
+   The buyer sends a per-order-unique amount to a fixed address. The page polls
+   a public block explorer for a matching output and unlocks the product when
+   it appears. That is the whole mechanism.
+
+   Read `LIMITS` in the README before relying on this for anything expensive.
+--------------------------------------------------------------------------- */
+
+const SHOP = {
+  address:  '__BTC_ADDRESS__',
+  priceUsd: 79,
+  productName: 'Instant Quote — lab quoting tool',
+
+  /* Public APIs. No key, no account. mempool.space is primary; blockstream
+     is a drop-in fallback because it serves the same Esplora schema.        */
+  api: ['https://mempool.space/api', 'https://blockstream.info/api'],
+  priceApi: 'https://mempool.space/api/v1/prices',
+
+  pollMs: 20000,        // explorer politeness; 20s is well inside rate limits
+  windowMin: 30,        // how long a locked-in rate stays valid
+  confirmations: 0      // 0 = unlock on sight in the mempool. See README.
+};
+
+const $ = s => document.querySelector(s);
+const KEY = 'labquote.order.v1';
+let order = null, timer = null, apiIndex = 0;
+
+const sats = btc => Math.round(btc * 1e8);
+const toBtc = s => (s / 1e8).toFixed(8);
+
+/* ---------------------------------------------------------------- pricing */
+
+async function fetchRate() {
+  try {
+    const r = await fetch(SHOP.priceApi, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    if (!j.USD || typeof j.USD !== 'number') throw new Error('no USD field');
+    return j.USD;
+  } catch { return null; }
+}
+
+/* Give every order a distinct amount so payments to one reused address can be
+   told apart. The last three digits of the satoshi figure become the tag.   */
+function tagAmount(baseSats) {
+  const tag = Math.floor(Math.random() * 900) + 100;
+  return Math.floor(baseSats / 1000) * 1000 + tag;
+}
+
+/* Returns the txids currently known for an address, or null if no explorer
+   would answer — in which case we must not open an order we cannot settle. */
+async function existingTxids(address) {
+  for (let i = 0; i < SHOP.api.length; i++) {
+    try {
+      const r = await fetch(`${SHOP.api[i]}/address/${address}/txs`, { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      const txs = await r.json();
+      if (!Array.isArray(txs)) throw new Error('unexpected payload');
+      return txs.map(t => t.txid);
+    } catch { /* try the next explorer */ }
+  }
+  return null;
+}
+
+/* --------------------------------------------------------------- checkout */
+
+async function startOrder() {
+  const usd = await fetchRate();
+  if (!usd) return showManual();
+
+  /* Record which transactions already exist against this address. The amount
+     tag only has 900 values and the address is reused, so without this an old
+     payment of a coincidentally equal amount would unlock a new order. Only a
+     txid absent from this snapshot can settle it.                           */
+  const seen = await existingTxids(SHOP.address);
+  if (seen === null) return showManual();
+
+  const amount = tagAmount(sats(SHOP.priceUsd / usd));
+  order = {
+    amount,
+    seen,
+    address: SHOP.address,
+    usdRate: usd,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + SHOP.windowMin * 60000
+  };
+  save();
+  renderPayStage();
+  poll();
+  timer = setInterval(poll, SHOP.pollMs);
+}
+
+function renderPayStage() {
+  $('#stage-idle').hidden = true;
+  $('#stage-pay').hidden = false;
+  $('#amt-btc').value = toBtc(order.amount);
+  $('#addr').value = order.address;
+  $('#wallet').href =
+    `bitcoin:${order.address}?amount=${toBtc(order.amount)}` +
+    `&label=${encodeURIComponent(SHOP.productName)}`;
+  tickExpiry();
+}
+
+function tickExpiry() {
+  const left = order.expiresAt - Date.now();
+  if (left <= 0) {
+    $('#expiry').textContent = 'This quote has expired — reload the page for a fresh rate. ';
+    return;
+  }
+  $('#expiry').textContent =
+    `Rate locked for ${Math.ceil(left / 60000)} more minutes. `;
+  setTimeout(tickExpiry, 30000);
+}
+
+/* ---------------------------------------------------------------- polling */
+
+async function poll() {
+  if (!order) return;
+  const base = SHOP.api[apiIndex % SHOP.api.length];
+  try {
+    const r = await fetch(`${base}/address/${order.address}/txs`, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    const txs = await r.json();
+    const hit = matchPayment(txs, order);
+    if (hit) return deliver(hit);
+    setStatus('waiting', 'No payment seen yet. This page keeps checking — leave it open.');
+  } catch {
+    apiIndex++;                       // rotate to the fallback explorer
+    if (apiIndex >= SHOP.api.length * 2) showManual();
+    else setStatus('waiting', 'Retrying the block explorer…');
+  }
+}
+
+/* A payment matches when any output pays our address for the exact tagged
+   amount, in a transaction newer than the order.                           */
+function matchPayment(txs, ord) {
+  if (!Array.isArray(txs)) return null;
+  const seen = new Set(ord.seen || []);
+  for (const tx of txs) {
+    if (seen.has(tx.txid)) continue;        // predates this order
+    const paid = (tx.vout || []).some(o =>
+      o.scriptpubkey_address === ord.address && o.value === ord.amount);
+    if (!paid) continue;
+    const confirmed = tx.status && tx.status.confirmed;
+    if (SHOP.confirmations > 0 && !confirmed) continue;
+    return { txid: tx.txid, confirmed: !!confirmed };
+  }
+  return null;
+}
+
+/* -------------------------------------------------------------- delivery */
+
+function deliver(hit) {
+  clearInterval(timer);
+  $('#stage-pay').hidden = true;
+  $('#stage-done').hidden = false;
+  $('#txid').textContent = hit.txid.slice(0, 16) + '…';
+  $('#done-note').textContent = hit.confirmed
+    ? 'Confirmed on-chain. Thank you.'
+    : 'Seen in the mempool and not yet confirmed in a block — your files are below regardless.';
+  localStorage.removeItem(KEY);
+  $('#stage-done').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  handOver('product-payload', 'quote-desk.zip', 'application/zip');
+}
+
+function payloadBytes(id) {
+  const bin = atob(document.getElementById(id).textContent.trim());
+  return Uint8Array.from(bin, ch => ch.charCodeAt(0));
+}
+
+function handOver(id, filename, type) {
+  const url = URL.createObjectURL(new Blob([payloadBytes(id)], { type }));
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* ----------------------------------------------------------------- misc */
+
+function setStatus(kind, text) {
+  const el = $('#status');
+  el.className = 'status ' + kind;
+  $('#status-text').textContent = text;
+}
+
+function showManual() {
+  clearInterval(timer);
+  $('#stage-idle').hidden = true;
+  $('#stage-pay').hidden = true;
+  $('#stage-manual').hidden = false;
+}
+
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(order)); } catch {} };
+
+function restore() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return false;
+    const o = JSON.parse(raw);
+    if (!o || o.expiresAt < Date.now()) { localStorage.removeItem(KEY); return false; }
+    order = o;
+    renderPayStage();
+    poll();
+    timer = setInterval(poll, SHOP.pollMs);
+    return true;
+  } catch { return false; }
+}
+
+async function init() {
+  $('#addr').value = SHOP.address;
+  $('#usd').textContent = '$' + SHOP.priceUsd;
+  $('#foot-price').textContent = `$${SHOP.priceUsd} one-time · full source`;
+
+  document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const input = document.getElementById(b.dataset.copy);
+    try { await navigator.clipboard.writeText(input.value); }
+    catch { input.select(); }
+    const was = b.textContent; b.textContent = 'Copied';
+    setTimeout(() => (b.textContent = was), 1600);
+  }));
+
+  $('#start').addEventListener('click', () => { $('#start').disabled = true; startOrder(); });
+  $('#recheck').addEventListener('click', poll);
+  $('#dl-zip').addEventListener('click',
+    () => handOver('product-payload', 'quote-desk.zip', 'application/zip'));
+  $('#dl-one').addEventListener('click',
+    () => handOver('standalone-payload', 'standalone.html', 'text/html'));
+
+  if (restore()) return;
+
+  const usd = await fetchRate();
+  if (usd) {
+    $('#rate').textContent =
+      `≈ ${toBtc(sats(SHOP.priceUsd / usd))} BTC at $${usd.toLocaleString('en-US')}/BTC`;
+    $('#start').disabled = false;
+  } else {
+    $('#rate').textContent = 'Live Bitcoin rate unavailable right now.';
+    $('#start').disabled = false;   // startOrder falls through to manual
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

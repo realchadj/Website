@@ -1,143 +1,120 @@
-# Instant Quote & Sample Intake
+# Instant Quote — product and storefront
 
-A self-contained quoting and sample-submission page for an analytical lab.
-A customer picks their tests, enters a sample count, and sees an itemised
-price immediately — then submits the request and prints a quote with a
-chain-of-custody form attached.
+Two things live here:
 
-No build step, no framework, no server required. Three files and a stylesheet.
+- **`product/`** — the thing being sold: a self-hosted instant-quote and
+  sample-intake page for an analytical lab. See `product/README.md`.
+- **`store/`** + **`index.html`** — a storefront that sells it for Bitcoin,
+  with no payment processor, no merchant account and no server.
 
----
-
-## Why this exists
-
-Small labs lose work at the quote stage. A prospect emails "what would it cost
-to run a full soil panel on 40 samples?", waits two days for a reply, and by
-then has already sent the box to whoever answered first. This page answers that
-question in about eight seconds and captures the submission while the customer
-is still deciding.
-
-It also removes a second leak: quoting by hand is slow enough that most labs
-don't chase small jobs, and inconsistent enough that volume discounts get
-applied by memory. Here the rules are in one file and applied identically
-every time.
+`index.html` at the root is **generated**. Edit `store/template.html` and
+rebuild.
 
 ---
 
-## Run it
-
-Open `index.html` in a browser. That's the whole setup — it works from the
-filesystem, no local server needed.
-
-## Deploy it
-
-**GitHub Pages** — Settings → Pages → Source: *Deploy from a branch* → pick
-your branch and `/ (root)`. Live in about a minute at
-`https://<user>.github.io/<repo>/`.
-
-**Netlify / Cloudflare Pages / Vercel** — drag the folder in, or connect the
-repo. No build command, publish directory `/`.
-
-**Your existing site** — copy `index.html` and `assets/` anywhere and link to
-it. Nothing depends on being at the domain root.
-
-**One file** — `standalone.html` is the whole thing inlined into a single
-file with no dependencies. Email it, drop it on any host, or open it from a
-USB stick. Regenerate it after editing prices:
+## Build and deploy
 
 ```
-node build-standalone.mjs
+node build-store.mjs           # → index.html, dist/quote-desk.zip
+```
+
+The build refuses to produce a page if the Bitcoin address fails checksum
+validation, if the package is missing a promised file, or if a template
+placeholder went unreplaced. A broken storefront costs a sale; a storefront
+pointed at a malformed address costs the buyer their money.
+
+Deploy the repo root to GitHub Pages (Settings → Pages → deploy from branch,
+`/` root). It's a static site — Netlify, Cloudflare Pages and any web host
+work identically. `demo/` is the live product, served for try-before-buy.
+
+To sell to a different address:
+
+```
+BTC_ADDRESS=bc1... node build-store.mjs
 ```
 
 ---
 
-## Make it yours — the three things to change
+## How the checkout works
 
-### 1. Prices and tests — `assets/catalog.js`
+There is no Stripe, no Coinbase Commerce, no account anywhere. The mechanism
+is four steps:
 
-This is the only file you need to touch to change what you sell. Everything
-in it is commented. The prices shipped are market-typical placeholders for a
-small US lab; **replace them with yours before going live.**
+1. The page fetches the USD/BTC rate from a public API and prices the product.
+2. It records which transactions already exist against the address, then
+   generates a payment amount with a **random three-digit satoshi tag** so this
+   order's payment is distinguishable from every other.
+3. The buyer pays — by copying the amount and address, or by tapping *Open in
+   wallet*, which hands their wallet app a `bitcoin:` URI with the amount
+   pre-filled.
+4. The page polls a public block explorer (mempool.space, falling back to
+   blockstream.info) for a **new** transaction paying that exact amount. When
+   one appears, the product downloads automatically.
 
-You can edit:
+The product itself is embedded in the page as base64 — the zip and the
+single-file build both. Nothing is fetched at delivery time, so there is no
+storage bucket to configure and no download link to expire.
 
-| What | Where |
-|---|---|
-| Test names, codes, prices, methods, turnaround | `categories[].tests[]` |
-| Whole service lines (add or delete) | `categories[]` |
-| Rush pricing multipliers | `turnaround[]` |
-| Volume discount tiers | `volumeBreaks[]` |
-| Add-ons (kits, pickup, interpretation) | `addOns[]` |
-| Minimum order value | `minimumOrder` |
-| How long a quote stays valid | `quoteValidDays` |
+### What this design does not do
 
-Nothing else in the codebase hardcodes a price.
+Read this before relying on it for real money.
 
-### 2. Your lab's details — top of `assets/app.js`
-
-```js
-const CONFIG = {
-  labName:  'Midwest Biolabs',
-  labEmail: 'midwestbiolabs@proton.me',
-  ...
-};
-```
-
-### 3. Where submissions go — `CONFIG.submitMode`
-
-- **`'mailto'`** (default) — opens the customer's mail client with the full
-  submission pre-filled. Zero setup, works the moment you deploy. The catch:
-  delivery depends on the customer pressing send, and you have no record if
-  they don't.
-
-- **`'post'`** — sends the submission as JSON to `CONFIG.endpoint`. Set this
-  up when you have five minutes. [Formspree](https://formspree.io) or
-  [Basin](https://usebasin.com) both give you a URL to paste in and will
-  forward submissions to your inbox on a free tier. Point it at your own
-  server later if you'd rather.
-
-Either way the customer always gets a download and a clipboard copy as a
-fallback, so a submission is never silently lost.
+- **It cannot enforce payment.** The product is embedded in a page anyone can
+  view the source of. A technically capable visitor can extract it without
+  paying. This is unavoidable without a server — any purely client-side
+  paywall is a courtesy lock. If that matters more than the zero-setup
+  property, move the payload behind a small backend that releases it only
+  after verifying payment server-side, and keep this page as the front end.
+- **It unlocks on an unconfirmed transaction** by default (`confirmations: 0`
+  in the checkout config). That is fast and correct for a low-priced digital
+  product; a mempool transaction can in principle be replaced. Raise it to `1`
+  if you'd rather wait for a block.
+- **The address is reused for every sale.** That is why the txid snapshot in
+  step 2 exists — without it an older payment of a coincidentally equal amount
+  would settle a new order. It also means anyone with the address can see your
+  whole sales history on-chain. Rotating addresses per order needs an xpub and
+  a key derivation step, which needs a server.
+- **There are no refunds.** Bitcoin payments are irreversible and there is no
+  mechanism here to send anything back. The storefront says so plainly on the
+  page, which is the honest way to sell this way.
+- **Income is still income.** Being paid in Bitcoin does not change that it's
+  taxable revenue in most jurisdictions. Keep the transaction records.
 
 ---
 
-## What the customer gets
+## Tests
 
-- **A running estimate** that updates as they select, with every line itemised
-  — testing, rush surcharge, volume discount, add-ons — so the number is
-  legible rather than a mystery.
-- **A nudge toward larger orders.** When they're near a discount tier the page
-  says so: *"Add 9 more samples to reach 10+ samples and save 10%."*
-- **A printable quote and chain of custody** on one page, ready to sign and
-  drop in the box with the samples.
-- **A reference number** (`Q-260818-4471`) on the quote, the email and the
-  downloads, so the paperwork in the box matches the email in your inbox.
-- **A saved draft.** Selections and contact details survive a page reload, so
-  a customer who leaves to go count samples doesn't start over.
+```
+node test-store.mjs            # storefront — 22 checks
+cd product && node test.mjs    # the product — 22 checks
+```
+
+Both need `npm install playwright` first, and both run fully offline: the
+storefront tests stub the block explorer and the price feed, so they never
+touch a real API or a real address. They cover the cases that actually lose
+money — underpayment, payment to a different address, and a pre-existing
+transaction attempting to settle a fresh order — alongside explorer and
+price-feed outages, which must fall back to the manual path rather than
+opening an order that can never settle.
 
 ---
 
-## Testing
+## Getting the first sale
 
-`test.mjs` covers pricing arithmetic (volume breaks, rush multipliers,
-minimum-order floor, cross-category selection), form validation, submission,
-draft persistence and mobile layout. To run them you'll need Playwright:
+The page is built. It won't sell itself, and no page does — organic traffic
+is a consequence of distribution, not a substitute for it. The shortest paths
+from here, roughly in order of effort:
 
-```
-npm install playwright
-node test.mjs
-```
+1. **Put it in front of labs directly.** There are trade associations and
+   directories for analytical labs. A short email with the demo link, sent to
+   fifty small labs, is a better test of whether this sells than any amount of
+   SEO.
+2. **Post the demo where lab people already are** — r/labrats, LinkedIn lab
+   groups, agronomy and food-safety forums. Lead with the demo, not the price.
+3. **Search traffic is a months-long play, not a launch strategy.** If you
+   want it, the terms to rank for are the ones a lab manager types when they're
+   already shopping ("lab quoting software", "sample submission form").
 
----
-
-## Notes before you take money with it
-
-- **Set your real prices.** The placeholders are plausible, not yours.
-- **Check your accreditation claims.** The method references in the catalog
-  (EPA, AOAC, Standard Methods) are the correct references for those analyses,
-  but only list what you're actually accredited or qualified to run.
-- **Taxes** are excluded and mentioned as such in the footer. If you need to
-  collect them, add the rule in `computeQuote()` in `assets/app.js`.
-- **This quotes, it does not charge.** There's no payment processing. If you
-  want card payment on submission, a Stripe Payment Link keyed to the total is
-  the shortest path.
+The honest expectation: a $79 tool sold to a niche audience needs volume, and
+volume needs distribution. This repo gives you a product that works and a
+checkout that takes money. The part it doesn't give you is customers.
