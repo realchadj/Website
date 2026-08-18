@@ -41,6 +41,14 @@ repo. No build command, publish directory `/`.
 **Your existing site** — copy `index.html` and `assets/` anywhere and link to
 it. Nothing depends on being at the domain root.
 
+**One file** — `standalone.html` is the whole thing inlined into a single
+file with no dependencies. Email it, drop it on any host, or open it from a
+USB stick. Regenerate it after editing prices:
+
+```
+node build-standalone.mjs
+```
+
 ---
 
 ## Make it yours — the three things to change
@@ -111,7 +119,7 @@ fallback, so a submission is never silently lost.
 
 ## Testing
 
-Browser tests cover pricing arithmetic (volume breaks, rush multipliers,
+`test.mjs` covers pricing arithmetic (volume breaks, rush multipliers,
 minimum-order floor, cross-category selection), form validation, submission,
 draft persistence and mobile layout. To run them you'll need Playwright:
 

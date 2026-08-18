@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Midwest Biolabs Quote Desk</title>
+  <meta name="description" content="Price your analytical testing instantly and submit samples online — no waiting on a callback.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+/* --------------------------------------------------------------------------
+   Instant quote — styles
+   Light and dark are both first-class; the palette lives in :root.
+-------------------------------------------------------------------------- */
+
+:root {
+  --bg:        #f5f7f4;
+  --surface:   #ffffff;
+  --surface-2: #eef1ec;
+  --ink:       #101815;
+  --ink-2:     #4e5c55;
+  --ink-3:     #86948c;
+  --line:      #dde3dd;
+  --accent:    #1b5e4a;
+  --accent-2:  #e6efe9;
+  --accent-ink:#ffffff;
+  --credit:    #8a5a0b;
+  --credit-bg: #fbf3e4;
+  --danger:    #9c3320;
+  --radius:    12px;
+  --shadow:    0 1px 2px rgba(16,24,21,.06), 0 8px 24px rgba(16,24,21,.05);
+  --display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --sans: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Dark tokens are declared twice on purpose: once for viewers on the system
+   default (no attribute set), once for an explicit dark choice.            */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d1311;
+    --surface:   #141c19;
+    --surface-2: #1a2420;
+    --ink:       #e6ede8;
+    --ink-2:     #9fada6;
+    --ink-3:     #6b7a72;
+    --line:      #253029;
+    --accent:    #4fb58c;
+    --accent-2:  #14261e;
+    --accent-ink:#06120d;
+    --credit:    #e0a544;
+    --credit-bg: #241c0e;
+    --danger:    #dd8168;
+    --shadow:    0 1px 2px rgba(0,0,0,.45), 0 8px 24px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d1311;
+  --surface:   #141c19;
+  --surface-2: #1a2420;
+  --ink:       #e6ede8;
+  --ink-2:     #9fada6;
+  --ink-3:     #6b7a72;
+  --line:      #253029;
+  --accent:    #4fb58c;
+  --accent-2:  #14261e;
+  --accent-ink:#06120d;
+  --credit:    #e0a544;
+  --credit-bg: #241c0e;
+  --danger:    #dd8168;
+  --shadow:    0 1px 2px rgba(0,0,0,.45), 0 8px 24px rgba(0,0,0,.32);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ head */
+
+.topbar {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  position: sticky; top: 0; z-index: 20;
+}
+.topbar-in {
+  max-width: 1180px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.brand { font-family: var(--display); display: flex; align-items: center; gap: 10px; font-weight: 650; letter-spacing: -.01em; }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--accent); color: var(--accent-ink); font-size: 15px; font-weight: 700;
+}
+.topbar-note { color: var(--ink-2); font-size: 14px; }
+
+.hero { max-width: 1180px; margin: 0 auto; padding: 40px 24px 8px; }
+.hero h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.025em; margin: 0 0 10px; }
+.hero p { color: var(--ink-2); font-size: 17px; max-width: 60ch; margin: 0; }
+.hero-points { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; list-style: none; }
+.hero-points li {
+  font-size: 13px; color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+}
+
+/* ----------------------------------------------------------------- shell */
+
+.shell {
+  max-width: 1180px; margin: 0 auto; padding: 28px 24px 80px;
+  display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 28px; align-items: start;
+}
+@media (max-width: 940px) { .shell { grid-template-columns: minmax(0, 1fr); } }
+
+.card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 20px; }
+.card-head { padding: 18px 20px 0; }
+.card-head h2 { font-family: var(--display); font-weight: 650; margin: 0 0 4px; font-size: 17px; letter-spacing: -.01em; }
+.card-head p { margin: 0; color: var(--ink-2); font-size: 14px; }
+.card-body { padding: 16px 20px 20px; }
+
+.step {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 8px;
+  border-radius: 50%; background: var(--accent-2); color: var(--accent);
+  font-size: 12px; font-weight: 700; vertical-align: 2px;
+}
+
+/* ------------------------------------------------------------------ tabs */
+
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 20px 0; }
+.tab {
+  font: inherit; font-size: 14px; cursor: pointer; padding: 7px 13px;
+  border-radius: 999px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink-2);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.tab:hover { border-color: var(--ink-3); color: var(--ink); }
+.tab.is-active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.tab-badge {
+  background: rgba(255,255,255,.28); border-radius: 999px;
+  padding: 0 6px; font-size: 11px; font-weight: 700; min-width: 17px; text-align: center;
+}
+.tab:not(.is-active) .tab-badge { background: var(--accent-2); color: var(--accent); }
+
+/* ----------------------------------------------------------------- tests */
+
+.blurb { padding: 12px 20px 0; color: var(--ink-2); font-size: 14px; }
+
+.tests { display: grid; gap: 8px; padding: 14px 20px 20px; }
+.test {
+  display: flex; gap: 12px; padding: 13px 14px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+  transition: border-color .12s, background .12s;
+}
+.test:hover { border-color: var(--ink-3); }
+.test.is-on { border-color: var(--accent); background: var(--accent-2); }
+.test input { margin: 3px 0 0; width: 17px; height: 17px; accent-color: var(--accent); flex: none; }
+.test-body { display: grid; gap: 5px; min-width: 0; flex: 1; }
+.test-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.test-name { font-weight: 600; font-size: 15px; }
+.test-price { font-weight: 650; font-size: 15px; white-space: nowrap;
+  font-variant-numeric: tabular-nums; }
+.test-price small { color: var(--ink-3); font-weight: 500; font-size: 12px; }
+.test-detail { color: var(--ink-2); font-size: 13.5px; }
+.test-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-family: var(--mono); font-size: 11px; padding: 2px 7px; border-radius: 5px;
+  background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
+}
+.chip-quiet { color: var(--ink-3); }
+
+/* --------------------------------------------------------------- options */
+
+.radios { display: grid; gap: 8px; }
+.radio {
+  display: flex; gap: 11px; padding: 12px 13px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 10px;
+}
+.radio:hover { border-color: var(--ink-3); }
+.radio.is-on { border-color: var(--accent); background: var(--accent-2); }
+.radio input { margin: 2px 0 0; width: 16px; height: 16px; accent-color: var(--accent); flex: none; }
+.radio span { display: grid; gap: 2px; }
+.radio strong { font-size: 14.5px; font-weight: 600; }
+.radio em { font-style: normal; font-size: 13px; color: var(--accent); font-weight: 600; }
+.radio small { color: var(--ink-2); font-size: 13px; }
+
+.field-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.field-row label { font-size: 14px; font-weight: 600; }
+.stepper { display: flex; align-items: center; gap: 0; }
+input[type="number"], input[type="text"], input[type="email"], input[type="tel"], textarea {
+  font: inherit; color: var(--ink); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%;
+}
+input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+#samples { width: 110px; }
+
+/* ----------------------------------------------------------------- form */
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+.field { display: grid; gap: 5px; }
+.field label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.field .req { color: var(--danger); }
+textarea { min-height: 78px; resize: vertical; }
+.error { color: var(--danger); font-size: 13.5px; min-height: 20px; margin: 8px 0 0; }
+
+/* ---------------------------------------------------------------- quote */
+
+.quote { position: sticky; top: 78px; }
+@media (max-width: 940px) { .quote { position: static; } }
+
+.quote-total {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 16px 20px; border-bottom: 1px solid var(--line);
+}
+.quote-total span { color: var(--ink-2); font-size: 14px; font-weight: 600; }
+.quote-total strong { font-family: var(--display); font-weight: 700; font-size: 31px;
+  letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+#per-sample { display: block; padding: 0 20px; margin: 10px 0 0; color: var(--ink-3); font-size: 13px; }
+
+#quote-lines { padding: 8px 20px; display: grid; gap: 2px; }
+.empty { color: var(--ink-2); font-size: 14px; padding: 10px 0 14px; margin: 0; }
+.line {
+  display: flex; justify-content: space-between; gap: 14px; align-items: baseline;
+  padding: 9px 0; border-bottom: 1px dashed var(--line);
+}
+.line:last-child { border-bottom: 0; }
+.line-name { display: block; font-size: 14px; font-weight: 550; }
+.line-meta { display: block; color: var(--ink-3); font-size: 12.5px; }
+.line-amount { font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.line.credit .line-amount, .line.credit .line-name { color: var(--credit); }
+#nudge { background: var(--credit-bg); border-radius: 8px; }
+
+.meta-row {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 12px 20px; border-top: 1px solid var(--line); font-size: 13.5px;
+}
+.meta-row span { color: var(--ink-2); }
+.meta-row strong { font-weight: 600; }
+
+#nudge { margin: 4px 20px 10px; padding: 9px 12px; color: var(--credit); font-size: 13px; }
+#nudge:empty { display: none; }
+
+.actions { display: grid; gap: 8px; padding: 14px 20px 18px; }
+
+.btn {
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  padding: 11px 16px; border-radius: 9px; border: 1px solid transparent; text-align: center;
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.07); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--ink-3); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-sm { font-size: 13.5px; padding: 8px 13px; }
+
+.linkish {
+  background: none; border: 0; font: inherit; font-size: 13px; color: var(--ink-3);
+  cursor: pointer; text-decoration: underline; padding: 0;
+}
+.linkish:hover { color: var(--ink); }
+
+/* --------------------------------------------------------- confirmation */
+
+.confirm {
+  margin-top: 20px; border: 1px solid var(--accent); background: var(--accent-2);
+  border-radius: var(--radius); padding: 20px;
+}
+.confirm h2 { font-family: var(--display); margin: 0 0 6px; font-size: 18px; }
+.confirm p { margin: 0 0 12px; color: var(--ink-2); font-size: 14.5px; }
+.confirm-ref {
+  font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 7px; padding: 3px 9px; display: inline-block;
+}
+#confirm-text {
+  width: 100%; min-height: 220px; font-family: var(--mono); font-size: 12px;
+  background: var(--surface); margin-bottom: 12px;
+}
+.confirm-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.confirm-actions a.btn { text-decoration: none; }
+
+/* -------------------------------------------------------------- footer */
+
+.foot {
+  border-top: 1px solid var(--line); background: var(--surface);
+  padding: 22px 24px; color: var(--ink-3); font-size: 13px;
+}
+.foot-in { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* ------------------------------------------------------- printed output */
+
+#print-area { display: none; }
+
+@media print {
+  body { background: #fff; color: #000; }
+  .topbar, .hero, .shell, .foot, .confirm { display: none !important; }
+  #print-area { display: block; }
+
+  .doc { font-family: var(--sans); font-size: 11pt; color: #000; }
+  .doc-head { display: flex; justify-content: space-between; align-items: flex-start;
+              border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 18px; }
+  .doc-head h1 { font-size: 19pt; margin: 0; }
+  .doc-head p { margin: 2px 0 0; font-size: 10pt; }
+  .doc-grid { display: flex; gap: 40px; margin-bottom: 18px; }
+  .doc h3 { font-size: 9pt; text-transform: uppercase; letter-spacing: .07em;
+            margin: 0 0 5px; color: #444; }
+  .doc p { margin: 0; }
+  .doc-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .doc-table th, .doc-table td { border-bottom: 1px solid #bbb; padding: 6px 7px;
+                                 text-align: left; font-size: 10pt; vertical-align: top; }
+  .doc-table thead th { border-bottom: 1.5px solid #000; font-size: 8.5pt;
+                        text-transform: uppercase; letter-spacing: .05em; }
+  .doc-table tfoot th { border-top: 1.5px solid #000; border-bottom: 0; font-size: 11pt; }
+  .doc-table small { color: #555; font-size: 8.5pt; }
+  .doc-coc td { height: 26pt; }
+  .r { text-align: right; }
+  .doc-note { font-size: 9pt; color: #444; margin-bottom: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+</style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129514;</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="brand-mark">M</span><span id="lab-name">Midwest Biolabs</span></div>
+    <div class="topbar-note">Pricing updated for the current season</div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Know what your testing costs before you pack the box.</h1>
+  <p>Select your analyses, tell us how many samples you have, and your price appears
+     immediately. Submit the request online and ship the same day — no quote request
+     form, no two-day wait for a callback.</p>
+  <ul class="hero-points">
+    <li>Instant, itemised pricing</li>
+    <li>Volume discounts applied automatically</li>
+    <li>Printable quote &amp; chain of custody</li>
+    <li>Rush turnaround available</li>
+  </ul>
+</div>
+
+<main class="shell">
+
+  <div>
+    <!-- 1 · analyses ------------------------------------------------------ -->
+    <section class="card">
+      <div class="card-head">
+        <h2><span class="step">1</span>Choose your analyses</h2>
+      </div>
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <p class="blurb" id="cat-blurb"></p>
+      <div class="tests" id="tests"></div>
+    </section>
+
+    <!-- 2 · samples & turnaround ------------------------------------------ -->
+    <section class="card">
+      <div class="card-head">
+        <h2><span class="step">2</span>Samples and turnaround</h2>
+        <p>Discounts apply automatically as your sample count grows.</p>
+      </div>
+      <div class="card-body">
+        <div class="field-row" style="margin-bottom:16px">
+          <label for="samples">How many samples?</label>
+          <input type="number" id="samples" min="1" max="9999" value="1" inputmode="numeric">
+        </div>
+        <div class="radios" id="turnaround"></div>
+      </div>
+    </section>
+
+    <!-- 3 · add-ons -------------------------------------------------------- -->
+    <section class="card">
+      <div class="card-head">
+        <h2><span class="step">3</span>Options</h2>
+        <p>Everything here is optional — untick what you don't need.</p>
+      </div>
+      <div class="card-body"><div class="radios" id="addons"></div></div>
+    </section>
+
+    <!-- 4 · contact -------------------------------------------------------- -->
+    <section class="card" id="form">
+      <div class="card-head">
+        <h2><span class="step">4</span>Where should results go?</h2>
+        <p>We only need enough to send your report and reach you with questions.</p>
+      </div>
+      <div class="card-body">
+        <div class="grid-2">
+          <div class="field">
+            <label for="f-name">Your name <span class="req">*</span></label>
+            <input type="text" id="f-name" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="f-company">Company or farm</label>
+            <input type="text" id="f-company" autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="f-email">Email <span class="req">*</span></label>
+            <input type="email" id="f-email" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="f-phone">Phone</label>
+            <input type="tel" id="f-phone" autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="f-matrix">Sample matrix</label>
+            <input type="text" id="f-matrix" placeholder="e.g. corn silage, well water, topsoil">
+          </div>
+          <div class="field">
+            <label for="f-project">Project or PO number</label>
+            <input type="text" id="f-project">
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="f-notes">Anything we should know?</label>
+          <textarea id="f-notes" placeholder="Sampling date, suspected issue, regulatory programme, deadline…"></textarea>
+        </div>
+        <p class="error" id="form-error" role="alert"></p>
+      </div>
+    </section>
+
+    <!-- confirmation ------------------------------------------------------- -->
+    <section class="confirm" id="confirm" hidden>
+      <h2>Request ready — reference <span class="confirm-ref" id="confirm-ref"></span></h2>
+      <p id="confirm-status"></p>
+      <p><strong>Total: <span id="confirm-total"></span></strong> — keep a copy for your records.</p>
+      <textarea id="confirm-text" readonly aria-label="Your submission summary"></textarea>
+      <div class="confirm-actions">
+        <a class="btn btn-primary btn-sm" id="confirm-mail" href="#">Send by email</a>
+        <button class="btn btn-ghost btn-sm" id="confirm-copy" type="button">Copy to clipboard</button>
+        <button class="btn btn-ghost btn-sm" id="confirm-download" type="button">Download as text</button>
+        <button class="btn btn-ghost btn-sm" id="confirm-json" type="button">Download as JSON</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- running quote -------------------------------------------------------- -->
+  <aside>
+    <section class="card quote">
+      <div class="quote-total">
+        <span>Your estimate</span>
+        <strong id="total">$0.00</strong>
+      </div>
+      <small id="per-sample"></small>
+      <div id="quote-lines"></div>
+      <p id="nudge"></p>
+      <div class="meta-row">
+        <span>Estimated turnaround</span>
+        <strong id="tat-summary">—</strong>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="submit" type="button" disabled>Submit samples</button>
+        <button class="btn btn-ghost" id="print" type="button" disabled>Print quote &amp; chain of custody</button>
+        <button class="linkish" id="clear" type="button">Clear selected tests</button>
+      </div>
+    </section>
+  </aside>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <span>Estimates are binding for 30 days and exclude applicable taxes.</span>
+    <span>Prices shown are per sample unless noted.</span>
+  </div>
+</footer>
+
+<div id="print-area"></div>
+
+<script>
+/* ---------------------------------------------------------------------------
+   TEST CATALOG & PRICING
+   ---------------------------------------------------------------------------
+   This is the only file you need to edit to make the quoting engine your own.
+   Change prices, rename tests, add or delete panels, adjust turnaround
+   multipliers and volume breaks. Nothing else in the app hardcodes a price.
+
+   Prices below are placeholder market-typical figures for a small US
+   analytical lab. REPLACE THEM WITH YOURS before going live.
+
+   Field reference for a test:
+     code      short SKU shown on the quote and chain-of-custody
+     name      customer-facing name
+     price     per-sample price in USD
+     tat       standard turnaround, in business days
+     method    reference method — builds credibility, shown on hover
+     detail    one-line plain-English description of what they get
+--------------------------------------------------------------------------- */
+
+const CATALOG = {
+  currency: 'USD',
+
+  categories: [
+    {
+      id: 'soil',
+      name: 'Soil & Agronomy',
+      blurb: 'Fertility, texture and salinity work for growers, agronomists and land managers.',
+      tests: [
+        { code: 'S1', name: 'Basic Soil Fertility', price: 18, tat: 5,
+          method: 'Mehlich-3 / ICP-OES',
+          detail: 'pH, buffer pH, organic matter, P, K, Ca, Mg, CEC and base saturation.' },
+        { code: 'S2', name: 'Complete Soil + Micronutrients', price: 28, tat: 5,
+          method: 'Mehlich-3 / ICP-OES',
+          detail: 'Everything in S1 plus sulfur, zinc, iron, manganese, copper and boron.' },
+        { code: 'S3', name: 'Soil Texture (Hydrometer)', price: 32, tat: 7,
+          method: 'ASTM D422',
+          detail: 'Sand, silt and clay percentages with USDA textural class.' },
+        { code: 'S4', name: 'Soluble Salts / Saturated Paste', price: 35, tat: 6,
+          method: 'USDA Handbook 60',
+          detail: 'EC, SAR, soluble Ca/Mg/Na/K and chloride for salinity diagnosis.' },
+        { code: 'S5', name: 'Nitrate-N', price: 9, tat: 3,
+          method: 'KCl extraction / colorimetric',
+          detail: 'Residual nitrate-nitrogen for in-season sidedress decisions.' },
+        { code: 'S6', name: 'Compost & Manure Analysis', price: 62, tat: 7,
+          method: 'TMECC',
+          detail: 'Nutrient value, moisture, C:N ratio and pH for land-application planning.' }
+      ]
+    },
+    {
+      id: 'water',
+      name: 'Water Quality',
+      blurb: 'Private wells, municipal compliance, irrigation and process water.',
+      tests: [
+        { code: 'W1', name: 'Coliform & E. coli (Presence/Absence)', price: 30, tat: 2,
+          method: 'SM 9223B',
+          detail: 'Pass/fail bacteriological safety screen — the standard well test.' },
+        { code: 'W2', name: 'Drinking Water Basic Panel', price: 65, tat: 5,
+          method: 'EPA 300.0 / 200.7',
+          detail: 'pH, hardness, TDS, alkalinity, nitrate, nitrite, iron, manganese, sulfate.' },
+        { code: 'W3', name: 'Heavy Metals Panel (13 metals)', price: 120, tat: 7,
+          method: 'EPA 200.8 (ICP-MS)',
+          detail: 'Includes lead, arsenic, cadmium, chromium, copper, mercury and selenium.' },
+        { code: 'W4', name: 'Nitrate / Nitrite', price: 22, tat: 3,
+          method: 'EPA 300.0',
+          detail: 'Quantitative nitrate and nitrite — infant safety and irrigation planning.' },
+        { code: 'W5', name: 'Total Coliform MPN (Quantitative)', price: 45, tat: 3,
+          method: 'SM 9223B',
+          detail: 'Numeric coliform count where presence/absence is not sufficient.' },
+        { code: 'W6', name: 'Irrigation Suitability', price: 78, tat: 6,
+          method: 'SM / USDA',
+          detail: 'EC, SAR, bicarbonate, chloride, boron and sodium hazard classification.' }
+      ]
+    },
+    {
+      id: 'food',
+      name: 'Food & Beverage',
+      blurb: 'Label compliance, safety testing and shelf life for producers and co-packers.',
+      tests: [
+        { code: 'F1', name: 'Nutrition Facts Panel (FDA 2016)', price: 475, tat: 10,
+          method: 'AOAC / FDA 21 CFR 101.9',
+          detail: 'Full label-ready panel with camera-ready artwork and added-sugars declaration.' },
+        { code: 'F2', name: 'Proximate Analysis', price: 95, tat: 7,
+          method: 'AOAC 934.01 / 990.03 / 920.39',
+          detail: 'Moisture, protein, fat, crude fiber, ash and calculated carbohydrate.' },
+        { code: 'F3', name: 'Aerobic Plate Count', price: 28, tat: 4,
+          method: 'FDA BAM Ch. 3',
+          detail: 'General microbial load — the baseline sanitation indicator.' },
+        { code: 'F4', name: 'Salmonella (PCR, 25 g)', price: 55, tat: 3,
+          method: 'AOAC-RI validated PCR',
+          detail: 'Rapid presence/absence screen with cultural confirmation of presumptives.' },
+        { code: 'F5', name: 'Listeria monocytogenes (PCR)', price: 58, tat: 3,
+          method: 'AOAC-RI validated PCR',
+          detail: 'Ready-to-eat and environmental swab testing for Listeria programs.' },
+        { code: 'F6', name: 'Mycotoxin Panel', price: 150, tat: 6,
+          method: 'HPLC-FLD / LC-MS/MS',
+          detail: 'Aflatoxin, deoxynivalenol, fumonisin, zearalenone and ochratoxin A.' },
+        { code: 'F7', name: 'Shelf Life Study (5 pull points)', price: 850, tat: 45,
+          method: 'Accelerated or real-time protocol',
+          detail: 'Micro and quality attributes across five intervals with a written conclusion.' },
+        { code: 'F8', name: 'Water Activity (aw)', price: 24, tat: 3,
+          method: 'AOAC 978.18',
+          detail: 'Critical control point documentation for HACCP and process authority filings.' }
+      ]
+    },
+    {
+      id: 'feed',
+      name: 'Feed & Forage',
+      blurb: 'Ration balancing and quality verification for livestock operations and feed mills.',
+      tests: [
+        { code: 'A1', name: 'Standard Forage Package', price: 42, tat: 5,
+          method: 'NIR / wet chemistry',
+          detail: 'Dry matter, crude protein, ADF, NDF, TDN and relative feed value.' },
+        { code: 'A2', name: 'Complete Feed Analysis', price: 88, tat: 7,
+          method: 'AOAC',
+          detail: 'Proximates plus calcium, phosphorus, potassium, magnesium and sodium.' },
+        { code: 'A3', name: 'Nitrate Toxicity Screen', price: 26, tat: 2,
+          method: 'Colorimetric',
+          detail: 'Same-week nitrate result for drought-stressed forage before feed-out.' },
+        { code: 'A4', name: 'Mineral Panel (ICP)', price: 68, tat: 6,
+          method: 'ICP-OES',
+          detail: 'Macro and trace minerals for ration formulation and deficiency workups.' }
+      ]
+    },
+    {
+      id: 'environmental',
+      name: 'Environmental',
+      blurb: 'Site assessment, remediation verification and regulatory reporting.',
+      tests: [
+        { code: 'E1', name: 'RCRA 8 Metals in Soil', price: 110, tat: 7,
+          method: 'EPA 6010/7471',
+          detail: 'Arsenic, barium, cadmium, chromium, lead, mercury, selenium, silver.' },
+        { code: 'E2', name: 'TPH — Diesel & Gasoline Range', price: 135, tat: 7,
+          method: 'EPA 8015',
+          detail: 'Petroleum hydrocarbon quantitation for tank pulls and spill closure.' },
+        { code: 'E3', name: 'Volatile Organics (VOC)', price: 185, tat: 8,
+          method: 'EPA 8260',
+          detail: 'Full volatile organic scan for groundwater and soil vapor investigations.' },
+        { code: 'E4', name: 'TCLP Extraction + 8 Metals', price: 215, tat: 10,
+          method: 'EPA 1311 / 6010',
+          detail: 'Waste characterization to determine hazardous vs. non-hazardous disposal.' }
+      ]
+    }
+  ],
+
+  /* Turnaround options. `multiplier` is applied to the whole testing subtotal.
+     `days` overrides the standard TAT shown to the customer.               */
+  turnaround: [
+    { id: 'standard', name: 'Standard',  multiplier: 1.00, note: 'Published turnaround for each test' },
+    { id: 'priority', name: 'Priority',  multiplier: 1.50, note: 'Results in 3 business days where methods allow' },
+    { id: 'rush',     name: 'Rush',      multiplier: 2.00, note: '24–48 hours, confirm capacity before shipping' }
+  ],
+
+  /* Volume breaks applied on sample count. First matching tier from the
+     bottom wins, so keep this sorted ascending by `min`.                    */
+  volumeBreaks: [
+    { min: 10,  discount: 0.10, label: '10+ samples' },
+    { min: 25,  discount: 0.15, label: '25+ samples' },
+    { min: 50,  discount: 0.20, label: '50+ samples' },
+    { min: 100, discount: 0.25, label: '100+ samples' }
+  ],
+
+  /* Optional line items the customer can toggle. `perSample: true` bills
+     once per sample; otherwise it is a single flat charge per order.        */
+  addOns: [
+    { id: 'kit',      name: 'Prepaid sample kit & shipping label', price: 12,  perSample: true,
+      detail: 'Bottles, bags, ice pack and a prepaid return label mailed to you.' },
+    { id: 'pickup',   name: 'Courier pickup (regional)',           price: 45,  perSample: false,
+      detail: 'We collect from your site — available within our service radius.' },
+    { id: 'coc',      name: 'Formal chain of custody',             price: 0,   perSample: false,
+      detail: 'Signed custody documentation. Required for regulatory and legal work.' },
+    { id: 'interp',   name: 'Written interpretation & recommendations', price: 85, perSample: false,
+      detail: 'An analyst walks through what the numbers mean and what to do next.' },
+    { id: 'archive',  name: 'Extended sample retention (90 days)', price: 15,  perSample: true,
+      detail: 'We hold your sample for retesting instead of the standard 14 days.' }
+  ],
+
+  /* Minimum order value. Set to 0 to disable.                              */
+  minimumOrder: 35,
+
+  /* Quote validity shown in the footer of the printed quote.               */
+  quoteValidDays: 30
+};
+
+</script>
+<script>
+/* ---------------------------------------------------------------------------
+   QUOTE ENGINE
+   ---------------------------------------------------------------------------
+   No build step, no framework, no backend. Loads CATALOG from catalog.js and
+   drives the whole page. Submission is wired for three modes — see CONFIG.
+--------------------------------------------------------------------------- */
+
+const CONFIG = {
+  labName: 'Midwest Biolabs',
+  labEmail: 'midwestbiolabs@proton.me',
+  labPhone: '',
+  labAddress: '',
+
+  /* How submitted requests reach you. Options:
+       'mailto' — opens the customer's mail client, pre-filled. Zero setup,
+                  works the moment you deploy, but delivery depends on the
+                  customer actually pressing send.
+       'post'   — POSTs JSON to `endpoint`. Point it at Formspree, Basin,
+                  a Google Apps Script, or your own server. Recommended
+                  once you have five minutes to set one up.
+     Both modes always offer a download and a clipboard copy as a fallback. */
+  submitMode: 'mailto',
+  endpoint: ''
+};
+
+const state = {
+  categoryId: CATALOG.categories[0].id,
+  selected: new Map(),     // code -> test object
+  sampleCount: 1,
+  turnaroundId: 'standard',
+  addOns: new Set(['coc']),
+  customer: {}
+};
+
+const money = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const $  = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+const allTests = () => CATALOG.categories.flatMap(c => c.tests.map(t => ({ ...t, categoryId: c.id })));
+const findTest = code => allTests().find(t => t.code === code);
+
+/* -------------------------------------------------------------- pricing -- */
+
+function computeQuote() {
+  const tests = Array.from(state.selected.values());
+  const n = Math.max(1, state.sampleCount);
+
+  const perSample = tests.reduce((sum, t) => sum + t.price, 0);
+  const testingBase = perSample * n;
+
+  const turnaround = CATALOG.turnaround.find(t => t.id === state.turnaroundId);
+  const rushAmount = testingBase * (turnaround.multiplier - 1);
+  const afterRush = testingBase + rushAmount;
+
+  const tier = CATALOG.volumeBreaks
+    .filter(b => n >= b.min)
+    .sort((a, b) => b.min - a.min)[0] || null;
+  const discountAmount = tier ? afterRush * tier.discount : 0;
+  const afterDiscount = afterRush - discountAmount;
+
+  const addOnLines = CATALOG.addOns
+    .filter(a => state.addOns.has(a.id))
+    .map(a => ({ ...a, qty: a.perSample ? n : 1, amount: a.price * (a.perSample ? n : 1) }))
+    .filter(a => a.amount > 0 || a.price === 0);
+  const addOnTotal = addOnLines.reduce((s, a) => s + a.amount, 0);
+
+  const subtotal = afterDiscount + addOnTotal;
+  const minimumApplied = tests.length > 0 && subtotal > 0 && subtotal < CATALOG.minimumOrder;
+  const total = minimumApplied ? CATALOG.minimumOrder : subtotal;
+
+  const slowest = tests.reduce((max, t) => Math.max(max, t.tat), 0);
+  const businessDays =
+    state.turnaroundId === 'rush'     ? Math.min(2, slowest || 2) :
+    state.turnaroundId === 'priority' ? Math.min(3, slowest || 3) : slowest;
+
+  return {
+    tests, n, perSample, testingBase, turnaround, rushAmount, tier,
+    discountAmount, addOnLines, addOnTotal, subtotal, minimumApplied, total,
+    businessDays
+  };
+}
+
+/* ------------------------------------------------------------ rendering -- */
+
+function renderTabs() {
+  $('#tabs').innerHTML = CATALOG.categories.map(c => `
+    <button class="tab${c.id === state.categoryId ? ' is-active' : ''}"
+            data-cat="${c.id}" type="button" role="tab"
+            aria-selected="${c.id === state.categoryId}">
+      ${c.name}
+      ${countInCategory(c.id) ? `<span class="tab-badge">${countInCategory(c.id)}</span>` : ''}
+    </button>`).join('');
+}
+
+const countInCategory = id =>
+  Array.from(state.selected.values()).filter(t => t.categoryId === id).length;
+
+function renderTests() {
+  const cat = CATALOG.categories.find(c => c.id === state.categoryId);
+  $('#cat-blurb').textContent = cat.blurb;
+  $('#tests').innerHTML = cat.tests.map(t => {
+    const on = state.selected.has(t.code);
+    return `
+      <label class="test${on ? ' is-on' : ''}" for="t-${t.code}">
+        <input type="checkbox" id="t-${t.code}" data-code="${t.code}" ${on ? 'checked' : ''}>
+        <span class="test-body">
+          <span class="test-head">
+            <span class="test-name">${t.name}</span>
+            <span class="test-price">${money(t.price)}<small>/sample</small></span>
+          </span>
+          <span class="test-detail">${t.detail}</span>
+          <span class="test-meta">
+            <span class="chip">${t.code}</span>
+            <span class="chip chip-quiet">${t.method}</span>
+            <span class="chip chip-quiet">${t.tat} business days</span>
+          </span>
+        </span>
+      </label>`;
+  }).join('');
+}
+
+function renderTurnaround() {
+  $('#turnaround').innerHTML = CATALOG.turnaround.map(t => `
+    <label class="radio${t.id === state.turnaroundId ? ' is-on' : ''}">
+      <input type="radio" name="tat" value="${t.id}" ${t.id === state.turnaroundId ? 'checked' : ''}>
+      <span>
+        <strong>${t.name}</strong>
+        ${t.multiplier !== 1 ? `<em>+${Math.round((t.multiplier - 1) * 100)}%</em>` : '<em>included</em>'}
+        <small>${t.note}</small>
+      </span>
+    </label>`).join('');
+}
+
+function renderAddOns() {
+  $('#addons').innerHTML = CATALOG.addOns.map(a => `
+    <label class="radio${state.addOns.has(a.id) ? ' is-on' : ''}">
+      <input type="checkbox" data-addon="${a.id}" ${state.addOns.has(a.id) ? 'checked' : ''}>
+      <span>
+        <strong>${a.name}</strong>
+        <em>${a.price === 0 ? 'no charge' : money(a.price) + (a.perSample ? ' /sample' : '')}</em>
+        <small>${a.detail}</small>
+      </span>
+    </label>`).join('');
+}
+
+function renderQuote() {
+  const q = computeQuote();
+  const box = $('#quote-lines');
+
+  if (q.tests.length === 0) {
+    box.innerHTML = `<p class="empty">Select the tests you need and your price appears here immediately —
+      no waiting on a callback.</p>`;
+    $('#total').textContent = money(0);
+    $('#tat-summary').textContent = '—';
+    $('#submit').disabled = true;
+    $('#print').disabled = true;
+    return;
+  }
+
+  const rows = [];
+  q.tests.forEach(t => rows.push(
+    line(`${t.code} · ${t.name}`, `${money(t.price)} × ${q.n} sample${q.n > 1 ? 's' : ''}`, t.price * q.n)
+  ));
+  if (q.rushAmount > 0) rows.push(
+    line(`${q.turnaround.name} turnaround`, `+${Math.round((q.turnaround.multiplier - 1) * 100)}% on testing`, q.rushAmount)
+  );
+  if (q.discountAmount > 0) rows.push(
+    line(`Volume discount — ${q.tier.label}`, `−${Math.round(q.tier.discount * 100)}%`, -q.discountAmount, 'credit')
+  );
+  q.addOnLines.forEach(a => rows.push(
+    line(a.name, a.perSample ? `${money(a.price)} × ${q.n}` : 'per order', a.amount)
+  ));
+  if (q.minimumApplied) rows.push(
+    line('Minimum order adjustment', `Orders are billed at a ${money(CATALOG.minimumOrder)} minimum`,
+         CATALOG.minimumOrder - q.subtotal)
+  );
+
+  box.innerHTML = rows.join('');
+  $('#total').textContent = money(q.total);
+  $('#tat-summary').textContent = q.businessDays
+    ? `${q.businessDays} business day${q.businessDays > 1 ? 's' : ''} from receipt`
+    : '—';
+  $('#per-sample').textContent = `${money(q.total / q.n)} per sample · ${q.n} sample${q.n > 1 ? 's' : ''}`;
+  $('#submit').disabled = false;
+  $('#print').disabled = false;
+
+  const next = CATALOG.volumeBreaks.find(b => q.n < b.min);
+  $('#nudge').innerHTML = next
+    ? `Add ${next.min - q.n} more sample${next.min - q.n > 1 ? 's' : ''} to reach
+       <strong>${next.label}</strong> and save ${Math.round(next.discount * 100)}%.`
+    : '';
+}
+
+const line = (name, meta, amount, cls = '') => `
+  <div class="line ${cls}">
+    <div><span class="line-name">${name}</span><span class="line-meta">${meta}</span></div>
+    <div class="line-amount">${amount < 0 ? '−' : ''}${money(Math.abs(amount))}</div>
+  </div>`;
+
+/* ----------------------------------------------------------- quote text -- */
+
+function quoteReference() {
+  const d = new Date();
+  const stamp = d.toISOString().slice(2, 10).replace(/-/g, '');
+  const rand = Math.abs(hash(JSON.stringify([...state.selected.keys()]) + d.getTime())) % 9000 + 1000;
+  return `Q-${stamp}-${rand}`;
+}
+
+function hash(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; }
+  return h;
+}
+
+function quoteAsText(ref) {
+  const q = computeQuote();
+  const c = readCustomer();
+  const L = [];
+  L.push(`${CONFIG.labName.toUpperCase()} — SAMPLE SUBMISSION & QUOTE`);
+  L.push(`Reference: ${ref}`);
+  L.push(`Date: ${new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}`);
+  L.push('');
+  L.push('SUBMITTED BY');
+  L.push(`  Name:     ${c.name || '—'}`);
+  L.push(`  Company:  ${c.company || '—'}`);
+  L.push(`  Email:    ${c.email || '—'}`);
+  L.push(`  Phone:    ${c.phone || '—'}`);
+  L.push('');
+  L.push(`SAMPLES: ${q.n}   MATRIX: ${c.matrix || '—'}   TURNAROUND: ${q.turnaround.name}`);
+  if (c.projectRef) L.push(`PROJECT / PO: ${c.projectRef}`);
+  L.push('');
+  L.push('ANALYSES REQUESTED');
+  q.tests.forEach(t => L.push(`  [${t.code}] ${t.name} — ${t.method} — ${money(t.price)}/sample`));
+  L.push('');
+  L.push('PRICING');
+  L.push(`  Testing (${money(q.perSample)}/sample × ${q.n})        ${money(q.testingBase)}`);
+  if (q.rushAmount > 0)      L.push(`  ${q.turnaround.name} turnaround                    ${money(q.rushAmount)}`);
+  if (q.discountAmount > 0)  L.push(`  Volume discount (${q.tier.label})            −${money(q.discountAmount)}`);
+  q.addOnLines.forEach(a =>  L.push(`  ${a.name}${' '.repeat(Math.max(1, 38 - a.name.length))}${money(a.amount)}`));
+  if (q.minimumApplied)      L.push(`  Minimum order adjustment                ${money(CATALOG.minimumOrder - q.subtotal)}`);
+  L.push(`  ${'-'.repeat(52)}`);
+  L.push(`  TOTAL                                   ${money(q.total)}`);
+  L.push('');
+  L.push(`Estimated turnaround: ${q.businessDays} business days from sample receipt.`);
+  L.push(`Quote valid ${CATALOG.quoteValidDays} days from the date above.`);
+  if (c.notes) { L.push(''); L.push('NOTES FROM CUSTOMER'); L.push('  ' + c.notes.replace(/\n/g, '\n  ')); }
+  return L.join('\n');
+}
+
+function readCustomer() {
+  const g = id => ($('#' + id) ? $('#' + id).value.trim() : '');
+  return {
+    name: g('f-name'), company: g('f-company'), email: g('f-email'),
+    phone: g('f-phone'), matrix: g('f-matrix'), projectRef: g('f-project'),
+    notes: g('f-notes')
+  };
+}
+
+/* ---------------------------------------------------------- submission -- */
+
+async function submitRequest() {
+  const c = readCustomer();
+  if (!c.name || !c.email) {
+    $('#form-error').textContent = 'Name and email are required so we can send your results.';
+    $('#f-name').focus();
+    return;
+  }
+  $('#form-error').textContent = '';
+
+  const ref = quoteReference();
+  const text = quoteAsText(ref);
+  const q = computeQuote();
+
+  const payload = {
+    reference: ref,
+    submittedAt: new Date().toISOString(),
+    customer: c,
+    sampleCount: q.n,
+    turnaround: q.turnaround.name,
+    tests: q.tests.map(t => ({ code: t.code, name: t.name, price: t.price })),
+    addOns: q.addOnLines.map(a => ({ name: a.name, amount: a.amount })),
+    total: Number(q.total.toFixed(2)),
+    plainText: text
+  };
+
+  saveDraft();
+  showConfirmation(ref, q.total, text, payload);
+
+  if (CONFIG.submitMode === 'post' && CONFIG.endpoint) {
+    try {
+      const res = await fetch(CONFIG.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      $('#confirm-status').textContent = res.ok
+        ? 'Your request was delivered to the lab.'
+        : 'The lab server did not confirm receipt — please send the copy below by email.';
+    } catch {
+      $('#confirm-status').textContent =
+        'We could not reach the lab server — please send the copy below by email.';
+    }
+  } else {
+    const subject = encodeURIComponent(`Sample submission ${ref} — ${c.company || c.name}`);
+    const body = encodeURIComponent(text);
+    $('#confirm-mail').href = `mailto:${CONFIG.labEmail}?subject=${subject}&body=${body}`;
+    $('#confirm-status').textContent = 'Press “Send by email” below to deliver this to the lab.';
+  }
+}
+
+function showConfirmation(ref, total, text, payload) {
+  $('#confirm-ref').textContent = ref;
+  $('#confirm-total').textContent = money(total);
+  $('#confirm-text').value = text;
+  $('#confirm').hidden = false;
+  $('#confirm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  $('#confirm-download').onclick = () => download(`${ref}.txt`, text, 'text/plain');
+  $('#confirm-json').onclick = () => download(`${ref}.json`, JSON.stringify(payload, null, 2), 'application/json');
+  $('#confirm-copy').onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      $('#confirm-copy').textContent = 'Copied';
+      setTimeout(() => ($('#confirm-copy').textContent = 'Copy to clipboard'), 1800);
+    } catch {
+      $('#confirm-text').select();
+    }
+  };
+  $('#confirm-mail').hidden = CONFIG.submitMode === 'post' && !!CONFIG.endpoint;
+}
+
+function download(filename, content, type) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ------------------------------------------------- printable quote/COC -- */
+
+function buildPrintable() {
+  const q = computeQuote();
+  const c = readCustomer();
+  const ref = quoteReference();
+  const rows = q.tests.map(t => `
+    <tr><td>${t.code}</td><td>${t.name}<br><small>${t.method}</small></td>
+        <td class="r">${money(t.price)}</td><td class="r">${q.n}</td>
+        <td class="r">${money(t.price * q.n)}</td></tr>`).join('');
+
+  const extras = [
+    q.rushAmount > 0 ? `<tr><td colspan="4">${q.turnaround.name} turnaround</td><td class="r">${money(q.rushAmount)}</td></tr>` : '',
+    q.discountAmount > 0 ? `<tr><td colspan="4">Volume discount — ${q.tier.label}</td><td class="r">−${money(q.discountAmount)}</td></tr>` : '',
+    ...q.addOnLines.map(a => `<tr><td colspan="4">${a.name}</td><td class="r">${money(a.amount)}</td></tr>`),
+    q.minimumApplied ? `<tr><td colspan="4">Minimum order adjustment</td><td class="r">${money(CATALOG.minimumOrder - q.subtotal)}</td></tr>` : ''
+  ].join('');
+
+  $('#print-area').innerHTML = `
+    <div class="doc">
+      <header class="doc-head">
+        <div><h1>${CONFIG.labName}</h1><p>Quotation &amp; Chain of Custody</p></div>
+        <div class="r"><strong>${ref}</strong><br>
+          ${new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}</div>
+      </header>
+      <section class="doc-grid">
+        <div><h3>Submitted by</h3>
+          <p>${esc(c.name) || '&nbsp;'}<br>${esc(c.company)}<br>${esc(c.email)}<br>${esc(c.phone)}</p></div>
+        <div><h3>Sample details</h3>
+          <p>Samples: ${q.n}<br>Matrix: ${esc(c.matrix) || '—'}<br>
+             Turnaround: ${q.turnaround.name}<br>Project/PO: ${esc(c.projectRef) || '—'}</p></div>
+      </section>
+      <table class="doc-table">
+        <thead><tr><th>Code</th><th>Analysis</th><th class="r">Unit</th><th class="r">Qty</th><th class="r">Amount</th></tr></thead>
+        <tbody>${rows}${extras}</tbody>
+        <tfoot><tr><th colspan="4" class="r">Total</th><th class="r">${money(q.total)}</th></tr></tfoot>
+      </table>
+      <p class="doc-note">Estimated turnaround ${q.businessDays} business days from sample receipt.
+        Quote valid ${CATALOG.quoteValidDays} days. Prices exclude applicable taxes.</p>
+      <section class="doc-coc">
+        <h3>Chain of custody</h3>
+        <table class="doc-table">
+          <thead><tr><th>Relinquished by</th><th>Date / time</th><th>Received by</th><th>Date / time</th></tr></thead>
+          <tbody>${'<tr><td></td><td></td><td></td><td></td></tr>'.repeat(3)}</tbody>
+        </table>
+      </section>
+      ${c.notes ? `<section><h3>Notes</h3><p>${esc(c.notes)}</p></section>` : ''}
+    </div>`;
+  window.print();
+}
+
+const esc = s => String(s || '').replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+
+/* ------------------------------------------------------------ persistence */
+
+const DRAFT_KEY = 'labquote.draft.v1';
+
+function saveDraft() {
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      codes: [...state.selected.keys()],
+      sampleCount: state.sampleCount,
+      turnaroundId: state.turnaroundId,
+      addOns: [...state.addOns],
+      customer: readCustomer()
+    }));
+  } catch { /* storage disabled — the app still works, it just won't remember */ }
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    (d.codes || []).forEach(code => { const t = findTest(code); if (t) state.selected.set(code, t); });
+    if (d.sampleCount) state.sampleCount = d.sampleCount;
+    if (d.turnaroundId) state.turnaroundId = d.turnaroundId;
+    if (Array.isArray(d.addOns)) state.addOns = new Set(d.addOns);
+    if (d.customer) Object.entries(d.customer).forEach(([k, v]) => {
+      const el = $('#f-' + ({ projectRef: 'project' }[k] || k));
+      if (el && v) el.value = v;
+    });
+    if ($('#samples')) $('#samples').value = state.sampleCount;
+  } catch { /* corrupt draft — start clean rather than break the page */ }
+}
+
+/* ------------------------------------------------------------------ init */
+
+function init() {
+  $('#lab-name').textContent = CONFIG.labName;
+  document.title = `Instant Quote — ${CONFIG.labName}`;
+
+  renderTabs(); renderTests(); renderTurnaround(); renderAddOns();
+  loadDraft();
+  renderTabs(); renderTests(); renderTurnaround(); renderAddOns();
+  renderQuote();
+
+  $('#tabs').addEventListener('click', e => {
+    const btn = e.target.closest('[data-cat]');
+    if (!btn) return;
+    state.categoryId = btn.dataset.cat;
+    renderTabs(); renderTests();
+  });
+
+  $('#tests').addEventListener('change', e => {
+    const code = e.target.dataset.code;
+    if (!code) return;
+    if (e.target.checked) state.selected.set(code, findTest(code));
+    else state.selected.delete(code);
+    renderTabs(); renderTests(); renderQuote(); saveDraft();
+  });
+
+  $('#samples').addEventListener('input', e => {
+    state.sampleCount = Math.max(1, Math.min(9999, parseInt(e.target.value, 10) || 1));
+    renderQuote(); saveDraft();
+  });
+
+  $('#turnaround').addEventListener('change', e => {
+    if (e.target.name !== 'tat') return;
+    state.turnaroundId = e.target.value;
+    renderTurnaround(); renderQuote(); saveDraft();
+  });
+
+  $('#addons').addEventListener('change', e => {
+    const id = e.target.dataset.addon;
+    if (!id) return;
+    e.target.checked ? state.addOns.add(id) : state.addOns.delete(id);
+    renderAddOns(); renderQuote(); saveDraft();
+  });
+
+  $('#clear').addEventListener('click', () => {
+    state.selected.clear();
+    renderTabs(); renderTests(); renderQuote(); saveDraft();
+  });
+
+  $('#submit').addEventListener('click', submitRequest);
+  $('#print').addEventListener('click', buildPrintable);
+  $$('#form input, #form textarea').forEach(el => el.addEventListener('change', saveDraft));
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>
