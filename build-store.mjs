@@ -85,6 +85,11 @@ execFileSync('zip', ['-r', '-X', '-q', '../dist/quote-desk.zip', '.',
 const zip = readFileSync(path('dist/quote-desk.zip'));
 const standalone = readFileSync(path('product/standalone.html'));
 
+/* The demo is served from the same build as the package, so a buyer can never
+   try one version and receive another. */
+mkdirSync(path('demo'), { recursive: true });
+writeFileSync(path('demo/index.html'), standalone);
+
 /* Cross-check the archive before it is sold: unzip -t proves it is readable,
    and the manifest is what the storefront promises the buyer.               */
 execFileSync('unzip', ['-t', '-q', path('dist/quote-desk.zip')]);
