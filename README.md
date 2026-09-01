@@ -1,11 +1,15 @@
 # Instant Quote — product and storefront
 
-Two things live here:
+Three things live here:
 
 - **`product/`** — the thing being sold: a self-hosted instant-quote and
   sample-intake page for an analytical lab. See `product/README.md`.
 - **`store/`** + **`index.html`** — a storefront that sells it for Bitcoin,
   with no payment processor, no merchant account and no server.
+- **`heartland/`** — the **Heartland Bio Labs** site: an SEO-structured
+  landing page plus its own branded instance of the quote desk, separate
+  from the Midwest Biolabs demo. Static, deploys anywhere. Tests:
+  `cd heartland && node test.mjs`.
 
 `index.html` at the root is **generated**. Edit `store/template.html` and
 rebuild.

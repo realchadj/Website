@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heartland Bio Labs — Soil, Water, Food, Feed &amp; Environmental Testing</title>
+  <meta name="description" content="Analytical testing with upfront pricing. Soil fertility from $9, water quality from $22, food safety, feed &amp; forage, and environmental panels — quote instantly and submit samples online.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Heartland Bio Labs — Analytical Testing, Priced Upfront">
+  <meta property="og:description" content="Soil, water, food, feed and environmental testing with instant itemised quotes, automatic volume discounts and rush turnaround.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127806;</text></svg>">
+  <style>
+    /* Landing-page layout on top of the shared quote-desk stylesheet. */
+    .land { max-width: 1180px; margin: 0 auto; padding: 8px 24px 72px; }
+    .land section { margin-top: 52px; }
+    .land h2 {
+      font-family: var(--display); font-weight: 700; letter-spacing: -.02em;
+      font-size: clamp(22px, 3vw, 28px); margin: 0 0 6px;
+    }
+    .land .lede { color: var(--ink-2); max-width: 62ch; margin: 0 0 22px; }
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .hero-cta .btn { text-decoration: none; display: inline-block; }
+    .svc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .svc { padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .svc h3 { font-family: var(--display); font-weight: 650; font-size: 16px; margin: 0; letter-spacing: -.01em; }
+    .svc p { margin: 0; color: var(--ink-2); font-size: 14px; flex: 1; }
+    .svc .from { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+    .svc a { color: var(--accent); font-size: 14px; font-weight: 600; text-decoration: none; }
+    .svc a:hover { text-decoration: underline; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; counter-reset: step; }
+    .stepcard { padding: 20px; }
+    .stepcard::before {
+      counter-increment: step; content: counter(step);
+      display: inline-grid; place-items: center; width: 26px; height: 26px; margin-bottom: 10px;
+      border-radius: 8px; background: var(--accent); color: var(--accent-ink);
+      font-family: var(--mono); font-size: 13px; font-weight: 700;
+    }
+    .stepcard h3 { font-family: var(--display); font-weight: 650; font-size: 15px; margin: 0 0 6px; }
+    .stepcard p { margin: 0; color: var(--ink-2); font-size: 14px; }
+    .faq details {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 14px 18px; margin-bottom: 10px;
+    }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .faq details p { color: var(--ink-2); font-size: 14.5px; margin: 10px 0 2px; max-width: 70ch; }
+    .band {
+      background: var(--accent-2); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .band h2 { margin: 0 0 4px; }
+    .band p { margin: 0; color: var(--ink-2); }
+    .band .btn { text-decoration: none; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="brand-mark">H</span><span>Heartland Bio Labs</span></div>
+    <div class="topbar-note"><a href="quote/" style="color:var(--accent);font-weight:600;text-decoration:none">Get an instant quote →</a></div>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Analytical testing for the heartland — priced upfront, delivered on time.</h1>
+  <p>Soil, water, food, feed and environmental analysis with reference methods on every
+     test and a price you can see before you pack a single sample. No quote request
+     forms, no two-day wait for a callback.</p>
+  <ul class="hero-points">
+    <li>Instant, itemised pricing</li>
+    <li>Volume discounts up to 25%</li>
+    <li>Rush results in 24–48 hours</li>
+    <li>Printable quote &amp; chain of custody</li>
+  </ul>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="quote/">Price my testing now</a>
+    <a class="btn btn-ghost" href="#services">See what we test</a>
+  </div>
+</div>
+
+<main class="land">
+
+  <section id="services" aria-labelledby="services-h">
+    <h2 id="services-h">What we test</h2>
+    <p class="lede">Five service lines, every test listed with its reference method, turnaround
+       and per-sample price. Pick your analyses on the quote desk and the total is itemised
+       in front of you.</p>
+    <div class="svc-grid">
+      <div class="card svc">
+        <h3>Soil &amp; Agronomy</h3>
+        <p>Fertility, micronutrients, texture, salinity and compost analysis for growers,
+           agronomists and land managers. Mehlich-3 / ICP-OES chemistry.</p>
+        <span class="from">from $9 / sample</span>
+        <a href="quote/">Price soil testing →</a>
+      </div>
+      <div class="card svc">
+        <h3>Water Quality</h3>
+        <p>Private well safety, drinking-water panels, heavy metals by ICP-MS and
+           irrigation suitability. EPA and Standard Methods throughout.</p>
+        <span class="from">from $22 / sample</span>
+        <a href="quote/">Price water testing →</a>
+      </div>
+      <div class="card svc">
+        <h3>Food &amp; Beverage</h3>
+        <p>Nutrition Facts panels, pathogen screens by PCR, mycotoxins, water activity
+           and shelf-life studies for producers and co-packers.</p>
+        <span class="from">from $24 / sample</span>
+        <a href="quote/">Price food testing →</a>
+      </div>
+      <div class="card svc">
+        <h3>Feed &amp; Forage</h3>
+        <p>Forage packages, complete feed analysis, nitrate toxicity screens and ICP
+           mineral panels for livestock operations and feed mills.</p>
+        <span class="from">from $26 / sample</span>
+        <a href="quote/">Price feed testing →</a>
+      </div>
+      <div class="card svc">
+        <h3>Environmental</h3>
+        <p>RCRA 8 metals, petroleum hydrocarbons, volatile organics and TCLP waste
+           characterisation for site assessment and closure reporting.</p>
+        <span class="from">from $110 / sample</span>
+        <a href="quote/">Price environmental testing →</a>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="how-h">
+    <h2 id="how-h">How it works</h2>
+    <p class="lede">From “what would this cost?” to samples in transit, in one sitting.</p>
+    <div class="steps">
+      <div class="card stepcard">
+        <h3>Build your quote</h3>
+        <p>Select tests, enter your sample count and pick a turnaround. The price is
+           itemised live — testing, rush, discounts and options, line by line.</p>
+      </div>
+      <div class="card stepcard">
+        <h3>Submit online</h3>
+        <p>Send the request from the same page and get a reference number that ties
+           your email, your paperwork and your box together.</p>
+      </div>
+      <div class="card stepcard">
+        <h3>Print &amp; ship</h3>
+        <p>One page prints your quote and a chain-of-custody form. Sign it, drop it
+           in with the samples, ship the same day.</p>
+      </div>
+      <div class="card stepcard">
+        <h3>Get results</h3>
+        <p>Reports go to the email on your submission within the published turnaround —
+           24–48 hours on rush where methods allow.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <h2 id="faq-h">Common questions</h2>
+    <details>
+      <summary>How much does testing cost?</summary>
+      <p>Every price is published on the quote desk: soil from $9, water from $22, food
+         from $24, feed and forage from $26 and environmental panels from $110 per sample.
+         Orders are billed at a $35 minimum, and quotes stay valid for 30 days.</p>
+    </details>
+    <details>
+      <summary>How fast will I get results?</summary>
+      <p>Each test shows its standard turnaround — most run in 2–7 business days from
+         receipt. Priority service returns results in 3 business days where methods allow,
+         and rush service in 24–48 hours. Confirm rush capacity before shipping.</p>
+    </details>
+    <details>
+      <summary>Do you offer volume discounts?</summary>
+      <p>Yes, automatically: 10% off at 10+ samples, 15% at 25+, 20% at 50+ and 25% at
+         100+. The quote desk applies the discount as you type your sample count — no
+         negotiating required.</p>
+    </details>
+    <details>
+      <summary>How do I submit samples?</summary>
+      <p>Build your quote online, submit it, then print the combined quote and
+         chain-of-custody form and ship it with your samples. A prepaid sample kit with
+         bottles, bags, ice pack and return label is available as an add-on.</p>
+    </details>
+    <details>
+      <summary>Can I get help interpreting my results?</summary>
+      <p>Add written interpretation to any order and an analyst walks through what the
+         numbers mean and what to do next — useful for soil fertility plans, well-water
+         issues and feed ration decisions.</p>
+    </details>
+  </section>
+
+  <section>
+    <div class="band">
+      <div>
+        <h2>Know your price before you pack the box.</h2>
+        <p>Itemised quote in about eight seconds. Submit and ship the same day.</p>
+      </div>
+      <a class="btn btn-primary" href="quote/">Get an instant quote</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <span>Heartland Bio Labs · <a href="mailto:midwestbiolabs@proton.me" style="color:inherit">midwestbiolabs@proton.me</a></span>
+    <span>Estimates are binding for 30 days and exclude applicable taxes.</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "Heartland Bio Labs",
+      "description": "Analytical laboratory offering soil, water, food, feed and environmental testing with instant online quoting.",
+      "email": "midwestbiolabs@proton.me",
+      "knowsAbout": ["Soil testing", "Water quality testing", "Food safety testing", "Feed and forage analysis", "Environmental testing"]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much does testing cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Every price is published on the quote desk: soil from $9, water from $22, food from $24, feed and forage from $26 and environmental panels from $110 per sample. Orders are billed at a $35 minimum, and quotes stay valid for 30 days." }
+        },
+        {
+          "@type": "Question",
+          "name": "How fast will I get results?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Each test shows its standard turnaround — most run in 2–7 business days from receipt. Priority service returns results in 3 business days where methods allow, and rush service in 24–48 hours." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you offer volume discounts?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, automatically: 10% off at 10+ samples, 15% at 25+, 20% at 50+ and 25% at 100+ samples. The discount is applied on the quote desk as the sample count grows." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I submit samples?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Build a quote online, submit it, then print the combined quote and chain-of-custody form and ship it with your samples. A prepaid sample kit is available as an add-on." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I get help interpreting my results?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Written interpretation can be added to any order — an analyst explains what the numbers mean and recommends next steps." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+</body>
+</html>
