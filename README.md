@@ -7,8 +7,8 @@ Two things live here:
 - **`store/`** + **`index.html`** — a storefront that sells it for Bitcoin,
   with no payment processor, no merchant account and no server.
 
-`index.html` at the root is **generated**. Edit `store/template.html` and
-rebuild.
+`index.html`, `robots.txt` and `sitemap.xml` at the root are **generated**.
+Edit `store/template.html` and rebuild.
 
 ---
 
@@ -31,6 +31,13 @@ To sell to a different address:
 
 ```
 BTC_ADDRESS=bc1... node build-store.mjs
+```
+
+The canonical URL, social-share cards and sitemap default to the GitHub Pages
+URL. Serving from a custom domain? Rebuild with:
+
+```
+SITE_URL=https://example.com/ node build-store.mjs
 ```
 
 ---

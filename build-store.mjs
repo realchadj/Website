@@ -5,13 +5,18 @@
    no storage bucket and no account anywhere.
 
    Usage:  node build-store.mjs
-           BTC_ADDRESS=bc1... node build-store.mjs                          */
+           BTC_ADDRESS=bc1... node build-store.mjs
+           SITE_URL=https://example.com/ node build-store.mjs               */
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 
 const ADDRESS = process.env.BTC_ADDRESS || '3ER42NnuB41VoPduKCPKUE1Dh1j17gzKqx';
+/* Absolute URL the site is served from — canonical link, social cards and the
+   sitemap all need it. Trailing slash enforced so path concatenation works.  */
+const SITE_URL = (process.env.SITE_URL || 'https://realchadj.github.io/website/')
+  .replace(/\/*$/, '/');
 const ROOT = new URL('./', import.meta.url);
 const path = p => new URL(p, ROOT).pathname;
 
@@ -113,10 +118,11 @@ const put = (marker, value) => {
     console.error(`Refusing to build: template has no ${marker}.`);
     process.exit(1);
   }
-  html = html.replace(marker, () => value);        // function: values contain $
+  html = html.replaceAll(marker, () => value);     // function: values contain $
 };
 
 put('__BTC_ADDRESS__', ADDRESS);
+put('__SITE_URL__', SITE_URL);
 put('__PRODUCT_B64__', zip.toString('base64'));
 put('__STANDALONE_B64__', standalone.toString('base64'));
 put('__ZIP_KB__', Math.round(zip.length / 1024));
@@ -128,6 +134,20 @@ if (/__[A-Z_]+__/.test(html)) {
 }
 
 writeFileSync(path('index.html'), html);
+
+/* --------------------------------------------------- robots and sitemap -- */
+
+const today = new Date().toISOString().slice(0, 10);
+writeFileSync(path('robots.txt'),
+  `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}sitemap.xml\n`);
+writeFileSync(path('sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${SITE_URL}</loc><lastmod>${today}</lastmod></url>
+  <url><loc>${SITE_URL}demo/</loc><lastmod>${today}</lastmod></url>
+</urlset>
+`);
+
 console.log(`index.html      ${(html.length / 1024).toFixed(0)} KB`);
+console.log(`  site url      ${SITE_URL}`);
 console.log(`  package       ${(zip.length / 1024).toFixed(0)} KB, ${listing.length} files`);
 console.log(`  paying to     ${ADDRESS}`);
