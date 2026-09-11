@@ -6,7 +6,7 @@
 --------------------------------------------------------------------------- */
 
 const CONFIG = {
-  labName: 'Midwest Biolabs',
+  labName: 'Heartland Bio Labs',
   labEmail: 'midwestbiolabs@proton.me',
   labPhone: '',
   labAddress: '',
