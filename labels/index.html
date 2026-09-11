@@ -408,6 +408,13 @@ function productFromSkuKey(key) {
   return hit || key;
 }
 
+/* "HBL-BPC157-5MG" → {name: 'BPC-157', size: '5 mg'}, or null if not a SKU. */
+function skuToItem(str) {
+  const m = String(str).trim().match(/^HBL[-_]?([A-Z0-9]+)[-_](\d+(?:\.\d+)?)\s*(MG|MCG|ML|IU)$/i);
+  if (!m) return null;
+  return { name: productFromSkuKey(m[1].toUpperCase()), size: m[2] + ' ' + m[3].toLowerCase() };
+}
+
 function parseLine(line) {
   line = line.trim();
   if (!line) return null;
@@ -498,8 +505,12 @@ $('copyLink').addEventListener('click', () => {
   if (q.get('tag')) $('tagLine').value = q.get('tag');
   if (spec) {
     const items = spec.split('|').map(part => {
-      const [name, size, qty, lot] = part.split(':').map(s => decodeURIComponent(s || '').trim());
-      return name ? { name, size: size || '', qty: Math.max(1, parseInt(qty, 10) || 1), lot: lot || '', date: '' } : null;
+      const f = part.split(':').map(s => decodeURIComponent(s || '').trim());
+      /* SKU form: HBL-BPC157-5MG:qty:lot — product and strength decode
+         from the SKU itself. Name form: name:size:qty:lot. */
+      const sku = skuToItem(f[0]);
+      if (sku) return { ...sku, qty: Math.max(1, parseInt(f[1], 10) || 1), lot: f[2] || '', date: '' };
+      return f[0] ? { name: f[0], size: f[1] || '', qty: Math.max(1, parseInt(f[2], 10) || 1), lot: f[3] || '', date: '' } : null;
     }).filter(Boolean);
     importItems(items, 'from link');
     if (items.length && q.get('print') === '1') setTimeout(() => window.print(), 300);
