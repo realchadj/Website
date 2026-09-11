@@ -203,7 +203,7 @@
     <label for="coName">Company line</label>
     <input id="coName" value="HEARTLAND BIO LABS">
     <label for="tagLine">Bottom line (every label)</label>
-    <input id="tagLine" placeholder="e.g. For laboratory use only">
+    <input id="tagLine" value="Research Use Only">
   </div>
 
   <div class="preview">
@@ -228,8 +228,27 @@ function saveJSON(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
 }
 
+/* The heartlandbiolabs.com catalog, preloaded so every product autofills
+   from day one. Products entered by hand are remembered alongside these. */
+const PRELOADED = [
+  'BPC-157', 'TB-500', 'Retatrutide', 'Tirzepatide', 'Semaglutide',
+  'Cagrilintide', 'BPC-157 + TB-500', 'GLOW (BPC-157 + TB-500 + GHK-Cu)',
+  'KLOW (BPC-157 + TB-500 + GHK-Cu + KPV)', 'Retatrutide + Tirzepatide',
+  'CJC-1295 with DAC', 'CJC-1295 (No DAC)', 'Ipamorelin',
+  'CJC-1295 + Ipamorelin', 'Tesamorelin', 'Sermorelin', 'GHRP-2', 'GHRP-6',
+  'IGF-1 LR3', 'PEG MGF', 'GHK-Cu', 'KPV', 'Glutathione', 'NAD+',
+  'MOTS-c', 'AOD-9604', 'AICAR', '5-Amino-1MQ', 'L-Carnitine', 'LIPO-C',
+  'PT-141', 'Kisspeptin-10', 'MT-2 (Melanotan II)', 'Oxytocin',
+  'Thymosin Alpha-1', 'DSIP', 'Selank', 'Semax', 'Adamax', 'Epithalon',
+  'Bacteriostatic Water'
+];
+
 let catalog = loadJSON('vialCatalog', []);   // [{name, size}]
-let order   = loadJSON('vialOrder', []);     // [{name, size, qty, lot, date}]
+for (const name of PRELOADED)
+  if (!catalog.some(p => p.name.toLowerCase() === name.toLowerCase()))
+    catalog.push({ name, size: '' });
+
+let order = loadJSON('vialOrder', []);       // [{name, size, qty, lot, date}]
 
 const $ = id => document.getElementById(id);
 
@@ -361,10 +380,56 @@ function rememberInCatalog(item) {
 
 const SIZE_RE = /(\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml|iu|units?))\b/i;
 
+/* ShipHero/WooCommerce SKUs: HBL-<PRODUCT>-<STRENGTH>, e.g. HBL-AICAR-100MG.
+   The product key is matched against the catalog; families whose SKU key
+   compacts differently from the display name are pinned here. */
+const SKU_ALIASES = {
+  CJC1295: 'CJC-1295 (No DAC)',
+  CJC1295NODAC: 'CJC-1295 (No DAC)',
+  CJC1295DAC: 'CJC-1295 with DAC',
+  CJC1295WITHDAC: 'CJC-1295 with DAC',
+  SAMINO1MQ: '5-Amino-1MQ',
+  AMINO1MQ: '5-Amino-1MQ',
+  NAD: 'NAD+',
+  NADPLUS: 'NAD+',
+  BACWATER: 'Bacteriostatic Water',
+  RETATIRZE: 'Retatrutide + Tirzepatide',
+  MELANOTAN2: 'MT-2 (Melanotan II)'
+};
+
+const normKey = s => String(s).replace(/[^a-z0-9]/gi, '').toUpperCase();
+
+function productFromSkuKey(key) {
+  if (SKU_ALIASES[key]) return SKU_ALIASES[key];
+  const hit = PRELOADED.find(n => {
+    const c = normKey(n);
+    return c === key || c.startsWith(key) || key.startsWith(c);
+  });
+  return hit || key;
+}
+
 function parseLine(line) {
   line = line.trim();
   if (!line) return null;
   if (/^(product|item|name|sku)\b/i.test(line) && /qty|quant|count|vials/i.test(line)) return null;
+
+  /* A line containing an HBL SKU is authoritative: product and strength
+     come from the SKU, quantity from an "x N" or a standalone number. */
+  const sku = line.match(/HBL[-_]?([A-Z0-9]+)[-_](\d+(?:\.\d+)?)\s*(MG|MCG|ML|IU)\b/i);
+  if (sku) {
+    const name = productFromSkuKey(sku[1].toUpperCase());
+    const size = sku[2] + ' ' + sku[3].toLowerCase();
+    const rest = line.replace(sku[0], ' ');
+    let qty = 1;
+    const xN = rest.match(/(?:^|\s)[x×]\s*(\d+)\b/i) || rest.match(/\b(\d+)\s*[x×](?:\s|$)/i);
+    if (xN) qty = +xN[1];
+    else {
+      const nums = [...rest.matchAll(/(?:^|[\s,])(\d{1,3})(?![\d.]*\s*(?:mg|mcg|ml|iu))(?=$|[\s,])/gi)]
+        .map(m => +m[1]).filter(n => n > 0);
+      if (nums.length) qty = nums[nums.length - 1];
+    }
+    return { name, size, qty: Math.max(1, qty), lot: '', date: '' };
+  }
 
   /* CSV / tab row: name, size, qty in any order after the name. */
   const cells = line.split(/\t|,/).map(c => c.trim()).filter(Boolean);
