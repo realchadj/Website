@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Instant Quote — source licence</title>
-<meta name="description" content="A working instant-quote and sample-intake tool for analytical labs. Full source, paid in Bitcoin.">
+<meta name="description" content="A working instant-quote and sample-intake tool for analytical labs. Full source, pay by __PAY_METHODS__.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -129,7 +129,7 @@ a{color:var(--accent)}
 <header class="masthead">
   <div class="wrap">
     <span class="logo"><i>Q</i> Instant Quote</span>
-    <small>Source licence · pay in Bitcoin</small>
+    <small>Source licence · pay by __PAY_METHODS__</small>
   </div>
 </header>
 
@@ -167,7 +167,7 @@ a{color:var(--accent)}
 
       <section class="panel">
         <div class="panel-h"><h2>What you receive</h2>
-          <p>Delivered on this page the moment payment is seen on-chain.</p></div>
+          <p>Delivered on this page the moment your payment goes through.</p></div>
         <div class="panel-b">
           <table class="manifest">
             <tr><td>index.html</td><td><span>The page.</span></td></tr>
@@ -215,6 +215,7 @@ a{color:var(--accent)}
         <p class="rate" id="rate">Fetching the Bitcoin rate…</p>
 
         <div class="stack" id="stage-idle">
+          <a class="btn btn-primary" id="card" href="#" hidden>Pay by card</a>
           <button class="btn btn-primary" id="start" type="button" disabled>Pay with Bitcoin</button>
           <p class="fineprint" style="padding:0;margin:0">Full source. Yours to modify and use on
             as many of your own lab's sites as you like.</p>
@@ -271,8 +272,8 @@ a{color:var(--accent)}
           <button class="btn btn-ghost btn-sm" id="dl-one" type="button" style="margin-top:9px">
             Download standalone.html only</button>
           <p class="fineprint" style="padding:12px 0 0">Save these now — this page holds your
-            files in the browser, not on a server. Your receipt is transaction
-            <span class="mono" id="txid"></span>.</p>
+            files in the browser, not on a server. <span id="receipt">Your receipt is transaction
+            <span class="mono" id="txid"></span>.</span></p>
         </div>
       </section>
     </aside>
@@ -281,7 +282,7 @@ a{color:var(--accent)}
 
 <footer class="foot">
   <div class="wrap">
-    <span>Payment goes directly to the seller's Bitcoin address. This page never holds funds.</span>
+    <span id="foot-pay">Payment goes directly to the seller's Bitcoin address. This page never holds funds.</span>
     <span id="foot-price"></span>
   </div>
 </footer>
@@ -301,6 +302,11 @@ a{color:var(--accent)}
 
 const SHOP = {
   address:  '__BTC_ADDRESS__',
+
+  /* Stripe Payment Link. Empty means the card button stays hidden. Set its
+     after-payment redirect to this page with ?paid={CHECKOUT_SESSION_ID} —
+     that return is what hands over the files. See README.                  */
+  stripeLink: '__STRIPE_LINK__',
   priceUsd: 79,
   productName: 'Instant Quote — lab quoting tool',
 
@@ -441,6 +447,29 @@ function matchPayment(txs, ord) {
   return null;
 }
 
+/* ------------------------------------------------------------------ card */
+
+/* Stripe sends the buyer back with the checkout session id it substituted
+   into the redirect. Like the Bitcoin path this is a courtesy lock, not
+   enforcement: the files are in the page source either way.               */
+function cardReturn() {
+  if (!SHOP.stripeLink) return null;
+  const id = new URLSearchParams(location.search).get('paid') || '';
+  return /^cs_(live|test)_[A-Za-z0-9]+$/.test(id) ? id : null;
+}
+
+function deliverCard(session) {
+  clearInterval(timer);
+  $('#stage-idle').hidden = true;
+  $('#stage-pay').hidden = true;
+  $('#stage-done').hidden = false;
+  $('#done-note').textContent = 'Card payment received. Thank you.';
+  $('#receipt').textContent =
+    `Stripe emails your receipt; your order reference is ${session.slice(0, 20)}…`;
+  $('#stage-done').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  handOver('product-payload', 'quote-desk.zip', 'application/zip');
+}
+
 /* -------------------------------------------------------------- delivery */
 
 function deliver(hit) {
@@ -519,6 +548,17 @@ async function init() {
     () => handOver('product-payload', 'quote-desk.zip', 'application/zip'));
   $('#dl-one').addEventListener('click',
     () => handOver('standalone-payload', 'standalone.html', 'text/html'));
+
+  if (SHOP.stripeLink) {
+    $('#card').href = SHOP.stripeLink;
+    $('#card').hidden = false;
+    $('#start').className = 'btn btn-ghost';
+    $('#foot-pay').textContent = 'Card payments are processed by Stripe. Bitcoin goes directly ' +
+      "to the seller's address. This page never holds funds.";
+  }
+
+  const session = cardReturn();
+  if (session) return deliverCard(session);
 
   if (restore()) return;
 

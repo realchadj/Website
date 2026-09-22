@@ -5,7 +5,8 @@
    no storage bucket and no account anywhere.
 
    Usage:  node build-store.mjs
-           BTC_ADDRESS=bc1... node build-store.mjs                          */
+           BTC_ADDRESS=bc1... node build-store.mjs
+           STRIPE_LINK=https://buy.stripe.com/... node build-store.mjs     */
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -71,6 +72,15 @@ if (!validBase58Check(ADDRESS) && !validBech32(ADDRESS)) {
   process.exit(1);
 }
 
+/* A typo'd payment link sends card buyers to a dead page, so only a Stripe
+   Payment Link URL is accepted. Unset means Bitcoin only.                  */
+const STRIPE_LINK = (process.env.STRIPE_LINK || '').trim();
+if (STRIPE_LINK && !/^https:\/\/buy\.stripe\.com\/[A-Za-z0-9_]+$/.test(STRIPE_LINK)) {
+  console.error(`Refusing to build: "${STRIPE_LINK}" is not a Stripe Payment Link ` +
+                '(expected https://buy.stripe.com/...).');
+  process.exit(1);
+}
+
 /* ------------------------------------------------------------ packaging -- */
 
 execFileSync('node', ['build-standalone.mjs', 'standalone.html'],
@@ -117,6 +127,8 @@ const put = (marker, value) => {
 };
 
 put('__BTC_ADDRESS__', ADDRESS);
+put('__STRIPE_LINK__', STRIPE_LINK);
+html = html.replaceAll('__PAY_METHODS__', STRIPE_LINK ? 'card or Bitcoin' : 'Bitcoin');
 put('__PRODUCT_B64__', zip.toString('base64'));
 put('__STANDALONE_B64__', standalone.toString('base64'));
 put('__ZIP_KB__', Math.round(zip.length / 1024));
@@ -131,3 +143,4 @@ writeFileSync(path('index.html'), html);
 console.log(`index.html      ${(html.length / 1024).toFixed(0)} KB`);
 console.log(`  package       ${(zip.length / 1024).toFixed(0)} KB, ${listing.length} files`);
 console.log(`  paying to     ${ADDRESS}`);
+console.log(`  card link     ${STRIPE_LINK || 'none — card button hidden'}`);

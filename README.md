@@ -4,8 +4,8 @@ Two things live here:
 
 - **`product/`** — the thing being sold: a self-hosted instant-quote and
   sample-intake page for an analytical lab. See `product/README.md`.
-- **`store/`** + **`index.html`** — a storefront that sells it for Bitcoin,
-  with no payment processor, no merchant account and no server.
+- **`store/`** + **`index.html`** — a storefront that sells it by card
+  (through a Stripe Payment Link) and for Bitcoin, with no server.
 
 `index.html` at the root is **generated**. Edit `store/template.html` and
 rebuild.
@@ -33,9 +33,47 @@ To sell to a different address:
 BTC_ADDRESS=bc1... node build-store.mjs
 ```
 
+To take cards as well, add your Stripe Payment Link (see below):
+
+```
+STRIPE_LINK=https://buy.stripe.com/... node build-store.mjs
+```
+
+Without `STRIPE_LINK` the card button stays hidden and the page is
+Bitcoin-only. The build refuses any link that isn't a `buy.stripe.com` URL.
+
 ---
 
-## How the checkout works
+## Card payments (Stripe)
+
+Card payments go through Stripe and are paid out to your bank account in
+dollars. Nothing is converted to or from Bitcoin.
+
+1. Create a Stripe account and connect your bank (Stripe needs your ID and
+   bank details, so you have to do this part yourself).
+2. In the Stripe dashboard: **Payment Links → New**, add a $79 product.
+3. Under **After payment**, pick *Don't show confirmation page → redirect
+   customers to your website* and enter your storefront URL with this
+   exact suffix:
+
+   ```
+   https://<your-site>/?paid={CHECKOUT_SESSION_ID}
+   ```
+
+   Stripe replaces `{CHECKOUT_SESSION_ID}` with the order's session id. The
+   page sees it on return and hands over the files.
+4. Rebuild with `STRIPE_LINK=<the link>` and redeploy.
+
+Test the whole path first with a test-mode link and card `4242 4242 4242 4242`.
+Stripe emails the buyer's receipt and handles refunds from its dashboard.
+
+Like the Bitcoin path, this is a courtesy lock: the return URL is not verified
+against Stripe (that needs a server), so someone who guesses the URL format
+can skip paying. Stripe's dashboard is the real record of who paid.
+
+---
+
+## How the Bitcoin checkout works
 
 There is no Stripe, no Coinbase Commerce, no account anywhere. The mechanism
 is four steps:
@@ -85,7 +123,7 @@ Read this before relying on it for real money.
 ## Tests
 
 ```
-node test-store.mjs            # storefront — 22 checks
+node test-store.mjs            # storefront — 34 checks
 cd product && node test.mjs    # the product — 22 checks
 ```
 
@@ -95,7 +133,8 @@ touch a real API or a real address. They cover the cases that actually lose
 money — underpayment, payment to a different address, and a pre-existing
 transaction attempting to settle a fresh order — alongside explorer and
 price-feed outages, which must fall back to the manual path rather than
-opening an order that can never settle.
+opening an order that can never settle. The card checks cover the button
+staying hidden without a link, and a malformed return URL not unlocking.
 
 ---
 
