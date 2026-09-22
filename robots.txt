@@ -1,0 +1,10 @@
+# Served at /Website/robots.txt on the project page, where crawlers ignore it;
+# it takes effect automatically if this site is ever moved to a custom domain
+# (or to the realchadj.github.io root), so it ships correct rather than absent.
+User-agent: *
+Disallow: /store/
+Disallow: /product/
+Disallow: /dist/
+Allow: /
+
+Sitemap: https://realchadj.github.io/Website/sitemap.xml
