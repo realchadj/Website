@@ -1,98 +1,115 @@
-# Heartland Bio Labs: calculator SEO drafts
+# Heartland Bio Labs: SEO drafts, ready to paste
 
-Ready-to-paste pages for heartlandbiolabs.com. This repo does not deploy the
-site. Everything here gets pasted into WordPress by hand.
+Everything here is pasted into WordPress by hand. This repo does not deploy heartlandbiolabs.com.
+Work through the checklist top to bottom in the Cowork session.
 
-## What the live site looks like (checked 2026-09-23)
+## Implementation checklist
 
-- `/peptide-calculator/` is live, solid and RUO-safe. It links to bac water,
-  BPC-157, TB-500, retatrutide, semaglutide, tirzepatide, GHK-Cu and
-  sermorelin, and it supports hash presets like `#10mg-2ml-500mcg`.
-- **The calculator is not in the header nav.** The header has Shop, About, FAQ,
-  Contact, My Account and Research. The calculator appears only in the footer.
-- **Conversion leak:** the calculator's product block shows **bac water, BPC-157
-  and tirzepatide as "Back soon · Join waitlist"**. Bac water ($9) is the
-  natural add-on for every calculator visitor. Restock it first. Until then,
-  swap in in-stock products (semaglutide, retatrutide) at the top of that block.
-- Retatrutide is in stock at 10 mg, 20 mg and 30 mg ($148 / $175 / $225), with
-  published COAs.
-- A supplier-vetting guide already exists:
-  `/blog/how-to-vet-a-research-peptide-supplier/`. No "are peptides legal"
-  page exists yet.
+### Day 1: fix the leaks
+- [ ] **Restock bac water** (or hide it from the calculator's product block until it's back).
+      It's the $9 add-on nearly every calculator visitor needs, and right now it shows
+      "Back soon". Until then, put semaglutide and retatrutide first in that block.
+- [ ] **Header menu:** Appearance → Menus. Add `Peptide Calculator` (it's footer-only today).
+- [ ] **Product-page data mismatches:** semaglutide's title says "(2-20mg)" and its copy says
+      "three strengths", but the selector lists 2/5/10/20 mg. Tirzepatide's title says "(5-20mg)"
+      and its copy says "both strengths ship from stock", but it only lists 10/20 mg and shows
+      "Back soon". Fix these; stale claims hurt trust and product-rich-result eligibility.
 
-## Keyword data (Semrush US, pulled 2026-09-23)
+### Compound calculator pages
+Each file is one Custom HTML block. The header comment in each file holds the slug, SEO title,
+meta description and keywords. Create each as a child of **Peptide Calculator**, using the same
+full-width template.
 
-| Cluster | Keywords (volume / KD) | Total/mo |
+| File | URL | Monthly searches | Stock |
+|---|---|---|---|
+| `peptide-calculator-retatrutide.html` | /peptide-calculator/retatrutide/ | ~14,000 (KD 0–18) | In stock |
+| `peptide-calculator-bpc-157.html` | /peptide-calculator/bpc-157/ | ~5,000 (KD 0–17) | Back soon: publish anyway |
+| `peptide-calculator-tirzepatide.html` | /peptide-calculator/tirzepatide/ | ~5,200 (KD 7–33) | Back soon: publish anyway |
+| `peptide-calculator-semaglutide.html` | /peptide-calculator/semaglutide/ | ~1,500 (KD 0–24) | In stock |
+
+- The pages carry their own WebApplication and FAQPage JSON-LD. **Turn off the SEO plugin's
+  FAQ schema on these pages**, or it will be duplicated. Leave breadcrumbs on.
+- Test on a phone: presets work, e.g. `/peptide-calculator/retatrutide/#20mg-3ml-1000mcg`.
+- The pages are generated. To change content, edit `calculators/compounds.mjs` and run
+  `node heartland-drafts/calculators/build.mjs`. When tirzepatide or BPC-157 is back in stock,
+  update that entry's `product`, `cta` and `stockNote`, then rebuild.
+
+### Main calculator upgrades: `main-calculator-additions.html`
+Seven numbered sections, each marked with where to paste it: compound calculator links; a
+**reconstitution chart** (7 vial sizes × 4 volumes, for "peptide reconstitution chart", 1k/mo);
+a variants section covering "peptide dosage calculator" (8.1k, KD 21), "peptide reconstitution
+calculator" (9.9k), "peptides calculator", "peptide calc", "mixing calculator" and "bac water
+calculator"; the **embed section with copy button**; 5 new FAQs; their schema; and fallback styles.
+It also has a suggested new SEO title and meta for the main page.
+
+### Embeddable calculator: `embed/peptide-calculator-embed.html`
+- Upload it to the site root as **`/tools/peptide-calculator-embed.html`** (hosting file manager
+  or SFTP; the `tools` folder sits next to `wp-content`). The embed code on the main page
+  already points there.
+- It's `noindex` with a canonical to /peptide-calculator/, so it can't compete with the real page.
+- The credit link sits *outside* the iframe in the embed code. That's the link that counts as a
+  backlink; links inside an iframe don't pass value to your site.
+- **Check framing is allowed.** If a security plugin or host sends `X-Frame-Options: SAMEORIGIN`
+  or a CSP `frame-ancestors` rule, the embed won't load on other sites. Test by pasting the
+  embed code into any HTML page on another domain, or a CodePen. If it's blocked, exempt `/tools/`.
+
+### Articles
+| File | URL | Target |
 |---|---|---|
-| **Retatrutide** | dosage calculator 5,400 / 11 · how much bac water for 10mg retatrutide 2,900 / 4 · how to reconstitute retatrutide 2,400 / 0 · reconstitution calculator 1,300 / 18 · retatrutide calculator 1,000 / 6 · reta calculator 590 / 2 | **~13,600** |
-| Tirzepatide | reconstitution calculator 2,400 / 33 · tirzepatide calculator 1,300 / 23 · peptide calculator for tirzepatide 880 / 24 | ~4,600 |
-| Semaglutide | reconstitution calculator 1,000 / 24 · semaglutide calculator 480 / 20 | ~1,500 |
-| BPC-157 | reconstitution calculator 260 / 16 · bpc 157 reconstitution 260 / 8 · how to reconstitute bpc 157 170 / 0 · bpc 157 calculator 140 / 15 | ~830 |
-| Main-page variants | peptide calc 4,400 / 24 · peptides calculator 2,900 / 9 · peptide reconstitution calculator 9,900 / 32 · peptide mixing calculator 880 / 31 · bac water calculator 390 / 30 | |
-| Other | are peptides legal 6,600 / 19 · how to reconstitute peptides 5,400 / 24 · is glp1 a peptide 1,900 / 24 · best peptide reconstitution calculator 1,000 / 14 · where to buy peptides 6,600 / 43 | |
+| `blog-are-peptides-legal.html` | /blog/are-peptides-legal/ | are peptides legal (6.6k, KD 19) |
+| `page-how-to-reconstitute-peptides.html` | /how-to-reconstitute-peptides/ (replace in place) | how to reconstitute peptides (5.4k, KD 24) |
+| `blog-is-glp-1-a-peptide.html` | /blog/is-glp-1-a-peptide/ | is glp1 a peptide (1.9k, KD 24) |
+| `blog-how-to-vet-a-research-peptide-supplier-REVISED.html` | existing URL (replace content) | where to buy peptides cluster |
+| `blog-best-peptide-reconstitution-calculator.html` | /blog/best-peptide-reconstitution-calculator/ | best peptide reconstitution calculator (1k, KD 14) |
 
-Retatrutide is the biggest and easiest cluster, and the product is in stock.
-Its SERP is weak: peptideuniv, a clinic blog, a wiki, an exact-match domain,
-Rite Aid and Cellgenic. Build order:
+Paste each into a Custom HTML block (or switch the editor to code view). The header comment in
+each file lists its SEO fields and **the internal links to add on other pages**. Do those the
+same day; for a site with little authority, internal links are the fastest lever.
 
-1. **`/peptide-calculator/retatrutide/`**: drafted (`peptide-calculator-retatrutide.html`).
-2. `/peptide-calculator/semaglutide/`: in stock, ~1.5k/mo.
-3. `/peptide-calculator/tirzepatide/`: wait until tirzepatide is back in stock.
-   A calculator page funneling to a waitlist wastes the traffic.
-4. BPC-157: skip the dedicated page for now (~830/mo, and out of stock).
-   Cover it with an H2 on the main calculator instead.
-5. "Are peptides legal" article, then the "how to reconstitute peptides" rebuild.
+### Internal links for the calculator pages
+- Main calculator's worked-example table: link the Retatrutide, Semaglutide, Tirzepatide and
+  BPC-157 rows to their compound calculators.
+- Each product page's "Open the peptide calculator…" link → its compound calculator
+  (e.g. `/peptide-calculator/retatrutide/#10mg-2ml-500mcg`), anchor
+  `<compound> reconstitution calculator`.
+- Reta + tirz blend product → `/peptide-calculator/retatrutide/#rc-blend`.
+  BPC-157 + TB-500, GLOW, KLOW → `/peptide-calculator/bpc-157/#rc-blend`.
+- Each compound's research-overview and buying-guide posts: one contextual link to its
+  calculator, varying the anchor text.
 
-Sema/tirz caution: FDA enforcement against RUO sellers has focused on
-semaglutide and tirzepatide. On those pages, keep to concentration math only
-and never show titration or dose tables. The retatrutide page follows the same
-rule.
+### After publishing
+- [ ] GSC → URL Inspection → Request indexing: the 4 calculator pages, the main calculator
+      and each article.
+- [ ] IndexNow (Rank Math Instant Indexing, or Bing Webmaster Tools URL submission).
+- [ ] Semrush Position Tracking: add the focus and secondary keywords from each file's header.
+- [ ] Start the outreach in `outreach.md`.
+- [ ] Re-check rankings in 2–3 weeks.
 
-## Publishing the retatrutide page
+## Keyword data (Semrush US, 2026-09-23)
 
-1. **Pages → Add New.** Title: `Retatrutide Calculator`. Parent: `Peptide
-   Calculator`. Slug: `retatrutide`. That gives the URL
-   `/peptide-calculator/retatrutide/`. Use the same full-width template as the
-   main calculator.
-2. Add **one Custom HTML block** and paste in the whole of
-   `peptide-calculator-retatrutide.html`. It's self-contained (scoped CSS,
-   vanilla JS, JSON-LD).
-3. SEO fields (Rank Math or Yoast):
-   - **SEO title:** `Retatrutide Calculator: 10, 20 & 30 mg Reconstitution Math`
-   - **Meta description:** `Free retatrutide reconstitution calculator. See how much bac water to add to a 10, 20 or 30 mg vial, the mg/mL concentration and mcg per syringe unit. Research use only.`
-   - **Focus keyword:** `retatrutide calculator`. Secondary: `retatrutide
-     reconstitution calculator`, `how much bac water for 10mg retatrutide`,
-     `retatrutide dosage calculator`.
-   - The block already contains WebApplication and FAQPage JSON-LD. Don't add
-     Rank Math's FAQ schema on this page, or it will be duplicated. Leave the
-     plugin's breadcrumb and WebPage schema on.
-4. Check it on a phone. The layout has no horizontal scroll at 390 px wide.
-   Presets work: `/peptide-calculator/retatrutide/#20mg-3ml-1000mcg`.
+| Keyword | Vol | KD |
+|---|---|---|
+| peptide calculator | 201,000 | 25 |
+| peptide reconstitution calculator | 9,900 | 32 |
+| peptide dosage calculator | 8,100 | 21 |
+| are peptides legal / where to buy peptides | 6,600 each | 19 / 43 |
+| retatrutide dosage calculator | 5,400 | 11 |
+| how to reconstitute peptides | 5,400 | 24 |
+| bpc 157 dosage calculator | 4,400 | 17 |
+| peptide calc | 4,400 | 24 |
+| reconstitution calculator | 3,600 | 29 |
+| how much bac water for 10mg retatrutide | 2,900 | 4 |
+| peptides calculator | 2,900 | 9 |
+| how to reconstitute retatrutide | 2,400 | 0 |
+| tirzepatide reconstitution calculator | 2,400 | 33 |
+| peptide dose calculator | 2,400 | 20 |
+| is glp1 a peptide | 1,900 | 24 |
+| tirzepatide dosage calculator | 1,600 | 20 |
+| retatrutide reconstitution calculator / tirzepatide calculator | 1,300 each | 18 / 23 |
+| semaglutide reconstitution calculator / retatrutide calculator / how to reconstitute tirzepatide / peptide reconstitution chart / best peptide reconstitution calculator | ~1,000 each | 6–24 |
 
-## Internal links to add the same day
-
-- **Main calculator** worked-example table, Retatrutide row: link "Retatrutide
-  10 mg" to `/peptide-calculator/retatrutide/`. Also add a short "Compound
-  calculators" list under the calculator, starting with retatrutide.
-- **Retatrutide product page:** change "Open the peptide calculator with the
-  10 mg + 2 mL worked example" to point at
-  `/peptide-calculator/retatrutide/#10mg-2ml-500mcg`, with anchor text
-  `retatrutide reconstitution calculator`.
-- **Reta + tirz blend product page:** link to
-  `/peptide-calculator/retatrutide/#rc-blend`.
-- **Blog:** in `retatrutide-research-overview`,
-  `buying-retatrutide-research-verification` and
-  `retatrutide-vs-tirzepatide-research-comparison`, add one contextual link each
-  with varied anchor text ("retatrutide calculator", "how much bac water for
-  10 mg retatrutide", "reconstitution math for retatrutide").
-- **Header nav:** add `Peptide Calculator` to the main menu (Appearance →
-  Menus). It's currently in the footer only.
-
-## After publishing
-
-- GSC → URL Inspection → Request indexing for the new URL and the main
-  calculator.
-- IndexNow: Rank Math → Instant Indexing, or submit the URL through Bing
-  Webmaster Tools.
-- Track the six retatrutide keywords in Semrush Position Tracking, and check
-  again in 2–3 weeks.
+## Compliance line all of this follows
+Concentration and volume math only: no dose tables, no titration schedules, no injection guidance
+and no benefit claims. Every "dosage calculator" query is answered honestly: the page does the
+arithmetic and recommends no dose. Aliquot examples deliberately avoid approved-label and
+clinical-trial dose steps.
