@@ -2,6 +2,10 @@
    run offline and never touch a real API or a real address.
    Usage: node test-store.mjs        (CHROME_PATH overrides the browser)     */
 import { chromium } from 'playwright';
+import { writeFileSync, mkdtempSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const ADDRESS = '3ER42NnuB41VoPduKCPKUE1Dh1j17gzKqx';
 const RATE = 60000;                       // stubbed USD/BTC
@@ -18,7 +22,7 @@ const browser = await chromium.launch(
   process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
 
 /* A stub chain. `txs` is what the explorer will report for the address. */
-async function open({ txs = [], priceOk = true, explorerOk = true } = {}) {
+async function open({ txs = [], priceOk = true, explorerOk = true, url = store } = {}) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
@@ -30,7 +34,7 @@ async function open({ txs = [], priceOk = true, explorerOk = true } = {}) {
     explorerOk ? r.fulfill({ json: txs.current }) : r.fulfill({ status: 503 }));
   await page.route('https://fonts.googleapis.com/**', r => r.abort());
 
-  await page.goto(store);
+  await page.goto(url);
   await page.waitForTimeout(350);
   return { page, errors };
 }
@@ -44,6 +48,9 @@ async function open({ txs = [], priceOk = true, explorerOk = true } = {}) {
   check('pay button enabled', await page.locator('#start').isDisabled(), 'false');
   check('demo link present', await page.locator('a[href="demo/"]').count(), 1);
   check('delivery hidden pre-payment', await page.locator('#stage-done').isVisible(), 'false');
+  check('catalog rendered', (await page.locator('#catalog .prod').count()) >= 1, 'true');
+  check('quote tool marked in stock',                       // badge renders uppercase
+        await page.locator('[data-product="quote-desk"] .badge').innerText(), 'IN STOCK');
 
   /* --------------------------------------------------- amount + wallet uri */
   await page.click('#start');
@@ -132,6 +139,84 @@ async function open({ txs = [], priceOk = true, explorerOk = true } = {}) {
   const over = await page.evaluate(() =>
     document.documentElement.scrollWidth - document.documentElement.clientWidth);
   check('no horizontal overflow on mobile', over <= 0, 'true');
+  await page.close();
+}
+
+/* ------------------------------------------- stock status drives the page */
+/* A fixture store: one downloadable product, one physical product in stock,
+   one out of stock. Built to a temp dir so the real index.html is untouched. */
+{
+  const dir = mkdtempSync(join(tmpdir(), 'store-fixture-'));
+  writeFileSync(join(dir, 'catalog.json'), JSON.stringify({
+    contact: 'orders@example.com',
+    products: [
+      { id: 'quote-desk', name: 'Instant Quote — lab quoting tool',
+        priceUsd: 79, status: 'in_stock', fulfillment: 'download' },
+      { id: 'widget', name: 'Tested widget',
+        priceUsd: 25, status: 'in_stock', fulfillment: 'contact' },
+      { id: 'gone', name: 'Sold-out thing',
+        priceUsd: 10, status: 'out_of_stock', fulfillment: 'contact' }
+    ]
+  }));
+  execFileSync('node', [new URL('./build-store.mjs', import.meta.url).pathname], {
+    env: { ...process.env,
+           CATALOG_PATH: join(dir, 'catalog.json'),
+           OUT_PATH: join(dir, 'index.html') },
+    stdio: 'pipe'
+  });
+
+  const txs = { current: [] };
+  const { page } = await open({ txs, url: 'file://' + join(dir, 'index.html') });
+
+  check('three products listed', await page.locator('#catalog .prod').count(), 3);
+  check('out-of-stock badge shown',
+        await page.locator('[data-product="gone"] .badge').innerText(), 'OUT OF STOCK');
+  check('out-of-stock has no buy button',
+        await page.locator('[data-product="gone"] [data-buy]').count(), 0);
+  check('out-of-stock button disabled',
+        await page.locator('[data-product="gone"] button').isDisabled(), 'true');
+  check('in-stock product buyable',
+        await page.locator('[data-buy="widget"]').isDisabled(), 'false');
+
+  /* Buy the physical product: price switches, payment settles, and delivery
+     shows contact instructions instead of a download.                       */
+  await page.click('[data-buy="widget"]');
+  await page.waitForTimeout(400);
+  check('price switches to selected product', await page.locator('#usd').innerText(), '$25');
+  const satoshis = Math.round(parseFloat(await page.locator('#amt-btc').inputValue()) * 1e8);
+  check('amount priced from selected product',
+        Math.abs(satoshis - Math.round(25 / RATE * 1e8)) < 1000, 'true');
+
+  txs.current = [{ txid: 'e'.repeat(64), status: { confirmed: true },
+                   vout: [{ scriptpubkey_address: ADDRESS, value: satoshis }] }];
+  await page.click('#recheck');
+  await page.waitForTimeout(500);
+  check('payment unlocks order', await page.locator('#stage-done').isVisible(), 'true');
+  check('no download offered for physical product',
+        await page.locator('#dl-zip').isVisible(), 'false');
+  check('contact instructions shown', await page.locator('#contact-note').isVisible(), 'true');
+  check('contact email included',
+        (await page.locator('#contact-note').innerText()).includes('orders@example.com'), 'true');
+  await page.close();
+}
+
+/* --------------------------------- everything out of stock closes the store */
+{
+  const dir = mkdtempSync(join(tmpdir(), 'store-fixture-'));
+  writeFileSync(join(dir, 'catalog.json'), JSON.stringify({
+    products: [{ id: 'quote-desk', name: 'Instant Quote — lab quoting tool',
+                 priceUsd: 79, status: 'out_of_stock', fulfillment: 'download' }]
+  }));
+  execFileSync('node', [new URL('./build-store.mjs', import.meta.url).pathname], {
+    env: { ...process.env,
+           CATALOG_PATH: join(dir, 'catalog.json'),
+           OUT_PATH: join(dir, 'index.html') },
+    stdio: 'pipe'
+  });
+  const { page } = await open({ txs: { current: [] },
+                                url: 'file://' + join(dir, 'index.html') });
+  check('sold-out store disables checkout', await page.locator('#start').isDisabled(), 'true');
+  check('sold-out store says so', await page.locator('#start').innerText(), 'Out of stock');
   await page.close();
 }
 

@@ -1,0 +1,13 @@
+{
+  "contact": "",
+  "products": [
+    {
+      "id": "quote-desk",
+      "name": "Instant Quote — lab quoting tool",
+      "blurb": "Self-hosted instant-quote and sample-intake page for analytical labs. Full source, delivered automatically the moment payment is seen on-chain.",
+      "priceUsd": 79,
+      "status": "in_stock",
+      "fulfillment": "download"
+    }
+  ]
+}

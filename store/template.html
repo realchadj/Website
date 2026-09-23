@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lab Quoting Software — Instant Quote &amp; Sample Intake Tool</title>
 <meta name="description" content="Self-hosted lab quoting software for analytical and testing labs: customers build itemised quotes in seconds and submit samples online. Full source, $79 one-time, paid in Bitcoin.">
-<link rel="canonical" href="https://realchadj.github.io/Website/">
+<link rel="canonical" href="__SITE_URL__">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Instant Quote">
 <meta property="og:title" content="Lab Quoting Software — Instant Quote &amp; Sample Intake Tool">
 <meta property="og:description" content="A working instant-quote and sample-submission page for analytical labs. Try the live demo — the demo is the product. Full source, $79 one-time.">
-<meta property="og:url" content="https://realchadj.github.io/Website/">
-<meta property="og:image" content="https://realchadj.github.io/Website/storefront.png">
+<meta property="og:url" content="__SITE_URL__">
+<meta property="og:image" content="__SITE_URL__storefront.png">
 <meta property="og:image:width" content="1300">
 <meta property="og:image:height" content="1939">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lab Quoting Software — Instant Quote &amp; Sample Intake Tool">
 <meta name="twitter:description" content="A working instant-quote and sample-submission page for analytical labs. Try the live demo — the demo is the product. Full source, $79 one-time.">
-<meta name="twitter:image" content="https://realchadj.github.io/Website/storefront.png">
+<meta name="twitter:image" content="__SITE_URL__storefront.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -26,15 +26,15 @@
   "description": "A self-hosted instant-quote and sample-intake page for analytical and testing laboratories. Customers pick analyses, see itemised pricing in seconds, then submit samples online and print a quote with a chain-of-custody form attached. Sold as full source code with no subscription.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Any (self-hosted static web page)",
-  "url": "https://realchadj.github.io/Website/",
-  "image": "https://realchadj.github.io/Website/storefront.png",
-  "softwareHelp": "https://realchadj.github.io/Website/demo/",
+  "url": "__SITE_URL__",
+  "image": "__SITE_URL__storefront.png",
+  "softwareHelp": "__SITE_URL__demo/",
   "offers": {
     "@type": "Offer",
     "price": "79",
     "priceCurrency": "USD",
     "availability": "https://schema.org/InStock",
-    "url": "https://realchadj.github.io/Website/"
+    "url": "__SITE_URL__"
   }
 }
 </script>
@@ -98,6 +98,22 @@ a{color:var(--accent)}
 .feat b{color:var(--ink);font-weight:600}
 .feat i{flex:none;width:18px;height:18px;margin-top:2px;border-radius:5px;background:var(--accent-2);
   color:var(--accent);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700}
+
+/* -------- catalog -------- */
+.prod{border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:8px}
+.prod+.prod{margin-top:12px}
+.prod-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.prod-top h3{font-size:15.5px}
+.badge{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:999px;white-space:nowrap;align-self:center}
+.badge.in{background:var(--accent-2);color:var(--ok)}
+.badge.out{background:var(--surface-2);color:var(--ink-3)}
+.prod p{margin:0;color:var(--ink-2);font-size:14px}
+.prod-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.prod-price{font-family:var(--display);font-weight:700;font-size:19px;
+  font-variant-numeric:tabular-nums}
+.prod-foot .btn{width:auto}
+.prod.out-of-stock{opacity:.75}
 
 .manifest{width:100%;border-collapse:collapse;font-size:13.5px}
 .manifest td{padding:7px 0;border-bottom:1px dashed var(--line);vertical-align:top}
@@ -177,6 +193,14 @@ a{color:var(--accent)}
 
   <div class="cols">
     <div>
+      <section class="panel">
+        <div class="panel-h"><h2>Products</h2>
+          <p>What's available right now. Items marked in stock can be bought below.</p></div>
+        <div class="panel-b" id="catalog">
+__CATALOG_CARDS__
+        </div>
+      </section>
+
       <section class="panel">
         <div class="panel-h"><h2>What it does</h2></div>
         <div class="panel-b">
@@ -293,16 +317,19 @@ a{color:var(--accent)}
       </section>
 
       <section class="panel delivered" id="stage-done" hidden>
-        <div class="panel-h"><h2>Payment received — here are your files</h2>
+        <div class="panel-h"><h2 id="done-title">Payment received — here are your files</h2>
           <p id="done-note"></p></div>
         <div class="panel-b">
+          <p class="fineprint" id="contact-note" hidden style="padding:0 0 10px">
+            Payment received. Contact the seller with the transaction ID below to arrange
+            delivery of your order.</p>
           <button class="btn btn-primary btn-sm" id="dl-zip" type="button">
             Download the package (.zip, __ZIP_KB__ KB)</button>
           <button class="btn btn-ghost btn-sm" id="dl-one" type="button" style="margin-top:9px">
             Download standalone.html only</button>
-          <p class="fineprint" style="padding:12px 0 0">Save these now — this page holds your
-            files in the browser, not on a server. Your receipt is transaction
-            <span class="mono" id="txid"></span>.</p>
+          <p class="fineprint" style="padding:12px 0 0"><span id="save-note">Save these now —
+            this page holds your files in the browser, not on a server. </span>Your receipt is
+            transaction <span class="mono" id="txid"></span>.</p>
         </div>
       </section>
     </aside>
@@ -331,8 +358,6 @@ a{color:var(--accent)}
 
 const SHOP = {
   address:  '__BTC_ADDRESS__',
-  priceUsd: 79,
-  productName: 'Instant Quote — lab quoting tool',
 
   /* Public APIs. No key, no account. mempool.space is primary; blockstream
      is a drop-in fallback because it serves the same Esplora schema.        */
@@ -344,9 +369,16 @@ const SHOP = {
   confirmations: 0      // 0 = unlock on sight in the mempool. See README.
 };
 
+/* Everything for sale, with stock status. Edit store/catalog.json, not this. */
+const CATALOG = __CATALOG_JSON__;
+
 const $ = s => document.querySelector(s);
-const KEY = 'labquote.order.v1';
+const KEY = 'labquote.order.v2';
 let order = null, timer = null, apiIndex = 0;
+
+/* The checkout sidebar sells one product at a time; Buy buttons switch it.
+   Default to the first thing actually in stock.                            */
+let product = CATALOG.products.find(p => p.status === 'in_stock') || CATALOG.products[0];
 
 const sats = btc => Math.round(btc * 1e8);
 const toBtc = s => (s / 1e8).toFixed(8);
@@ -398,10 +430,11 @@ async function startOrder() {
   const seen = await existingTxids(SHOP.address);
   if (seen === null) return showManual();
 
-  const amount = tagAmount(sats(SHOP.priceUsd / usd));
+  const amount = tagAmount(sats(product.priceUsd / usd));
   order = {
     amount,
     seen,
+    productId: product.id,
     address: SHOP.address,
     usdRate: usd,
     createdAt: Date.now(),
@@ -420,7 +453,7 @@ function renderPayStage() {
   $('#addr').value = order.address;
   $('#wallet').href =
     `bitcoin:${order.address}?amount=${toBtc(order.amount)}` +
-    `&label=${encodeURIComponent(SHOP.productName)}`;
+    `&label=${encodeURIComponent(product.name)}`;
   tickExpiry();
 }
 
@@ -478,12 +511,24 @@ function deliver(hit) {
   $('#stage-pay').hidden = true;
   $('#stage-done').hidden = false;
   $('#txid').textContent = hit.txid.slice(0, 16) + '…';
+
+  const downloadable = product.fulfillment === 'download';
+  $('#dl-zip').hidden = $('#dl-one').hidden = $('#save-note').hidden = !downloadable;
+  $('#contact-note').hidden = downloadable;
+  $('#done-title').textContent = downloadable
+    ? 'Payment received — here are your files'
+    : `Payment received — ${product.name}`;
+  if (!downloadable && CATALOG.contact) {
+    $('#contact-note').textContent = 'Payment received. Email ' + CATALOG.contact +
+      ' with the transaction ID below to arrange delivery of your order.';
+  }
   $('#done-note').textContent = hit.confirmed
     ? 'Confirmed on-chain. Thank you.'
-    : 'Seen in the mempool and not yet confirmed in a block — your files are below regardless.';
+    : 'Seen in the mempool and not yet confirmed in a block — ' +
+      (downloadable ? 'your files are below regardless.' : 'your order is recorded regardless.');
   localStorage.removeItem(KEY);
   $('#stage-done').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  handOver('product-payload', 'quote-desk.zip', 'application/zip');
+  if (downloadable) handOver('product-payload', 'quote-desk.zip', 'application/zip');
 }
 
 function payloadBytes(id) {
@@ -522,6 +567,9 @@ function restore() {
     if (!raw) return false;
     const o = JSON.parse(raw);
     if (!o || o.expiresAt < Date.now()) { localStorage.removeItem(KEY); return false; }
+    const p = CATALOG.products.find(x => x.id === o.productId);
+    if (!p) { localStorage.removeItem(KEY); return false; }   // catalog changed
+    selectProduct(p);
     order = o;
     renderPayStage();
     poll();
@@ -530,10 +578,15 @@ function restore() {
   } catch { return false; }
 }
 
+function selectProduct(p) {
+  product = p;
+  $('#usd').textContent = '$' + p.priceUsd;
+  $('#foot-price').textContent = `$${p.priceUsd} one-time`;
+}
+
 async function init() {
   $('#addr').value = SHOP.address;
-  $('#usd').textContent = '$' + SHOP.priceUsd;
-  $('#foot-price').textContent = `$${SHOP.priceUsd} one-time · full source`;
+  selectProduct(product);
 
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
     const input = document.getElementById(b.dataset.copy);
@@ -550,12 +603,30 @@ async function init() {
   $('#dl-one').addEventListener('click',
     () => handOver('standalone-payload', 'standalone.html', 'text/html'));
 
+  /* Buy buttons on the catalog cards. One order at a time: while a payment
+     is open, a second click just brings the checkout into view.            */
+  document.querySelectorAll('[data-buy]').forEach(b => b.addEventListener('click', () => {
+    const p = CATALOG.products.find(x => x.id === b.dataset.buy);
+    if (!p || p.status !== 'in_stock') return;
+    document.querySelector('.buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (order) return;
+    selectProduct(p);
+    $('#start').disabled = true;
+    startOrder();
+  }));
+
   if (restore()) return;
+
+  if (product.status !== 'in_stock') {          // nothing buyable at all
+    $('#start').textContent = 'Out of stock';
+    $('#rate').textContent = 'Check back soon.';
+    return;
+  }
 
   const usd = await fetchRate();
   if (usd) {
     $('#rate').textContent =
-      `≈ ${toBtc(sats(SHOP.priceUsd / usd))} BTC at $${usd.toLocaleString('en-US')}/BTC`;
+      `≈ ${toBtc(sats(product.priceUsd / usd))} BTC at $${usd.toLocaleString('en-US')}/BTC`;
     $('#start').disabled = false;
   } else {
     $('#rate').textContent = 'Live Bitcoin rate unavailable right now.';

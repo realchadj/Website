@@ -46,6 +46,46 @@ SITE_URL=https://example.com/ node build-store.mjs
 
 ---
 
+## Products and stock
+
+Everything the store offers lives in **`store/catalog.json`** — one entry per
+product, each with a stock status. The storefront renders a card for every
+entry: in-stock products get a working Buy button; out-of-stock products show
+a disabled one and cannot be purchased. Flip a product's availability by
+editing its `status` and rebuilding:
+
+```json
+{
+  "contact": "you@example.com",
+  "products": [
+    { "id": "quote-desk",
+      "name": "Instant Quote — lab quoting tool",
+      "blurb": "What the buyer sees on the card.",
+      "priceUsd": 79,
+      "status": "in_stock",
+      "fulfillment": "download" },
+    { "id": "my-item",
+      "name": "Some physical product",
+      "priceUsd": 25,
+      "status": "out_of_stock",
+      "fulfillment": "contact" }
+  ]
+}
+```
+
+- `status` — `"in_stock"` or `"out_of_stock"`. Nothing else is accepted;
+  a typo fails the build instead of silently listing a product wrong.
+- `fulfillment` — `"download"` delivers the embedded package automatically
+  on payment (the quote tool). `"contact"` is for anything shipped or handed
+  over manually: on payment the buyer is told to contact you with their
+  transaction ID. Set `contact` to the address they should use.
+- `priceUsd` — the Bitcoin amount is computed from this at the live rate.
+
+After any change: `node build-store.mjs`, then commit and push. The site is
+static, so stock status changes exactly when you rebuild and deploy.
+
+---
+
 ## How the checkout works
 
 There is no Stripe, no Coinbase Commerce, no account anywhere. The mechanism

@@ -20,6 +20,11 @@ const SITE_URL = (process.env.SITE_URL || 'https://realchadj.github.io/website/'
 const ROOT = new URL('./', import.meta.url);
 const path = p => new URL(p, ROOT).pathname;
 
+/* CATALOG_PATH and OUT_PATH exist so the tests can build a fixture store
+   without touching the real catalog or the real index.html.               */
+const CATALOG_PATH = process.env.CATALOG_PATH || path('store/catalog.json');
+const OUT_PATH = process.env.OUT_PATH || path('index.html');
+
 /* A malformed address means a buyer's payment is unrecoverable, so a bad one
    fails the build rather than reaching a customer. Covers base58check (1…,
    3…) and bech32 (bc1…), which are the address forms a wallet will produce. */
@@ -76,6 +81,58 @@ if (!validBase58Check(ADDRESS) && !validBech32(ADDRESS)) {
   process.exit(1);
 }
 
+/* -------------------------------------------------------------- catalog -- */
+
+/* Every product the store offers lives in store/catalog.json. A product
+   marked in_stock is a promise to sell at that price, so a malformed entry
+   fails the build rather than reaching a buyer.                            */
+let catalog;
+try {
+  catalog = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
+} catch (e) {
+  console.error(`Refusing to build: cannot read ${CATALOG_PATH} — ${e.message}`);
+  process.exit(1);
+}
+
+if (!Array.isArray(catalog.products) || catalog.products.length === 0) {
+  console.error('Refusing to build: catalog has no products.');
+  process.exit(1);
+}
+{
+  const ids = new Set();
+  for (const p of catalog.products) {
+    const where = `catalog product ${JSON.stringify(p.id ?? p.name ?? '?')}`;
+    const fail = why => { console.error(`Refusing to build: ${where} ${why}.`); process.exit(1); };
+    if (typeof p.id !== 'string' || !/^[a-z0-9-]+$/.test(p.id)) fail('needs a lowercase slug id');
+    if (ids.has(p.id)) fail('has a duplicate id');
+    ids.add(p.id);
+    if (typeof p.name !== 'string' || !p.name.trim()) fail('needs a name');
+    if (typeof p.priceUsd !== 'number' || !Number.isFinite(p.priceUsd) || p.priceUsd <= 0)
+      fail('needs a priceUsd greater than 0');
+    if (p.status !== 'in_stock' && p.status !== 'out_of_stock')
+      fail('needs status "in_stock" or "out_of_stock"');
+    if (p.fulfillment !== 'download' && p.fulfillment !== 'contact')
+      fail('needs fulfillment "download" or "contact"');
+  }
+}
+
+const esc = s => String(s).replace(/[&<>"']/g,
+  c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const productCard = p => {
+  const inStock = p.status === 'in_stock';
+  return `<article class="prod${inStock ? '' : ' out-of-stock'}" data-product="${esc(p.id)}">
+  <div class="prod-top"><h3>${esc(p.name)}</h3>
+    <span class="badge ${inStock ? 'in' : 'out'}">${inStock ? 'In stock' : 'Out of stock'}</span></div>
+  ${p.blurb ? `<p>${esc(p.blurb)}</p>` : ''}
+  <div class="prod-foot"><span class="prod-price">$${p.priceUsd}</span>
+    ${inStock
+      ? `<button class="btn btn-primary btn-sm" type="button" data-buy="${esc(p.id)}">Buy with Bitcoin</button>`
+      : `<button class="btn btn-ghost btn-sm" type="button" disabled>Out of stock</button>`}
+  </div>
+</article>`;
+};
+
 /* ------------------------------------------------------------ packaging -- */
 
 execFileSync('node', ['build-standalone.mjs', 'standalone.html'],
@@ -126,6 +183,12 @@ put('__SITE_URL__', SITE_URL);
 put('__PRODUCT_B64__', zip.toString('base64'));
 put('__STANDALONE_B64__', standalone.toString('base64'));
 put('__ZIP_KB__', Math.round(zip.length / 1024));
+put('__CATALOG_CARDS__', catalog.products.map(productCard).join('\n'));
+/* <-escape so a name containing "</script" can't break out of the tag */
+put('__CATALOG_JSON__', JSON.stringify({
+  contact: typeof catalog.contact === 'string' ? catalog.contact : '',
+  products: catalog.products
+}).replace(/</g, '\\u003c'));
 
 if (/__[A-Z_]+__/.test(html)) {
   console.error('Refusing to build: a placeholder was left unreplaced —',
@@ -133,13 +196,17 @@ if (/__[A-Z_]+__/.test(html)) {
   process.exit(1);
 }
 
-writeFileSync(path('index.html'), html);
+writeFileSync(OUT_PATH, html);
 
 /* --------------------------------------------------- robots and sitemap -- */
 
 const today = new Date().toISOString().slice(0, 10);
 writeFileSync(path('robots.txt'),
-  `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}sitemap.xml\n`);
+  `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}sitemap.xml
+`);
 writeFileSync(path('sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${SITE_URL}</loc><lastmod>${today}</lastmod></url>
@@ -147,7 +214,9 @@ writeFileSync(path('sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 </urlset>
 `);
 
-console.log(`index.html      ${(html.length / 1024).toFixed(0)} KB`);
+const inStock = catalog.products.filter(p => p.status === 'in_stock').length;
+console.log(`${OUT_PATH.split('/').pop().padEnd(15)} ${(html.length / 1024).toFixed(0)} KB`);
 console.log(`  site url      ${SITE_URL}`);
 console.log(`  package       ${(zip.length / 1024).toFixed(0)} KB, ${listing.length} files`);
+console.log(`  catalog       ${catalog.products.length} product(s), ${inStock} in stock`);
 console.log(`  paying to     ${ADDRESS}`);
