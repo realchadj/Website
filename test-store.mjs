@@ -2,7 +2,7 @@
    run offline and never touch a real API or a real address.
    Usage: node test-store.mjs        (CHROME_PATH overrides the browser)     */
 import { chromium } from 'playwright';
-import { writeFileSync, mkdtempSync } from 'node:fs';
+import { readFileSync, writeFileSync, rmSync, mkdtempSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,6 +10,15 @@ import { join } from 'node:path';
 const ADDRESS = '3ER42NnuB41VoPduKCPKUE1Dh1j17gzKqx';
 const RATE = 60000;                       // stubbed USD/BTC
 const store = new URL('./index.html', import.meta.url).href;
+
+/* A card-enabled variant of the built page, as STRIPE_LINK would produce. */
+const LINK = 'https://buy.stripe.com/test_00example';
+const cardFile = new URL('./.store-card.html', import.meta.url);
+const built = readFileSync(new URL('./index.html', import.meta.url), 'utf8');
+if (!built.includes("stripeLink: ''")) throw new Error('index.html was built with a Stripe link');
+writeFileSync(cardFile, built.replace("stripeLink: ''", `stripeLink: '${LINK}'`)
+                             .replace(/pay by Bitcoin/g, 'pay by card or Bitcoin'));
+const cardStore = cardFile.href;
 
 let fail = 0;
 const check = (label, got, want) => {
@@ -220,6 +229,47 @@ async function open({ txs = [], priceOk = true, explorerOk = true, url = store }
   await page.close();
 }
 
+/* -------------------------------------------------------------------- card */
+{
+  const { page } = await open({ txs: { current: [] } });
+  check('no link: card button hidden', await page.locator('#card').isVisible(), 'false');
+  await page.close();
+}
+{
+  const { page } = await open({ txs: { current: [] }, url: store + '?paid=cs_test_abc123' });
+  check('no link: card return ignored', await page.locator('#stage-done').isVisible(), 'false');
+  await page.close();
+}
+{
+  const { page, errors } = await open({ txs: { current: [] }, url: cardStore });
+  check('card button shown', await page.locator('#card').isVisible(), 'true');
+  check('card button links to Stripe', await page.locator('#card').getAttribute('href'), LINK);
+  check('bitcoin still offered', await page.locator('#start').isVisible(), 'true');
+  check('footer names Stripe', (await page.locator('#foot-pay').innerText()).includes('Stripe'), 'true');
+  check('card page: no JS errors', errors.length, 0);
+  await page.close();
+}
+{
+  const { page } = await open({ txs: { current: [] }, url: cardStore + '?paid=not-a-session' });
+  check('malformed card return does not unlock', await page.locator('#stage-done').isVisible(), 'false');
+  await page.close();
+}
+{
+  const page = await browser.newPage();
+  await page.route('**/api/**', r => r.fulfill({ status: 503 }));
+  await page.route('https://fonts.googleapis.com/**', r => r.abort());
+  const dl = page.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+  await page.goto(cardStore + '?paid=cs_test_a1B2c3D4e5');
+  await page.waitForTimeout(400);
+  check('card return unlocks', await page.locator('#stage-done').isVisible(), 'true');
+  check('card return hides checkout', await page.locator('#stage-idle').isVisible(), 'false');
+  check('card receipt shown', (await page.locator('#receipt').innerText()).includes('cs_test_a1B2'), 'true');
+  const auto = await dl;
+  check('card: package auto-delivered', auto && auto.suggestedFilename(), 'quote-desk.zip');
+  await page.close();
+}
+
+rmSync(cardFile, { force: true });
 await browser.close();
 console.log(fail ? `\n${fail} FAILING` : '\nAll storefront checks passed.');
 process.exit(fail ? 1 : 0);
