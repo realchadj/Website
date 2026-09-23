@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chad Johnson</title>
+<meta name="description" content="Rebuilt at 38. Health, recovery, and building companies in Tulsa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<script>
+/* ---------------------------------------------------------------------------
+   LINK-IN-BIO — three doors
+   ---------------------------------------------------------------------------
+   The page Instagram sends people to. No build step, no framework, no backend.
+   Everything you need to change is in CONFIG below.
+
+   Order is deliberate and should not be shuffled: the email capture sits above
+   the doors because it converts the ~90% of visitors who are not ready to buy
+   today, and because an owned list is the only audience asset a platform
+   cannot take away from you.
+--------------------------------------------------------------------------- */
+
+const CONFIG = {
+  name:     'Chad Johnson',
+  location: 'Tulsa, Oklahoma',
+
+  /* The one-line positioning. Keep it identical to the Instagram bio — a
+     visitor who taps through should land somewhere that sounds like the
+     same person. */
+  tagline:  'Reality TV villain → rebuilt at 38.',
+  subline:  'Health, recovery, and building companies in Tulsa. The unglamorous stuff that actually worked.',
+
+  /* --- FILL THESE IN ------------------------------------------------------
+     Every '' below renders that door as "coming soon" and disables its
+     button, so the page is safe to deploy before all three exist. */
+  consultUrl:   '',        // telehealth intake form / booking link
+  shopUrl:      '',        // retail catalogue
+  wholesaleUrl: '',        // practitioner + wholesale application form
+
+  instagram: 'realchadjohnson',
+  tiktok:    'ChadJohnsonTV',
+
+  /* What the free email opt-in actually delivers. Name a real thing you will
+     actually send — an unfulfilled promise costs more than no promise. */
+  leadMagnet: 'The rebuild protocol — the boring daily practice, written out.',
+
+  /* How captured emails reach you. Options:
+       'post'   — POSTs JSON to `emailEndpoint`. Formspree, Basin, ConvertKit,
+                  Beehiiv and Kit all give you a URL to paste in. Use this.
+       'mailto' — falls back to the visitor's mail client. Zero setup, but you
+                  only get the address if they actually press send.
+     With 'post', a failed request falls back to 'mailto' rather than losing
+     the address silently. */
+  captureMode:   'post',
+  emailEndpoint: '',       // e.g. https://formspree.io/f/xxxxxxx
+  contactEmail:  'midwestbiolabs@proton.me'
+};
+</script>
+
+<style>
+/* --------------------------------------------------------------------------
+   Palette lives in :root. Light and dark are both first-class.
+-------------------------------------------------------------------------- */
+:root {
+  --bg:        #f6f7f8;
+  --surface:   #ffffff;
+  --surface-2: #eceff1;
+  --ink:       #0f1719;
+  --ink-2:     #4a575c;
+  --ink-3:     #838f95;
+  --line:      #dbe1e4;
+  --accent:    #164a52;
+  --accent-2:  #e4eeef;
+  --accent-ink:#ffffff;
+  --radius:    12px;
+  --shadow:    0 1px 2px rgba(15,23,25,.06), 0 8px 24px rgba(15,23,25,.05);
+  --display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --sans: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Dark tokens are declared twice on purpose: once for viewers on the system
+   default (no attribute set), once for an explicit dark choice.            */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0c1214;
+    --surface:   #131c1e;
+    --surface-2: #1a2426;
+    --ink:       #e6edee;
+    --ink-2:     #9fadb1;
+    --ink-3:     #6b7a7e;
+    --line:      #243033;
+    --accent:    #58b5b0;
+    --accent-2:  #122626;
+    --accent-ink:#06120d;
+    --shadow:    0 1px 2px rgba(0,0,0,.45), 0 8px 24px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0c1214;
+  --surface:   #131c1e;
+  --surface-2: #1a2426;
+  --ink:       #e6edee;
+  --ink-2:     #9fadb1;
+  --ink-3:     #6b7a7e;
+  --line:      #243033;
+  --accent:    #58b5b0;
+  --accent-2:  #122626;
+  --accent-ink:#06120d;
+  --shadow:    0 1px 2px rgba(0,0,0,.45), 0 8px 24px rgba(0,0,0,.32);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 560px; margin: 0 auto; padding: 48px 20px 72px; }
+
+/* ------------------------------------------------------------- identity -- */
+
+.identity { text-align: center; margin-bottom: 34px; }
+
+.avatar {
+  width: 92px; height: 92px; border-radius: 50%;
+  margin: 0 auto 18px; display: block;
+  object-fit: cover; background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.avatar-placeholder {
+  display: grid; place-items: center;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--ink-3); text-align: center; padding: 8px;
+}
+
+h1 {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.6rem; line-height: 1.15; letter-spacing: -.015em;
+  color: var(--ink); margin: 0 0 10px;
+}
+.tagline {
+  font-family: var(--display); font-weight: 500;
+  font-size: 1.02rem; color: var(--ink); margin: 0 0 8px;
+}
+.subline { margin: 0 auto; max-width: 44ch; font-size: .93rem; color: var(--ink-2); }
+.place {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3); margin: 14px 0 0;
+}
+
+/* --------------------------------------------------------------- capture -- */
+
+.capture {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 22px; margin-bottom: 30px;
+}
+.capture h2 {
+  font-family: var(--display); font-weight: 600; font-size: 1.02rem;
+  color: var(--ink); margin: 0 0 6px; line-height: 1.3;
+}
+.capture p { margin: 0 0 14px; font-size: .88rem; color: var(--ink-2); }
+
+.capture-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.capture-row input {
+  flex: 1 1 200px; min-width: 0;
+  padding: 11px 13px; font: inherit; font-size: .93rem;
+  color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px;
+}
+.capture-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+button, .door {
+  font: inherit; cursor: pointer; border-radius: 8px;
+  border: 1px solid transparent; transition: transform .08s ease;
+}
+button:active, .door:active { transform: translateY(1px); }
+button:focus-visible, .door:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.capture-row button {
+  padding: 11px 20px; font-family: var(--display); font-weight: 600;
+  font-size: .92rem; background: var(--accent); color: var(--accent-ink);
+}
+.capture-note {
+  margin: 12px 0 0; font-size: .78rem; color: var(--ink-3);
+}
+.capture-note[role="status"]:empty { display: none; }
+.capture.done .capture-row { display: none; }
+
+/* ----------------------------------------------------------------- doors -- */
+
+.doors-label {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin: 0 0 12px; text-align: center;
+}
+.doors { display: grid; gap: 10px; margin-bottom: 34px; }
+
+.door {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px;
+  padding: 18px 20px; text-decoration: none;
+  background: var(--surface); border-color: var(--line);
+  box-shadow: var(--shadow); color: var(--ink-2);
+}
+.door:hover { border-color: var(--accent); }
+.door .label {
+  font-family: var(--display); font-weight: 600; font-size: 1.02rem;
+  color: var(--ink); display: block; margin-bottom: 3px;
+}
+.door .who { font-size: .84rem; color: var(--ink-2); display: block; }
+.door .arrow { font-family: var(--mono); color: var(--accent); font-size: 1.1rem; }
+
+/* Primary door — the highest-intent, highest-margin path. */
+.door.primary { background: var(--accent-2); border-color: var(--accent); }
+
+.door.pending { pointer-events: none; opacity: .55; box-shadow: none; }
+.door.pending .arrow { color: var(--ink-3); font-size: .7rem; letter-spacing: .1em;
+  font-family: var(--mono); text-transform: uppercase; }
+
+/* ----------------------------------------------------------------- foot -- */
+
+footer { text-align: center; border-top: 1px solid var(--line); padding-top: 22px; }
+.socials { display: flex; gap: 18px; justify-content: center; margin: 0 0 16px; }
+.socials a {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .06em;
+  color: var(--ink-2); text-decoration: none;
+}
+.socials a:hover { color: var(--accent); }
+.legal { font-size: .74rem; color: var(--ink-3); margin: 0; max-width: 46ch;
+  margin-inline: auto; line-height: 1.55; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<main class="page">
+
+  <section class="identity">
+    <div class="avatar avatar-placeholder" id="avatar">REPLACE<br>WITH<br>PHOTO</div>
+    <h1 id="name"></h1>
+    <p class="tagline" id="tagline"></p>
+    <p class="subline" id="subline"></p>
+    <p class="place" id="place"></p>
+  </section>
+
+  <!-- Above the doors on purpose. See the note in CONFIG. -->
+  <section class="capture" id="capture">
+    <h2 id="magnet"></h2>
+    <p>Free. One email, no spam, unsubscribe any time.</p>
+    <form class="capture-row" id="capture-form">
+      <label for="email" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Email address</label>
+      <input type="email" id="email" name="email" placeholder="you@email.com" required autocomplete="email">
+      <button type="submit">Send it</button>
+    </form>
+    <p class="capture-note" id="capture-note" role="status" aria-live="polite"></p>
+  </section>
+
+  <p class="doors-label">Or pick your door</p>
+  <nav class="doors" id="doors"></nav>
+
+  <footer>
+    <div class="socials" id="socials"></div>
+    <p class="legal">
+      Nothing on this page is medical advice. Products and services are not
+      intended to diagnose, treat, cure, or prevent any disease. Any
+      prescription therapy is provided by an independently licensed
+      practitioner following a consultation.
+    </p>
+  </footer>
+
+</main>
+
+<script>
+/* ------------------------------------------------------------------ render */
+
+const $ = sel => document.querySelector(sel);
+
+$('#name').textContent     = CONFIG.name;
+$('#tagline').textContent  = CONFIG.tagline;
+$('#subline').textContent  = CONFIG.subline;
+$('#place').textContent    = CONFIG.location;
+$('#magnet').textContent   = CONFIG.leadMagnet;
+document.title             = CONFIG.name;
+
+/* Order matters: highest intent and highest margin first. A door with no URL
+   yet renders as pending rather than as a dead link. */
+const DOORS = [
+  { url: CONFIG.consultUrl,   label: 'Work with a licensed provider',
+    who: 'Consultation and, where appropriate, prescribed therapy.', primary: true },
+  { url: CONFIG.shopUrl,      label: 'Shop',
+    who: 'The retail range.' },
+  { url: CONFIG.wholesaleUrl, label: 'Wholesale & practitioner enquiries',
+    who: 'For clinics, gyms and med-spas.' }
+];
+
+$('#doors').innerHTML = DOORS.map(d => {
+  const ready = Boolean(d.url);
+  const cls = ['door', d.primary && ready ? 'primary' : '', ready ? '' : 'pending']
+    .filter(Boolean).join(' ');
+  const href = ready ? ` href="${d.url}"` : '';
+  const arrow = ready ? '&rarr;' : 'soon';
+  return `<a class="${cls}"${href}>
+            <span><span class="label">${d.label}</span><span class="who">${d.who}</span></span>
+            <span class="arrow">${arrow}</span>
+          </a>`;
+}).join('');
+
+const SOCIALS = [
+  CONFIG.instagram && { label: 'Instagram', url: `https://instagram.com/${CONFIG.instagram}` },
+  CONFIG.tiktok    && { label: 'TikTok',    url: `https://tiktok.com/@${CONFIG.tiktok}` }
+].filter(Boolean);
+
+$('#socials').innerHTML = SOCIALS
+  .map(s => `<a href="${s.url}" rel="me noopener">${s.label}</a>`).join('');
+
+/* ----------------------------------------------------------------- capture */
+
+const note = $('#capture-note');
+
+/* Last resort. Losing a captured address is worse than an ugly handoff, so a
+   failed POST hands the visitor a pre-filled mail client rather than an
+   error they can do nothing about. */
+function mailtoFallback(email) {
+  const subject = encodeURIComponent('Send me the rebuild protocol');
+  const body = encodeURIComponent(`Please add ${email} to the list.`);
+  window.location.href =
+    `mailto:${CONFIG.contactEmail}?subject=${subject}&body=${body}`;
+  note.textContent = 'Opening your mail app — press send and you are on the list.';
+}
+
+$('#capture-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = $('#email').value.trim();
+  if (!email) return;
+
+  const button = e.target.querySelector('button');
+  button.disabled = true;
+  note.textContent = 'Sending…';
+
+  if (CONFIG.captureMode !== 'post' || !CONFIG.emailEndpoint) {
+    mailtoFallback(email);
+    button.disabled = false;
+    return;
+  }
+
+  try {
+    const res = await fetch(CONFIG.emailEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email, source: 'link-in-bio' })
+    });
+    if (!res.ok) throw new Error(res.status);
+    $('#capture').classList.add('done');
+    note.textContent = 'Done — check your inbox.';
+  } catch (err) {
+    mailtoFallback(email);
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
