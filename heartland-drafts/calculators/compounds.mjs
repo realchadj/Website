@@ -37,7 +37,7 @@ export default [
 </ul>
 <p>The ratio between the two is fixed by the fill (1 : 2 here) and stays the same whatever volume you use. Enter each component's mass in the calculator above to get its figures.</p>`
     },
-    product: `Heartland stocks <a href="${S}/product/retatrutide/">retatrutide</a> in 10 mg, 20 mg and 30 mg vials ($148, $175 and $225). Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    product: `Heartland stocks <a href="${S}/product/retatrutide/">retatrutide</a> in 10 mg, 20 mg and 30 mg vials ($148, $175 and $225). Certificates of analysis are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
     cta: 'Retatrutide: 10 / 20 / 30 mg',
     reading: [
       ['/blog/retatrutide-research-overview/', 'retatrutide research overview'],
@@ -72,7 +72,7 @@ export default [
     storage: 'Keep lyophilized semaglutide sealed, cold, dry and away from light, and refrigerate or freeze it for longer storage. Once reconstituted with bacteriostatic water, store it at 2–8 °C. Bacteriostatic preparations are conventionally used within about 28 days. Avoid repeated temperature swings and agitation.',
     storageFaq: 'Reconstituted with bacteriostatic water and kept at 2–8 °C, it is conventionally used within about 28 days. Keep lyophilized powder sealed, cold, dry and away from light. Avoid repeated freeze–thaw cycles.',
     howNote: 'Semaglutide carries a C18 fatty diacid side chain but dissolves in bacteriostatic water with gentle swirling. Give it a minute or two before deciding it hasn\'t dissolved.',
-    product: `Heartland stocks <a href="${S}/product/semaglutide/">semaglutide</a> in 2 mg, 5 mg and 10 mg vials ($49, $105 and $185). Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    product: `Heartland stocks <a href="${S}/product/semaglutide/">semaglutide</a> in 2 mg, 5 mg and 10 mg vials ($49, $105 and $185). Certificates of analysis are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
     cta: 'Semaglutide: 2 / 5 / 10 mg',
     reading: [
       ['/blog/semaglutide-research-overview/', 'semaglutide research overview'],
@@ -115,7 +115,7 @@ export default [
 </ul>
 <p>The fill fixes the 2 : 1 ratio, and it stays the same whatever volume you use. The <a href="${S}/peptide-calculator/retatrutide/">retatrutide calculator</a> covers the other component.</p>`
     },
-    product: `Heartland carries <a href="${S}/product/tirzepatide/">tirzepatide</a> in 10 mg and 20 mg vials ($105 and $135). Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    product: `Heartland carries <a href="${S}/product/tirzepatide/">tirzepatide</a> in 10 mg and 20 mg vials ($105 and $135). Certificates of analysis are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
     cta: 'Tirzepatide: 10 / 20 mg',
     reading: [
       ['/blog/tirzepatide-research-overview/', 'tirzepatide research overview'],
@@ -154,7 +154,7 @@ export default [
       title: 'BPC-157 blend vials (BPC-157 + TB-500, GLOW, KLOW)',
       html: `<p>In a blend vial, the diluent dilutes every component at once, so each one ends up with its own concentration. Run the calculation once per component, using that component's mass from the label or the <a href="${S}/coa-portal/">certificate of analysis</a>. The ratio between components is fixed by the fill and doesn't change with the volume you add. Blends Heartland carries: <a href="${S}/product/bpc-157-tb-500/">BPC-157 + TB-500</a>, <a href="${S}/product/glow/">GLOW</a> and <a href="${S}/product/klow/">KLOW</a> (see the <a href="${S}/blog/klow-reconstitution/">KLOW reconstitution guide</a>).</p>`
     },
-    product: `Heartland carries <a href="${S}/product/bpc-157/">BPC-157</a> in 5 mg and 10 mg vials. Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    product: `Heartland carries <a href="${S}/product/bpc-157/">BPC-157</a> in 5 mg and 10 mg vials. Certificates of analysis are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
     cta: 'BPC-157: 5 / 10 mg',
     reading: [
       ['/blog/bpc-157-research-overview-structure-stability-quality/', 'BPC-157 research overview'],
