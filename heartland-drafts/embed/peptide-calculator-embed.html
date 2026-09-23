@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Peptide Reconstitution Calculator | Heartland Bio Labs</title>
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://heartlandbiolabs.com/peptide-calculator/">
+<style>
+body{margin:0;padding:12px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#fff}
+.hbl-rc{--rc-ink:#1b2430;--rc-muted:#5b6675;--rc-line:#d9dee5;--rc-soft:#f4f6f8;--rc-accent:#1f5f8b;--rc-warn:#8a4b00;--rc-warn-bg:#fff5e6;max-width:880px;margin:0 auto;color:var(--rc-ink);line-height:1.6}
+.hbl-rc *{box-sizing:border-box}
+.hbl-rc h2{margin:2.2em 0 .6em;line-height:1.25}
+.hbl-rc h3{margin:1.4em 0 .4em}
+.hbl-rc .rc-lede{font-size:1.08em;color:var(--rc-muted)}
+.hbl-rc .rc-jump{display:flex;flex-wrap:wrap;gap:.5em;margin:1em 0 0;padding:0;list-style:none}
+.hbl-rc .rc-jump a{display:inline-block;padding:.3em .8em;border:1px solid var(--rc-line);border-radius:999px;text-decoration:none;font-size:.92em}
+.hbl-rc .rc-panel{border:1px solid var(--rc-line);border-radius:12px;padding:1.25em;background:#fff;margin:1.5em 0}
+.hbl-rc .rc-field{margin:0 0 1.1em}
+.hbl-rc .rc-field>label{display:block;font-weight:600;margin:0 0 .35em}
+.hbl-rc .rc-chips{display:flex;flex-wrap:wrap;gap:.4em;margin:0 0 .45em}
+.hbl-rc .rc-chips button{font:inherit;padding:.35em .9em;border:1px solid var(--rc-line);border-radius:8px;background:var(--rc-soft);color:var(--rc-ink);cursor:pointer;min-height:40px}
+.hbl-rc .rc-chips button[aria-pressed="true"]{background:var(--rc-accent);border-color:var(--rc-accent);color:#fff}
+.hbl-rc input[type=number]{font:inherit;width:100%;max-width:220px;padding:.5em .6em;border:1px solid var(--rc-line);border-radius:8px}
+.hbl-rc .rc-hint{font-size:.88em;color:var(--rc-muted);margin:.3em 0 0}
+.hbl-rc .rc-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75em;margin:1.2em 0 0}
+.hbl-rc .rc-stat{background:var(--rc-soft);border-radius:10px;padding:.8em 1em}
+.hbl-rc .rc-stat b{display:block;font-size:1.45em;line-height:1.2}
+.hbl-rc .rc-stat span{font-size:.86em;color:var(--rc-muted)}
+.hbl-rc .rc-warn{display:none;margin:1em 0 0;padding:.7em 1em;border-radius:8px;background:var(--rc-warn-bg);color:var(--rc-warn);font-size:.93em}
+.hbl-rc .rc-warn.on{display:block}
+.hbl-rc .rc-ruo{font-size:.86em;color:var(--rc-muted);margin:1em 0 0}
+.hbl-rc .rc-table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.95em}
+.hbl-rc .rc-table th,.hbl-rc .rc-table td{border-bottom:1px solid var(--rc-line);padding:.55em .5em;text-align:left}
+.hbl-rc .rc-table th{background:var(--rc-soft)}
+.hbl-rc .rc-scroll{overflow-x:auto}
+.hbl-rc .rc-cta{display:flex;flex-wrap:wrap;gap:.6em;margin:1em 0}
+.hbl-rc .rc-cta a{display:inline-block;padding:.65em 1.1em;border-radius:8px;text-decoration:none;font-weight:600;border:1px solid var(--rc-accent)}
+.hbl-rc .rc-cta a.rc-primary{background:var(--rc-accent);color:#fff}
+.hbl-rc details{border-bottom:1px solid var(--rc-line);padding:.8em 0}
+.hbl-rc summary{cursor:pointer;font-weight:600}
+.hbl-rc details p{margin:.6em 0 0}
+.hbl-rc .rc-notice{border:1px solid var(--rc-line);border-radius:10px;padding:1em 1.2em;background:var(--rc-soft);font-size:.92em;margin:2em 0}
+.hbl-rc .rc-panel{margin:0}
+.hbl-rc .rc-credit{font-size:12px;color:var(--rc-muted);margin:.8em 0 0}
+</style>
+</head>
+<body>
+<div class="hbl-rc">
+<section id="rc-calc" class="rc-panel" aria-labelledby="rc-calc-h">
+  <h2 id="rc-calc-h" style="margin:0 0 .8em;font-size:1.2em">Peptide reconstitution calculator</h2>
+  <div class="rc-field">
+    <label for="rc-mg">Peptide in vial (mg)</label>
+    <div class="rc-chips" data-for="rc-mg">
+      <button type="button" data-v="2">2</button>
+      <button type="button" data-v="5">5</button>
+      <button type="button" data-v="10">10</button>
+      <button type="button" data-v="15">15</button>
+      <button type="button" data-v="20">20</button>
+      <button type="button" data-v="30">30</button>
+      <button type="button" data-v="50">50</button>
+    </div>
+    <input id="rc-mg" type="number" min="0.1" step="0.1" value="5" inputmode="decimal">
+  </div>
+  <div class="rc-field">
+    <label for="rc-ml">Bacteriostatic water added (mL)</label>
+    <div class="rc-chips" data-for="rc-ml">
+      <button type="button" data-v="1">1</button>
+      <button type="button" data-v="2">2</button>
+      <button type="button" data-v="3">3</button>
+      <button type="button" data-v="5">5</button>
+    </div>
+    <input id="rc-ml" type="number" min="0.1" step="0.1" value="2" inputmode="decimal">
+  </div>
+  <div class="rc-field">
+    <label for="rc-al">Amount per aliquot (mcg), optional</label>
+    <input id="rc-al" type="number" min="0" step="1" placeholder="e.g. 250" inputmode="decimal">
+  </div>
+  <div class="rc-out" aria-live="polite">
+    <div class="rc-stat"><b id="rc-o-conc">2.5 mg/mL</b><span>Concentration</span></div>
+    <div class="rc-stat"><b id="rc-o-unit">25 mcg</b><span>per U-100 unit (0.01 mL)</span></div>
+    <div class="rc-stat"><b id="rc-o-vol">—</b><span>Aliquot volume</span></div>
+    <div class="rc-stat"><b id="rc-o-n">—</b><span>Aliquots per vial</span></div>
+  </div>
+  <p id="rc-w-small" class="rc-warn">Under 2 units (0.02 mL): too small to measure accurately. More diluent makes the same aliquot a larger volume.</p>
+  <p id="rc-w-big" class="rc-warn">A standard 3 mL vial holds about 3 mL of diluent.</p>
+  <p id="rc-w-over" class="rc-warn">Larger than a 1 mL (100-unit) syringe.</p>
+  <p class="rc-credit">Concentration arithmetic for research use only. No dosage guidance. <a href="https://heartlandbiolabs.com/peptide-calculator/" target="_blank" rel="noopener">Full calculator, chart and guide by Heartland Bio Labs</a></p>
+</section>
+</div>
+<script>
+(function(){
+  var root=document.querySelector('.hbl-rc'); if(!root) return;
+  var $=function(id){return document.getElementById(id);};
+  var mg=$('rc-mg'), ml=$('rc-ml'), al=$('rc-al');
+  function fmt(n,d){ if(!isFinite(n)) return '—'; var s=n.toLocaleString('en-US',{maximumFractionDigits:d}); return s; }
+  function syncChips(){
+    root.querySelectorAll('.rc-chips').forEach(function(g){
+      var inp=$(g.getAttribute('data-for'));
+      g.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(parseFloat(b.getAttribute('data-v'))===parseFloat(inp.value))); });
+    });
+  }
+  function calc(){
+    var m=parseFloat(mg.value), v=parseFloat(ml.value), a=parseFloat(al.value);
+    var ok=m>0&&v>0, conc=ok?m/v:NaN;
+    $('rc-o-conc').textContent = ok ? fmt(conc,3)+' mg/mL' : '—';
+    $('rc-o-unit').textContent = ok ? fmt(conc*10,2)+' mcg' : '—';
+    var hasA=ok&&a>0, vol=hasA?a/(conc*1000):NaN, units=vol*100;
+    $('rc-o-vol').textContent = hasA ? fmt(vol,3)+' mL · '+fmt(units,1)+' units' : '—';
+    $('rc-o-n').textContent = hasA ? fmt(Math.floor(m*1000/a+1e-9),0) : '—';
+    $('rc-w-small').classList.toggle('on', hasA && units<2);
+    $('rc-w-over').classList.toggle('on', hasA && units>100);
+    $('rc-w-big').classList.toggle('on', ok && v>3);
+    syncChips();
+  }
+  root.querySelectorAll('.rc-chips button').forEach(function(b){
+    b.addEventListener('click',function(){ $(b.parentNode.getAttribute('data-for')).value=b.getAttribute('data-v'); calc(); });
+  });
+  [mg,ml,al].forEach(function(i){ i.addEventListener('input',calc); });
+  // Deep-link presets, same format as the main calculator: #10mg-2ml-500mcg
+  var h=(location.hash||'').match(/^#([\d.]+)mg-([\d.]+)ml(?:-([\d.]+)mcg)?$/i);
+  if(h){ mg.value=h[1]; ml.value=h[2]; if(h[3]) al.value=h[3]; }
+  calc();
+})();
+</script>
+</body>
+</html>

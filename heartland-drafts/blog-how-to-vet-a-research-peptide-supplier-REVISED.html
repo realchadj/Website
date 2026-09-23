@@ -1,0 +1,276 @@
+<!--
+  Heartland Bio Labs: /blog/how-to-vet-a-research-peptide-supplier/  (REVISED, replace the live content in place)
+  Post type: post (blog). Keep the URL, slug and publish date. Update the "last modified" date.
+  Paste into a Custom HTML block or the code editor.
+
+  Suggested post title (H1 in WordPress): Where to Buy Peptides: How to Vet a Research Peptide Supplier
+    (live title is "How to Vet a Research Peptide Supplier: The 7-Point Checklist")
+  SEO title (53 chars):  Where to Buy Peptides: How to Vet a Research Supplier
+  Meta description (151 chars): Where to buy peptides: research peptides come from RUO suppliers, prescription peptides from a licensed pharmacy. Use this scorecard to vet a supplier.
+
+  Focus keyword: where to buy peptides (Semrush US 6,600/mo, KD 43)
+  Secondary keywords (Semrush US, pulled 2026-09-23):
+    where can i buy peptides ............ 2,900 / KD 42
+    best place to buy peptides .......... 1,300 / KD 36
+    best peptide companies .............. 1,300 / KD 46
+    where can you buy peptides .......... 1,000 / KD 31
+    where to buy peptides online ........ 880 / KD 34
+    how to buy peptides ................. 590 / KD 39
+    can you buy peptides over the counter 320 / KD 19
+    where to buy research peptides ...... 210 / KD 33
+    legit peptide sites ................. 140 / KD 44
+    (keep ranking for) how to vet a research peptide supplier / peptide supplier checklist
+
+  SERP read (2026-09-23): positions 1-3 for "where to buy peptides" are a lab-reagent peptide storefront
+  (page timed out in Nimble; SERP snippet only), a Reddit "best peptide companies compared by COA"
+  thread (behind Reddit's bot wall, not readable), and a catalog page from a neurodegeneration-research
+  peptide house (read in full: a product grid with a one-line RUO notice and no buying guidance). The rest of the
+  top 10 is catalog pages from custom-synthesis houses, plus one telehealth listicle that says legal
+  peptides only come through a prescription. None of them gives a vetting method a buyer can use, and
+  none separates the research and prescription paths clearly. That is the gap this revision fills.
+
+  WHAT CHANGED vs the live version (live post read 2026-09-23, dated Aug 20, 2026):
+    1. New opening snippet answer (55 words) that answers "where to buy peptides" directly.
+    2. New H2 "Where to Buy Peptides: Research vs Prescription". Research peptides come from RUO suppliers,
+       prescription peptide drugs from a state-licensed pharmacy with a prescription. Cites 21 U.S.C. 353(b)(1),
+       21 CFR 201.128, FDA BeSafeRx and two FDA warning letters (linked by URL, firms not named in text).
+    3. The original 7-point checklist is kept in full, lightly tightened. Point 1 no longer promises
+       that a specific product or lot has a certificate. It now says our certificates are published in the COA portal.
+    4. New "Supplier scorecard" table (10 rows: what to check / what good looks like / red flag).
+    5. New H2 "How to Read the COA Before You Buy", linking the COA article, the HPLC vs MS article and the
+       endotoxin article.
+    6. "Red flags" list expanded from 5 to 10 items.
+    7. New short H2 "How Heartland Does It": independent HPLC + MS, every tested lot listed
+       (older lots stay published), contiguous-US shipping with a 2 pm CT dispatch cutoff and
+       tracking, 21+ and RUO policy. Every point was checked against the live COA portal, lot-data and
+       shipping-policy pages. No stock status or lot results are claimed.
+    8. "The one-minute version" is kept as the close.
+    9. New FAQ (8 questions) with matching FAQPage JSON-LD. The live post had no FAQ section.
+       Turn off the SEO plugin's FAQ schema on this post if it adds its own.
+   10. Adds internal links: /coa-portal/, /lot-data/, /testing-methods/, /shipping-policy/,
+       /research-use-policy/, and three blog articles. The live post linked only /coa-portal/.
+   11. The closing RUO line becomes the standard notice, linked to /research-use-policy/.
+
+  CHECK BEFORE PUBLISHING (site consistency):
+    The live /testing-methods/ page (read 2026-09-23) says "Methods recorded on published
+    certificates: HPLC", with 9 certificates from one lab. The site footer and COA portal say every
+    product is "HPLC-verified and mass-spec confirmed". This post says we test for HPLC purity and MS
+    identity, per the brief. Make sure the published certificates actually show an MS identity
+    result, or update /testing-methods/. Otherwise a careful reader running this post's own scorecard
+    will find the mismatch.
+
+  Internal links to ADD on existing pages pointing here:
+    /faq/  (any buying/quality question): "where to buy peptides for research"
+    /coa-portal/  (under "What Is a Certificate of Analysis?"): "how to vet a research peptide supplier"
+    /testing-methods/ : "supplier scorecard"
+    /about/ : "what to check before buying peptides from anyone, including us"
+    /blog/how-to-read-a-certificate-of-analysis-for-peptides/ : "where to buy peptides and how to vet the seller"
+    /blog/buying-retatrutide-research-verification/ , /blog/buying-bpc-157-research-verification/ ,
+    /blog/buying-sermorelin-research-verification/ : "how to choose a research peptide supplier"
+    Once /blog/are-peptides-legal/ is published, link each way ("are peptides legal" / "where to buy peptides").
+-->
+
+<p><strong>Where you buy peptides depends on what they are for. Research peptides for laboratory work are sold by research-use-only (RUO) suppliers. Prescription peptide drugs, such as semaglutide or tirzepatide for a person, come only from a state-licensed pharmacy with a valid prescription. For research supply, pick a vendor whose certificates you can verify before ordering.</strong></p>
+
+<p>Research peptide suppliers are not interchangeable, and the differences rarely show on the homepage. Marketing claims cost nothing. Documentation does. This guide gives researchers a concrete, checkable standard for any supplier, including us. Apply it to everyone.</p>
+
+<h2>Where to Buy Peptides: Research vs Prescription</h2>
+
+<p>"Where to buy peptides" has two honest answers, and they don't overlap.</p>
+
+<ul>
+<li><strong>For laboratory research:</strong> buy from a supplier that sells research-use-only material to qualified buyers, publishes lot-specific testing, and makes no health claims. The rest of this guide shows how to choose one.</li>
+<li><strong>For a person:</strong> peptide medicines such as semaglutide and tirzepatide are prescription drugs. Under federal law, prescription drugs are dispensed only on the prescription of a licensed practitioner (<a href="https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title21-section353&amp;num=0&amp;edition=prelim" rel="noopener">21 U.S.C. 353(b)(1)</a>). That means a clinician and a state-licensed pharmacy. FDA's <a href="https://www.fda.gov/drugs/buying-using-medicine-safely/besaferx-your-source-online-pharmacy-information" rel="noopener">BeSafeRx</a> program explains how to check that an online pharmacy is licensed. A research supplier is not that path, and a trustworthy one will say so.</li>
+</ul>
+
+<p>An RUO label does not change what a product is. FDA judges a product's intended use from its labeling, advertising and the circumstances of sale (<a href="https://www.ecfr.gov/current/title-21/section-201.128" rel="noopener">21 CFR 201.128</a>). It has sent warning letters to online sellers whose semaglutide, tirzepatide and retatrutide carried "research use only" labels but whose websites pointed to human use (<a href="https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/usapeptidecom-696885-02262025" rel="noopener">February 2025</a>, <a href="https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/gram-peptides-721806-03312026" rel="noopener">March 2026</a>). A supplier that talks like a clinic is a supplier at risk of disappearing mid-study.</p>
+
+<h2>The 7-Point Checklist</h2>
+
+<h3>1. Per-lot certificates of analysis, published and not just promised</h3>
+<p>This is the strongest signal. A trustworthy supplier publishes a certificate of analysis for each tested lot, openly, where anyone can read it <em>before</em> ordering. That rules out a generic "COA available on request" and one certificate recycled across every batch. Check whether you can find the certificate for the product and lot you intend to buy without emailing anyone. Ours are published in the <a href="https://heartlandbiolabs.com/coa-portal/">COA portal</a>, searchable by product name.</p>
+
+<h3>2. A named, independent laboratory</h3>
+<p>A certificate is only as credible as the lab that issued it. The lab should be named on the certificate and independent of the supplier. An unsigned purity table with no lab name is a spreadsheet, not a certificate.</p>
+
+<h3>3. The original lab document, not a screenshot</h3>
+<p>Transcribed numbers can say anything. The supplier should attach the laboratory's original PDF next to any summary, so you can compare the two. If a supplier shows only cropped images of results, ask why.</p>
+
+<h3>4. Purity claims that match the paperwork</h3>
+<p>If the homepage claims a purity standard, the published certificates should meet it. Spot-check two products: open their certificates and compare the chromatographic purity with the sitewide claim. If this matches, the rest of the paperwork usually does too.</p>
+
+<h3>5. Straight research-use positioning</h3>
+<p>A legitimate research supplier states plainly that its compounds are for laboratory research only, and it makes no clinical claims. Dosing guides, testimonial photos and health promises are the exact evidence FDA cites in warning letters.</p>
+
+<h3>6. Traceable business identity</h3>
+<p>Look for a registered legal entity, a physical US address, a working phone number and a support inbox that answers. Suppliers that exist only as a checkout page tend to leave the market as fast as they entered it, often with orders still open.</p>
+
+<h3>7. Sane logistics</h3>
+<p>Look for a stated dispatch cutoff, tracking on every order, a written shipping policy, and storage guidance for lyophilized material. Vague transit promises and missing tracking cost your research timeline.</p>
+
+<h2>Supplier Scorecard</h2>
+
+<p>Use this table on any site you are considering. One red flag is a question to ask. Three is an answer.</p>
+
+<table>
+<thead>
+<tr><th>What to check</th><th>What good looks like</th><th>Red flag</th></tr>
+</thead>
+<tbody>
+<tr><td>Certificates of analysis</td><td>Published per lot, public, searchable before purchase</td><td>"Available on request," or one COA for every lot</td></tr>
+<tr><td>Testing laboratory</td><td>Named, independent lab, with a report date on each certificate</td><td>No lab name, or "in-house tested" only</td></tr>
+<tr><td>Original document</td><td>Lab's original PDF attached to the summary</td><td>Cropped screenshots or retyped tables</td></tr>
+<tr><td>Identity test</td><td>Mass spectrometry: observed mass matches the expected mass</td><td>HPLC purity only, with no identity result</td></tr>
+<tr><td>Purity test</td><td>HPLC with method, chromatogram and a percentage</td><td>A bare "99%+" with no method or trace</td></tr>
+<tr><td>Lot traceability</td><td>The lot number on the vial matches a published certificate</td><td>No lot number on the label</td></tr>
+<tr><td>Certificate history</td><td>Older lots stay published after newer ones arrive</td><td>Certificates quietly replaced or removed</td></tr>
+<tr><td>Positioning</td><td>Research-use-only, with no dosing and no health claims</td><td>Dosing charts, before-and-after photos, "for weight loss"</td></tr>
+<tr><td>Business identity</td><td>Legal entity, US address, phone, written policies</td><td>Checkout page only, or orders taken through messaging apps</td></tr>
+<tr><td>Logistics</td><td>Published dispatch cutoff, tracking on every order</td><td>No tracking, no written shipping policy</td></tr>
+</tbody>
+</table>
+
+<h2>How to Read the COA Before You Buy</h2>
+
+<p>A certificate answers three questions. Check each one before you order.</p>
+
+<ol>
+<li><strong>Is it the right molecule?</strong> Identity comes from mass spectrometry. The observed mass should match the expected molecular weight of the sequence. HPLC cannot tell you this on its own. <a href="https://heartlandbiolabs.com/blog/hplc-vs-mass-spectrometry-peptide-verification/">HPLC vs mass spectrometry</a> explains why you need both.</li>
+<li><strong>How pure is it?</strong> Purity comes from HPLC, reported as the main peak's share of total peak area. Look for the method and the trace, not just the number.</li>
+<li><strong>Is it this lot?</strong> The certificate should show a lot number, the testing laboratory and a report date. Match them to the vial you receive. If the lab reported appearance or an endotoxin (LAL) result, read those too. See <a href="https://heartlandbiolabs.com/blog/peptide-endotoxin-testing/">peptide endotoxin testing</a>.</li>
+</ol>
+
+<p>The full walkthrough, field by field, is in <a href="https://heartlandbiolabs.com/blog/how-to-read-a-certificate-of-analysis-for-peptides/">how to read a certificate of analysis for peptides</a>.</p>
+
+<h2>Red Flags Worth Taking Seriously</h2>
+
+<ul>
+<li>No certificates, expired certificates, or one certificate reused across all lots</li>
+<li>Certificates with no laboratory name, no lot number or no report date</li>
+<li>Purity claimed in marketing but absent from any document</li>
+<li>Purity results with no identity (mass spec) result</li>
+<li>Screenshots in place of the lab's original PDF</li>
+<li>Prices far below the market. Peptide synthesis has real costs, and a price that looks too good is usually paid for in purity.</li>
+<li>Health claims, dosing instructions or "protocols" on a "research" storefront</li>
+<li>Brand-name drug names used to sell research material</li>
+<li>No reachable person, no address, and ordering only through direct messages</li>
+<li>No written shipping, returns or research-use policy</li>
+</ul>
+
+<h2>How Heartland Does It</h2>
+
+<p>The same scorecard, applied to us:</p>
+
+<ul>
+<li><strong>Independent testing:</strong> we test for HPLC purity and mass-spectrometry identity through an independent laboratory, which is named on each certificate. Each certificate records the methods applied to that lot. <a href="https://heartlandbiolabs.com/testing-methods/">Testing methods</a> explains what each method establishes.</li>
+<li><strong>Published certificates:</strong> the <a href="https://heartlandbiolabs.com/coa-portal/">COA portal</a> lists every tested lot of a product, newest first, with the testing lab, report date and the original lab PDF. Older lots stay published when a newer lot replaces them. All published results are also in one table on <a href="https://heartlandbiolabs.com/lot-data/">lot data</a>.</li>
+<li><strong>Shipping:</strong> orders ship from the Tulsa, Oklahoma area to the contiguous United States. Orders paid before 2 pm Central on a business day go out that day, and every shipment is tracked. Details are in our <a href="https://heartlandbiolabs.com/shipping-policy/">shipping policy</a>.</li>
+<li><strong>Research use only:</strong> buyers must be 21 or older and confirm laboratory research use. We publish no dosing or health claims. See the <a href="https://heartlandbiolabs.com/research-use-policy/">Research Use Policy</a>.</li>
+</ul>
+
+<p>Check all of this yourself before you order. That's the point of publishing it.</p>
+
+<h2>The One-Minute Version</h2>
+
+<p>Open the supplier's certificate for the exact product and lot you intend to order. If you can't find one, or the lab is unnamed, or the numbers don't match the marketing, keep looking. Documentation you can verify beats claims you have to trust.</p>
+
+<h2>FAQ</h2>
+
+<h3>Where is the best place to buy peptides?</h3>
+<p>For laboratory research, the best place is a research-use-only supplier that publishes lot-specific certificates from a named independent lab, with HPLC purity and mass-spec identity. For use in a person, peptide medicines come only from a state-licensed pharmacy with a valid prescription.</p>
+
+<h3>Can you buy peptides over the counter?</h3>
+<p>Not prescription peptide drugs. Medicines such as semaglutide and tirzepatide are dispensed only with a prescription from a licensed practitioner. Research peptides are sold by RUO suppliers for laboratory use only, not for human use.</p>
+
+<h3>Where can I buy research peptides online?</h3>
+<p>From a supplier that sells to qualified buyers for laboratory use, publishes a certificate for each lot before you order, names its testing laboratory, and makes no dosing or health claims. Use the scorecard above to compare sites.</p>
+
+<h3>How can I tell if a peptide site is legit?</h3>
+<p>Look for per-lot certificates with a named independent lab and the original PDF, mass-spec identity as well as HPLC purity, a traceable US business with written policies, and no dosing or health claims. Missing certificates and clinic-style marketing are the clearest warning signs.</p>
+
+<h3>Does a "research use only" label make a product legal to use in people?</h3>
+<p>No. RUO material is not approved for human use. FDA judges intended use from labeling, marketing and how a product is sold, and it has issued warning letters to RUO-labeled sellers whose websites implied human use.</p>
+
+<h3>What should a peptide certificate of analysis include?</h3>
+<p>The product and lot number, the testing laboratory and report date, HPLC purity with its method, mass-spectrometry identity, and the lab's original document. Where the lab tested them, appearance and endotoxin results belong on it too.</p>
+
+<h3>Why does lot-specific testing matter?</h3>
+<p>Every synthesis batch is different. A certificate from an earlier lot says nothing about the vial in front of you. Only a certificate whose lot number matches your vial documents what you actually received.</p>
+
+<h3>Are cheaper peptide suppliers worse?</h3>
+<p>Not always, but a price far below the market is a reason to look harder. Synthesis, purification and independent testing all cost money. If the certificates are missing or vague, the low price is often explained by lower purity.</p>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Where is the best place to buy peptides?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For laboratory research, the best place is a research-use-only supplier that publishes lot-specific certificates from a named independent lab, with HPLC purity and mass-spec identity. For use in a person, peptide medicines come only from a state-licensed pharmacy with a valid prescription."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you buy peptides over the counter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not prescription peptide drugs. Medicines such as semaglutide and tirzepatide are dispensed only with a prescription from a licensed practitioner. Research peptides are sold by RUO suppliers for laboratory use only, not for human use."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where can I buy research peptides online?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "From a supplier that sells to qualified buyers for laboratory use, publishes a certificate for each lot before you order, names its testing laboratory, and makes no dosing or health claims. Use the scorecard above to compare sites."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I tell if a peptide site is legit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Look for per-lot certificates with a named independent lab and the original PDF, mass-spec identity as well as HPLC purity, a traceable US business with written policies, and no dosing or health claims. Missing certificates and clinic-style marketing are the clearest warning signs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a \"research use only\" label make a product legal to use in people?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. RUO material is not approved for human use. FDA judges intended use from labeling, marketing and how a product is sold, and it has issued warning letters to RUO-labeled sellers whose websites implied human use."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should a peptide certificate of analysis include?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The product and lot number, the testing laboratory and report date, HPLC purity with its method, mass-spectrometry identity, and the lab's original document. Where the lab tested them, appearance and endotoxin results belong on it too."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does lot-specific testing matter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Every synthesis batch is different. A certificate from an earlier lot says nothing about the vial in front of you. Only a certificate whose lot number matches your vial documents what you actually received."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are cheaper peptide suppliers worse?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not always, but a price far below the market is a reason to look harder. Synthesis, purification and independent testing all cost money. If the certificates are missing or vague, the low price is often explained by lower purity."
+      }
+    }
+  ]
+}
+</script>
+
+<p><em>All compounds sold by Heartland Bio Labs are for laboratory research use only and are not for human or animal consumption. Nothing here is medical or legal advice. See our <a href="https://heartlandbiolabs.com/research-use-policy/">Research Use Policy</a>.</em></p>
