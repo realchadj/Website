@@ -77,7 +77,7 @@ Nothing else in the codebase hardcodes a price.
 
 ```js
 const CONFIG = {
-  labName:  'Midwest Biolabs',
+  labName:  'Heartland Bio Labs',
   labEmail: 'midwestbiolabs@proton.me',
   ...
 };
