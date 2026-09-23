@@ -1,6 +1,6 @@
 // Builds the compound-specific calculator pages for heartlandbiolabs.com.
 //   node heartland-drafts/calculators/build.mjs
-// Writes heartland-drafts/peptide-calculator-<slug>.html, one paste-ready Custom HTML
+// Writes heartland-drafts/peptide-calculator-<slug>.html (SUPERSEDED: the live site already has these pages; see README), one paste-ready Custom HTML
 // block per page. Tables, FAQ text and FAQPage JSON-LD are generated from the same
 // data, so the visible answers and the schema cannot drift apart.
 

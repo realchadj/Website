@@ -13,23 +13,15 @@ Work through the checklist top to bottom in the Cowork session.
 - [ ] **Product-page title mismatches:** semaglutide's title says "(2-20mg)", but the copy lists
       2/5/10 mg. Tirzepatide's title says "(5-20mg)", but it lists 10/20 mg.
 
-### Compound calculator pages
-Each file is one Custom HTML block. The header comment in each file holds the slug, SEO title,
-meta description and keywords. Create each as a child of **Peptide Calculator**, using the same
-full-width template.
-
-| File | URL | Monthly searches |
-|---|---|---|
-| `peptide-calculator-retatrutide.html` | /peptide-calculator/retatrutide/ | ~14,000 (KD 0–18) |
-| `peptide-calculator-bpc-157.html` | /peptide-calculator/bpc-157/ | ~5,000 (KD 0–17) |
-| `peptide-calculator-tirzepatide.html` | /peptide-calculator/tirzepatide/ | ~5,200 (KD 7–33) |
-| `peptide-calculator-semaglutide.html` | /peptide-calculator/semaglutide/ | ~1,500 (KD 0–24) |
-
-- The pages carry their own WebApplication and FAQPage JSON-LD. **Turn off the SEO plugin's
-  FAQ schema on these pages**, or it will be duplicated. Leave breadcrumbs on.
-- Test on a phone: presets work, e.g. `/peptide-calculator/retatrutide/#20mg-3ml-1000mcg`.
-- The pages are generated. To change content, edit `calculators/compounds.mjs` and run
-  `node heartland-drafts/calculators/build.mjs`.
+### Compound calculator pages: ALREADY LIVE (don't paste the drafts)
+Another session published six compound calculators today (first at 08:57 UTC, last updated
+13:22 UTC): semaglutide, tirzepatide, retatrutide, BPC-157, TB-500 and GHK-Cu, each under
+/peptide-calculator/. They report mg/mL, mcg per 0.1 mL and molarity, and they do not
+convert to syringe units, which is the lower-risk framing after FDA's March 2026 warning
+letter. **Keep the live pages.** The drafts from this session are in `superseded/` for
+reference only. Pasting them would overwrite the live pages.
+The only thing worth porting from them: a FAQ answering "how much bac water for 10mg
+retatrutide" (2.9k/mo, KD 4) and "…30mg retatrutide" (480, KD 2) in those exact words.
 
 ### Main calculator upgrades: `main-calculator-additions.html`
 Seven numbered sections, each marked with where to paste it: compound calculator links; a
