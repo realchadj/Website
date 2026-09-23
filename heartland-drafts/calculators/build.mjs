@@ -200,7 +200,7 @@ ${rows}
 <h2>Storage after reconstitution</h2>
 <p>${c.storage}</p>
 ${blend}
-<h2>${Nc} for research, with published COAs</h2>
+<h2>${Nc} for research</h2>
 <p>${c.product}</p>
 <div class="rc-cta">
   <a class="rc-primary" href="${SITE}/product/${c.productSlug}/">${c.cta}</a>

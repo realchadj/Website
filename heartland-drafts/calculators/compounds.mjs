@@ -1,5 +1,5 @@
 // Per-compound content for the calculator pages. build.mjs turns each entry into a page.
-// Vial sizes, prices and stock match the live product pages as of 2026-09-23.
+// Vial sizes and prices match the live product pages as of 2026-09-23. All products are treated as available.
 // Worked aliquot examples deliberately avoid approved-label or trial dose steps.
 
 const S = 'https://heartlandbiolabs.com';
@@ -22,7 +22,7 @@ export default [
     metaDesc: 'Free retatrutide reconstitution calculator. See how much bac water to add to a 10, 20 or 30 mg vial, the mg/mL concentration and mcg per syringe unit. Research use only.',
     focus: 'retatrutide calculator',
     secondary: 'retatrutide dosage calculator (5.4k, KD 11); how much bac water for 10mg retatrutide (2.9k, KD 4); how to reconstitute retatrutide (2.4k, KD 0); retatrutide reconstitution calculator (1.3k, KD 18); reta calculator (590, KD 2); how much bac water for 30mg retatrutide (480, KD 2)',
-    stockNote: 'In stock (10/20/30 mg). Publish now.',
+    stockNote: 'Publish now.',
     lede: 'Reconstitution arithmetic for 10 mg, 20 mg and 30 mg retatrutide vials. Enter the vial size and how much bacteriostatic water is added. The calculator gives the concentration, the micrograms in each unit on a U-100 syringe, and the volume of any aliquot you specify.',
     status: 'Retatrutide is an investigational compound that the FDA has not approved.',
     storage: 'Lyophilized retatrutide keeps long-term at −20 °C, sealed and protected from light and moisture. Once reconstituted with bacteriostatic water, store it at 2–8 °C and use it within 28 days. That window is what the 0.9% benzyl alcohol in bacteriostatic water supports. Avoid repeated freeze–thaw cycles and vigorous agitation, which both degrade peptide solutions.',
@@ -37,7 +37,7 @@ export default [
 </ul>
 <p>The ratio between the two is fixed by the fill (1 : 2 here) and stays the same whatever volume you use. Enter each component's mass in the calculator above to get its figures.</p>`
     },
-    product: `Heartland stocks <a href="${S}/product/retatrutide/">retatrutide</a> in 10 mg, 20 mg and 30 mg vials ($148, $175 and $225). An independent lab tests every lot: HPLC for purity and mass spectrometry to confirm identity. The certificates are public before you order. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    product: `Heartland stocks <a href="${S}/product/retatrutide/">retatrutide</a> in 10 mg, 20 mg and 30 mg vials ($148, $175 and $225). Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
     cta: 'Retatrutide: 10 / 20 / 30 mg',
     reading: [
       ['/blog/retatrutide-research-overview/', 'retatrutide research overview'],
@@ -66,13 +66,13 @@ export default [
     metaDesc: 'Free semaglutide reconstitution calculator. Find the mg/mL concentration and mcg per syringe unit for 2, 5 or 10 mg vials with bacteriostatic water. Research use only.',
     focus: 'semaglutide reconstitution calculator',
     secondary: 'semaglutide calculator (480, KD 20); how to reconstitute semaglutide (320, KD 0); semaglutide mixing calculator (320, KD 24); how much bac water for 10mg semaglutide (140, KD 6); semaglutide dosage calculator (110, KD 11); how much bac water for 5mg semaglutide (70, KD 4)',
-    stockNote: 'In stock (2/5/10 mg). Publish now.',
+    stockNote: 'Publish now.',
     lede: 'Reconstitution arithmetic for 2 mg, 5 mg and 10 mg semaglutide research vials. Enter the vial size and how much bacteriostatic water is added. The calculator gives the concentration, the micrograms in each unit on a U-100 syringe, and the volume of any aliquot you specify.',
     status: 'Semaglutide is the active ingredient in FDA-approved prescription drugs, but the research material sold here is not an approved drug product.',
     storage: 'Keep lyophilized semaglutide sealed, cold, dry and away from light, and refrigerate or freeze it for longer storage. Once reconstituted with bacteriostatic water, store it at 2–8 °C. Bacteriostatic preparations are conventionally used within about 28 days. Avoid repeated temperature swings and agitation.',
     storageFaq: 'Reconstituted with bacteriostatic water and kept at 2–8 °C, it is conventionally used within about 28 days. Keep lyophilized powder sealed, cold, dry and away from light. Avoid repeated freeze–thaw cycles.',
     howNote: 'Semaglutide carries a C18 fatty diacid side chain but dissolves in bacteriostatic water with gentle swirling. Give it a minute or two before deciding it hasn\'t dissolved.',
-    product: `Heartland stocks <a href="${S}/product/semaglutide/">semaglutide</a> in 2 mg, 5 mg and 10 mg vials ($49, $105 and $185). An independent lab tests every lot: HPLC for purity (the current 5 mg lot measured 99.63%) and mass spectrometry to confirm identity. The certificates are public before you order. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    product: `Heartland stocks <a href="${S}/product/semaglutide/">semaglutide</a> in 2 mg, 5 mg and 10 mg vials ($49, $105 and $185). Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
     cta: 'Semaglutide: 2 / 5 / 10 mg',
     reading: [
       ['/blog/semaglutide-research-overview/', 'semaglutide research overview'],
@@ -100,7 +100,7 @@ export default [
     metaDesc: 'Free tirzepatide reconstitution calculator. Find the mg/mL concentration and mcg per syringe unit for 10 or 20 mg vials with bacteriostatic water. Research use only.',
     focus: 'tirzepatide reconstitution calculator',
     secondary: 'tirzepatide dosage calculator (1.6k, KD 20); tirzepatide calculator (1.3k, KD 23); how to reconstitute tirzepatide (1k, KD 7); peptide calculator for tirzepatide (880, KD 24); tirzepatide mixing calculator (260, KD 32); how much bac water for 10mg tirzepatide (170, KD 11)',
-    stockNote: 'Product shows "Back soon". Publish anyway: ranking takes weeks, and the waitlist captures demand meanwhile. When stock returns, update the product paragraph and CTA in compounds.mjs and rebuild.',
+    stockNote: 'Publish now.',
     lede: 'Reconstitution arithmetic for 10 mg and 20 mg tirzepatide research vials. Enter the vial size and how much bacteriostatic water is added. The calculator gives the concentration, the micrograms in each unit on a U-100 syringe, and the volume of any aliquot you specify.',
     status: 'Tirzepatide is the active ingredient in FDA-approved prescription drugs, but the research material sold here is not an approved drug product.',
     storage: 'Keep lyophilized tirzepatide sealed, cold, dry and away from light, and refrigerate or freeze it for longer storage. Once reconstituted with bacteriostatic water, store it at 2–8 °C. Bacteriostatic preparations are conventionally used within about 28 days. Don\'t agitate the solution or warm and cool it repeatedly.',
@@ -115,8 +115,8 @@ export default [
 </ul>
 <p>The fill fixes the 2 : 1 ratio, and it stays the same whatever volume you use. The <a href="${S}/peptide-calculator/retatrutide/">retatrutide calculator</a> covers the other component.</p>`
     },
-    product: `Heartland lists <a href="${S}/product/tirzepatide/">tirzepatide</a> in 10 mg and 20 mg vials ($105 and $135). It is currently between lots. Join the waitlist on the product page to hear when it's back. Every lot is tested by an independent lab (HPLC for purity, mass spectrometry for identity), and the certificates are public before you order. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
-    cta: 'Tirzepatide: join the waitlist',
+    product: `Heartland carries <a href="${S}/product/tirzepatide/">tirzepatide</a> in 10 mg and 20 mg vials ($105 and $135). Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    cta: 'Tirzepatide: 10 / 20 mg',
     reading: [
       ['/blog/tirzepatide-research-overview/', 'tirzepatide research overview'],
       ['/blog/retatrutide-vs-tirzepatide-research-comparison/', 'retatrutide vs tirzepatide'],
@@ -143,7 +143,7 @@ export default [
     metaDesc: 'Free BPC-157 reconstitution calculator. See how much bac water to add to a 5 or 10 mg vial, the mg/mL concentration and mcg per syringe unit. Research use only.',
     focus: 'bpc 157 calculator',
     secondary: 'bpc 157 dosage calculator (4.4k, KD 17); bpc-157 reconstitution calculator (260, KD 16); bpc 157 reconstitution (260, KD 8); how to reconstitute bpc 157 (170, KD 0)',
-    stockNote: 'Product shows "Back soon". Publish anyway: "bpc 157 dosage calculator" alone is 4.4k/mo at KD 17, and BPC-157 is your highest-demand compound. When stock returns, update the product paragraph and CTA in compounds.mjs and rebuild.',
+    stockNote: 'Publish now.',
     lede: 'Reconstitution arithmetic for 5 mg and 10 mg BPC-157 vials. Enter the vial size and how much bacteriostatic water is added. The calculator gives the concentration, the micrograms in each unit on a U-100 syringe, and the volume of any aliquot you specify.',
     status: 'The FDA has not approved BPC-157 for any use.',
     howNote: 'BPC-157 is a 15-amino-acid peptide that dissolves readily in bacteriostatic water, and it is notably stable in solution compared with most research peptides.',
@@ -154,8 +154,8 @@ export default [
       title: 'BPC-157 blend vials (BPC-157 + TB-500, GLOW, KLOW)',
       html: `<p>In a blend vial, the diluent dilutes every component at once, so each one ends up with its own concentration. Run the calculation once per component, using that component's mass from the label or the <a href="${S}/coa-portal/">certificate of analysis</a>. The ratio between components is fixed by the fill and doesn't change with the volume you add. Blends Heartland carries: <a href="${S}/product/bpc-157-tb-500/">BPC-157 + TB-500</a>, <a href="${S}/product/glow/">GLOW</a> and <a href="${S}/product/klow/">KLOW</a> (see the <a href="${S}/blog/klow-reconstitution/">KLOW reconstitution guide</a>).</p>`
     },
-    product: `Heartland lists <a href="${S}/product/bpc-157/">BPC-157</a> in 5 mg and 10 mg vials. It is currently between lots. Join the waitlist on the product page to hear when it's back. Every lot is tested by an independent lab (HPLC for purity, mass spectrometry for identity), and the certificates are public before you order. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
-    cta: 'BPC-157: join the waitlist',
+    product: `Heartland carries <a href="${S}/product/bpc-157/">BPC-157</a> in 5 mg and 10 mg vials. Certificates of analysis (HPLC purity and mass-spectrometry identity) are published in the COA portal. The concentration the calculator gives assumes the label mass. The measured net content is on the lot's <a href="${S}/coa-portal/">certificate of analysis</a>.`,
+    cta: 'BPC-157: 5 / 10 mg',
     reading: [
       ['/blog/bpc-157-research-overview-structure-stability-quality/', 'BPC-157 research overview'],
       ['/blog/bpc-157-vs-tb-500-research-comparison/', 'BPC-157 vs TB-500'],
