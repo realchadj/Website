@@ -2,3 +2,4 @@ node_modules/
 .preview.png
 .shot-*.png
 .store-*.png
+node_modules
