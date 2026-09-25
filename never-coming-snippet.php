@@ -1,7 +1,7 @@
 <?php
 /* "NEVER COMING" badge for WooCommerce.
-   Any product tagged `never-coming` is greyed out, gets a NEVER COMING
-   badge on top, and cannot be added to the cart, even through a direct
+   Any product tagged `never-coming` is greyed out, gets a red NEVER COMING
+   sticker on top, and cannot be added to the cart, even through a direct
    add-to-cart link. Install with the Code Snippets plugin (Run everywhere)
    or paste into the child theme's functions.php.                        */
 
@@ -48,10 +48,11 @@ add_action( 'wp_head', function () {
 	.mbl-never-coming .woocommerce-loop-product__title { opacity: .5; }
 	.mbl-never-coming .button, .mbl-never-coming form.cart { display: none !important; }
 	.mbl-never-coming-badge {
-		position: absolute; top: 10px; left: 10px; z-index: 5;
-		background: #3a3a3a; color: #fff; font-weight: 700; font-size: 12px;
-		letter-spacing: .08em; padding: 6px 10px; border-radius: 4px;
+		position: absolute; top: 14px; left: 10px; z-index: 5;
+		background: #d10000; color: #fff; font-weight: 800; font-size: 13px;
+		letter-spacing: .08em; padding: 7px 12px; border-radius: 4px;
+		transform: rotate(-8deg); box-shadow: 0 2px 6px rgba(0,0,0,.35);
 	}
-	.mbl-never-coming-text { color: #777; font-weight: 700; text-transform: uppercase; }
+	.mbl-never-coming-text { color: #d10000; font-weight: 800; text-transform: uppercase; }
 	</style>';
 } );
