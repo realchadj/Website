@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Vial Label Printer — Heartland Bio Labs</title>
+<style>
+  :root {
+    --ink: #1a2330;
+    --muted: #5b6675;
+    --line: #d7dce3;
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --accent: #0f5c8c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 15px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  header.app {
+    padding: 14px 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  header.app h1 { font-size: 18px; margin: 0; }
+  header.app span { color: var(--muted); font-size: 13px; }
+  .wrap {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    flex: 1 1 340px;
+    max-width: 460px;
+  }
+  .panel h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+  .preview { flex: 2 1 420px; min-width: 300px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 3px; }
+  input, select, textarea {
+    width: 100%;
+    padding: 7px 9px;
+    font: inherit;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: #fff;
+    color: var(--ink);
+  }
+  textarea { resize: vertical; font-size: 13px; }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; }
+  button {
+    font: inherit;
+    padding: 8px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 5px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  button.ghost { background: #fff; color: var(--accent); }
+  button.small { padding: 3px 9px; font-size: 12px; margin: 0; }
+  button.danger { border-color: #b3392f; background: #fff; color: #b3392f; }
+  table.items { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+  table.items th, table.items td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--line); }
+  table.items th { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .count-note { color: var(--muted); font-size: 13px; margin-top: 10px; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  /* ---- The labels themselves ---- */
+  #sheet {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.125in;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.25in;
+    margin-top: 12px;
+  }
+  .vial-label {
+    width: var(--lw, 1.75in);
+    height: var(--lh, 0.5in);
+    border: 1px dashed #b9c2cc;   /* screen only — hidden in print */
+    border-radius: 4px;
+    padding: 2px 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.15;
+    color: #000;
+    background: #fff;
+  }
+  .vial-label .co { font-size: 6.5pt; letter-spacing: .05em; text-transform: uppercase; }
+  .vial-label .name { font-size: 9pt; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+  .vial-label .meta { font-size: 6.5pt; }
+  .vial-label.tall .co { font-size: 7.5pt; }
+  .vial-label.tall .name { font-size: 11pt; white-space: normal; }
+  .vial-label.tall .meta { font-size: 7.5pt; }
+
+  @media print {
+    body { background: #fff; }
+    header.app, .panel, .count-note, .no-print { display: none !important; }
+    .wrap { padding: 0; }
+    .preview { min-width: 0; }
+    #sheet { border: none; border-radius: 0; margin: 0; padding: 0; }
+    .vial-label { border: none; border-radius: 0; }
+    @page { margin: 0.5in; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <h1>Vial Label Printer</h1>
+  <span>Enter the order → one label per vial → File&nbsp;›&nbsp;Print onto label stock.</span>
+</header>
+
+<div class="wrap">
+  <div class="panel">
+    <h2>Order</h2>
+
+    <label for="pName">Product</label>
+    <input id="pName" list="catalog" placeholder="Product name (e.g. BPC-157)" autocomplete="off">
+    <datalist id="catalog"></datalist>
+
+    <div class="row">
+      <div>
+        <label for="pSize">Strength / size</label>
+        <input id="pSize" placeholder="e.g. 5 mg">
+      </div>
+      <div>
+        <label for="pQty">Vials</label>
+        <input id="pQty" type="number" min="1" value="1">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="pLot">Lot # (optional)</label>
+        <input id="pLot" placeholder="e.g. 2409-А1">
+      </div>
+      <div>
+        <label for="pDate">Date (optional)</label>
+        <input id="pDate" type="date">
+      </div>
+    </div>
+
+    <button id="addItem">Add to order</button>
+    <button id="clearOrder" class="ghost">Clear order</button>
+
+    <table class="items" id="itemsTable" hidden>
+      <thead><tr><th>Product</th><th>Size</th><th>Vials</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h2 style="margin-top:22px">Auto-import</h2>
+    <label for="pasteBox">Paste an order — CSV, a packing list, or lines like “3 x BPC-157 5mg”</label>
+    <textarea id="pasteBox" rows="4" placeholder="BPC-157, 5 mg, 3&#10;2 x TB-500 10mg"></textarea>
+    <button id="importBtn">Import order</button>
+    <button id="copyLink" class="ghost">Copy auto-print link</button>
+    <p class="count-note" id="importNote"></p>
+
+    <h2 style="margin-top:22px">Label setup</h2>
+    <div class="row">
+      <div>
+        <label for="preset">Label size</label>
+        <select id="preset">
+          <option value="1.75x0.5" selected>1.75 × 0.5 in — small vial wrap</option>
+          <option value="1.5x0.5">1.5 × 0.5 in — 2 mL vial</option>
+          <option value="2x1">2 × 1 in — large vial</option>
+          <option value="2.625x1">2.625 × 1 in — Avery 5160 sheet</option>
+          <option value="custom">Custom…</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" id="customSize" hidden>
+      <div>
+        <label for="cw">Width (in)</label>
+        <input id="cw" type="number" step="0.05" value="1.75">
+      </div>
+      <div>
+        <label for="ch">Height (in)</label>
+        <input id="ch" type="number" step="0.05" value="0.5">
+      </div>
+    </div>
+    <label for="coName">Company line</label>
+    <input id="coName" value="HEARTLAND BIO LABS">
+    <label for="tagLine">Bottom line (every label)</label>
+    <input id="tagLine" value="Research Use Only">
+  </div>
+
+  <div class="preview">
+    <div class="toolbar no-print">
+      <button id="printBtn">Print labels</button>
+      <span class="count-note" id="countNote">No items yet — add the first product on the left.</span>
+    </div>
+    <div id="sheet"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* Saved product catalog: names + last-used size, so repeat orders are two
+   clicks. Lives in this browser only (localStorage). */
+function loadJSON(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+  catch (e) { return fallback; }
+}
+function saveJSON(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+}
+
+/* The heartlandbiolabs.com catalog, preloaded so every product autofills
+   from day one. Products entered by hand are remembered alongside these. */
+const PRELOADED = [
+  'BPC-157', 'TB-500', 'Semaglutide',
+  'Cagrilintide', 'BPC-157 + TB-500', 'GLOW (BPC-157 + TB-500 + GHK-Cu)',
+  'KLOW (BPC-157 + TB-500 + GHK-Cu + KPV)',
+  'CJC-1295 with DAC', 'CJC-1295 (No DAC)', 'Ipamorelin',
+  'CJC-1295 + Ipamorelin', 'Tesamorelin', 'Sermorelin', 'GHRP-2', 'GHRP-6',
+  'IGF-1 LR3', 'PEG MGF', 'GHK-Cu', 'KPV', 'Glutathione', 'NAD+',
+  'MOTS-c', 'AOD-9604', 'AICAR', '5-Amino-1MQ', 'L-Carnitine', 'LIPO-C',
+  'PT-141', 'Kisspeptin-10', 'MT-2 (Melanotan II)', 'Oxytocin',
+  'Thymosin Alpha-1', 'DSIP', 'Selank', 'Semax', 'Adamax', 'Epithalon',
+  'Bacteriostatic Water'
+];
+
+let catalog = loadJSON('vialCatalog', []);   // [{name, size}]
+for (const name of PRELOADED)
+  if (!catalog.some(p => p.name.toLowerCase() === name.toLowerCase()))
+    catalog.push({ name, size: '' });
+
+let order = loadJSON('vialOrder', []);       // [{name, size, qty, lot, date}]
+
+const $ = id => document.getElementById(id);
+
+function renderCatalog() {
+  $('catalog').innerHTML = catalog
+    .map(p => `<option value="${esc(p.name)}">`).join('');
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function renderOrder() {
+  const tbody = $('itemsTable').querySelector('tbody');
+  tbody.innerHTML = order.map((it, i) => `
+    <tr>
+      <td>${esc(it.name)}</td>
+      <td>${esc(it.size || '')}</td>
+      <td>${it.qty}</td>
+      <td><button class="small danger" data-del="${i}">✕</button></td>
+    </tr>`).join('');
+  $('itemsTable').hidden = order.length === 0;
+  saveJSON('vialOrder', order);
+  renderLabels();
+}
+
+function labelDims() {
+  const preset = $('preset').value;
+  if (preset === 'custom') {
+    return { w: parseFloat($('cw').value) || 1.75, h: parseFloat($('ch').value) || 0.5 };
+  }
+  const [w, h] = preset.split('x').map(Number);
+  return { w, h };
+}
+
+function renderLabels() {
+  const { w, h } = labelDims();
+  const sheet = $('sheet');
+  sheet.style.setProperty('--lw', w + 'in');
+  sheet.style.setProperty('--lh', h + 'in');
+  const co = $('coName').value.trim();
+  const tag = $('tagLine').value.trim();
+  const tall = h >= 0.75;
+
+  const html = [];
+  let total = 0;
+  for (const it of order) {
+    for (let n = 0; n < it.qty; n++) {
+      total++;
+      const meta = [it.size, it.lot && 'Lot ' + it.lot, it.date].filter(Boolean).join(' · ');
+      html.push(`<div class="vial-label${tall ? ' tall' : ''}">` +
+        (co ? `<div class="co">${esc(co)}</div>` : '') +
+        `<div class="name">${esc(it.name)}</div>` +
+        (meta ? `<div class="meta">${esc(meta)}</div>` : '') +
+        (tag ? `<div class="meta">${esc(tag)}</div>` : '') +
+        `</div>`);
+    }
+  }
+  sheet.innerHTML = html.join('');
+  $('countNote').textContent = total
+    ? `${total} label${total === 1 ? '' : 's'} ready — ${w}″ × ${h}″ each.`
+    : 'No items yet — add the first product on the left.';
+}
+
+$('addItem').addEventListener('click', () => {
+  const name = $('pName').value.trim();
+  if (!name) { $('pName').focus(); return; }
+  const item = {
+    name,
+    size: $('pSize').value.trim(),
+    qty: Math.max(1, parseInt($('pQty').value, 10) || 1),
+    lot: $('pLot').value.trim(),
+    date: $('pDate').value
+  };
+  order.push(item);
+
+  const known = catalog.find(p => p.name.toLowerCase() === name.toLowerCase());
+  if (!known) catalog.push({ name, size: item.size });
+  else if (item.size) known.size = item.size;
+  saveJSON('vialCatalog', catalog);
+  renderCatalog();
+
+  $('pName').value = ''; $('pQty').value = 1;
+  renderOrder();
+  $('pName').focus();
+});
+
+/* Picking a known product auto-fills its last-used size. */
+$('pName').addEventListener('change', () => {
+  const p = catalog.find(p => p.name.toLowerCase() === $('pName').value.trim().toLowerCase());
+  if (p && p.size && !$('pSize').value) $('pSize').value = p.size;
+});
+
+$('itemsTable').addEventListener('click', e => {
+  const i = e.target.dataset.del;
+  if (i !== undefined) { order.splice(+i, 1); renderOrder(); }
+});
+
+$('clearOrder').addEventListener('click', () => { order = []; renderOrder(); });
+
+$('preset').addEventListener('change', () => {
+  $('customSize').hidden = $('preset').value !== 'custom';
+  renderLabels();
+});
+for (const id of ['cw', 'ch', 'coName', 'tagLine']) {
+  $(id).addEventListener('input', renderLabels);
+}
+
+$('printBtn').addEventListener('click', () => window.print());
+
+/* ---- Auto-import ----------------------------------------------------------
+   Two zero-typing paths in:
+
+   1. URL:  labels/?order=BPC-157:5mg:3|TB-500:10mg:2&print=1
+      Items separated by "|", fields by ":" — name:size:qty:lot. Any order
+      system, email template or webhook that can build a link can pre-fill
+      this page; &print=1 opens the print dialog on load.
+
+   2. Paste: CSV rows ("BPC-157, 5 mg, 3"), packing-list lines
+      ("3 x BPC-157 5mg", "BPC-157 5mg x3"), one item per line.           */
+
+function rememberInCatalog(item) {
+  const known = catalog.find(p => p.name.toLowerCase() === item.name.toLowerCase());
+  if (!known) catalog.push({ name: item.name, size: item.size });
+  else if (item.size) known.size = item.size;
+}
+
+const SIZE_RE = /(\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml|iu|units?))\b/i;
+
+/* ShipHero/WooCommerce SKUs: HBL-<PRODUCT>-<STRENGTH>, e.g. HBL-AICAR-100MG.
+   The product key is matched against the catalog; families whose SKU key
+   compacts differently from the display name are pinned here. */
+const SKU_ALIASES = {
+  CJC1295: 'CJC-1295 (No DAC)',
+  CJC1295NODAC: 'CJC-1295 (No DAC)',
+  CJC1295DAC: 'CJC-1295 with DAC',
+  CJC1295WITHDAC: 'CJC-1295 with DAC',
+  SAMINO1MQ: '5-Amino-1MQ',
+  AMINO1MQ: '5-Amino-1MQ',
+  NAD: 'NAD+',
+  NADPLUS: 'NAD+',
+  BACWATER: 'Bacteriostatic Water',
+  MELANOTAN2: 'MT-2 (Melanotan II)'
+};
+
+const normKey = s => String(s).replace(/[^a-z0-9]/gi, '').toUpperCase();
+
+function productFromSkuKey(key) {
+  if (SKU_ALIASES[key]) return SKU_ALIASES[key];
+  const hit = PRELOADED.find(n => {
+    const c = normKey(n);
+    return c === key || c.startsWith(key) || key.startsWith(c);
+  });
+  return hit || key;
+}
+
+/* "HBL-BPC157-5MG" → {name: 'BPC-157', size: '5 mg'}, or null if not a SKU. */
+function skuToItem(str) {
+  const m = String(str).trim().match(/^HBL[-_]?([A-Z0-9]+)[-_](\d+(?:\.\d+)?)\s*(MG|MCG|ML|IU)$/i);
+  if (!m) return null;
+  return { name: productFromSkuKey(m[1].toUpperCase()), size: m[2] + ' ' + m[3].toLowerCase() };
+}
+
+function parseLine(line) {
+  line = line.trim();
+  if (!line) return null;
+  if (/^(product|item|name|sku)\b/i.test(line) && /qty|quant|count|vials/i.test(line)) return null;
+
+  /* A line containing an HBL SKU is authoritative: product and strength
+     come from the SKU, quantity from an "x N" or a standalone number. */
+  const sku = line.match(/HBL[-_]?([A-Z0-9]+)[-_](\d+(?:\.\d+)?)\s*(MG|MCG|ML|IU)\b/i);
+  if (sku) {
+    const name = productFromSkuKey(sku[1].toUpperCase());
+    const size = sku[2] + ' ' + sku[3].toLowerCase();
+    const rest = line.replace(sku[0], ' ');
+    let qty = 1;
+    const xN = rest.match(/(?:^|\s)[x×]\s*(\d+)\b/i) || rest.match(/\b(\d+)\s*[x×](?:\s|$)/i);
+    if (xN) qty = +xN[1];
+    else {
+      const nums = [...rest.matchAll(/(?:^|[\s,])(\d{1,3})(?![\d.]*\s*(?:mg|mcg|ml|iu))(?=$|[\s,])/gi)]
+        .map(m => +m[1]).filter(n => n > 0);
+      if (nums.length) qty = nums[nums.length - 1];
+    }
+    return { name, size, qty: Math.max(1, qty), lot: '', date: '' };
+  }
+
+  /* CSV / tab row: name, size, qty in any order after the name. */
+  const cells = line.split(/\t|,/).map(c => c.trim()).filter(Boolean);
+  if (cells.length >= 2) {
+    const item = { name: cells[0], size: '', qty: 1, lot: '', date: '' };
+    for (const c of cells.slice(1)) {
+      if (/^\d+$/.test(c)) item.qty = Math.max(1, parseInt(c, 10));
+      else if (SIZE_RE.test(c) && !item.size) item.size = c.match(SIZE_RE)[1];
+      else if (/^lot\b/i.test(c)) item.lot = c.replace(/^lot\s*#?\s*/i, '');
+    }
+    if (item.name) return item;
+  }
+
+  /* Free text: "3 x Name 5mg" / "Name 5mg x3" / "Name 5mg (3)". */
+  let qty = 1, rest = line;
+  let m = rest.match(/^(\d+)\s*[x×]\s*/i);
+  if (m) { qty = +m[1]; rest = rest.slice(m[0].length); }
+  m = rest.match(/[x×]\s*(\d+)\s*$/i) || rest.match(/\((\d+)\)\s*$/);
+  if (m) { qty = +m[1]; rest = rest.slice(0, m.index); }
+  let size = '';
+  m = rest.match(SIZE_RE);
+  if (m) { size = m[1]; rest = rest.replace(m[0], ' '); }
+  const name = rest.replace(/\s+/g, ' ').replace(/[-–,]\s*$/, '').trim();
+  return name ? { name, size, qty: Math.max(1, qty), lot: '', date: '' } : null;
+}
+
+function importItems(items, sourceLabel) {
+  if (!items.length) {
+    $('importNote').textContent = 'Nothing recognized — one item per line, product name first.';
+    return;
+  }
+  order = items;
+  for (const it of items) rememberInCatalog(it);
+  saveJSON('vialCatalog', catalog);
+  renderCatalog();
+  renderOrder();
+  $('importNote').textContent = `Imported ${items.length} item${items.length === 1 ? '' : 's'} ${sourceLabel}.`;
+}
+
+$('importBtn').addEventListener('click', () => {
+  const items = $('pasteBox').value.split('\n').map(parseLine).filter(Boolean);
+  importItems(items, 'from pasted order');
+  if (items.length) $('pasteBox').value = '';
+});
+
+/* A link that reopens this exact order, for order emails and bookmarks. */
+$('copyLink').addEventListener('click', () => {
+  const enc = s => encodeURIComponent(String(s || ''));
+  const spec = order.map(it =>
+    [it.name, it.size, it.qty, it.lot].map(enc).join(':').replace(/:+$/, '')).join('|');
+  const url = location.origin + location.pathname +
+    '?order=' + spec + '&size=' + $('preset').value + '&print=1';
+  const done = ok => { $('importNote').textContent = ok ? 'Link copied — opening it fills this order and prints.' : url; };
+  navigator.clipboard ? navigator.clipboard.writeText(url).then(() => done(true), () => done(false)) : done(false);
+});
+
+(function importFromUrl() {
+  const q = new URLSearchParams(location.search);
+  const spec = q.get('order');
+  if (q.get('size')) {
+    const preset = q.get('size');
+    if ([...$('preset').options].some(o => o.value === preset)) $('preset').value = preset;
+    $('customSize').hidden = $('preset').value !== 'custom';
+  }
+  if (q.get('co')) $('coName').value = q.get('co');
+  if (q.get('tag')) $('tagLine').value = q.get('tag');
+  if (spec) {
+    const items = spec.split('|').map(part => {
+      const f = part.split(':').map(s => decodeURIComponent(s || '').trim());
+      /* SKU form: HBL-BPC157-5MG:qty:lot — product and strength decode
+         from the SKU itself. Name form: name:size:qty:lot. */
+      const sku = skuToItem(f[0]);
+      if (sku) return { ...sku, qty: Math.max(1, parseInt(f[1], 10) || 1), lot: f[2] || '', date: '' };
+      return f[0] ? { name: f[0], size: f[1] || '', qty: Math.max(1, parseInt(f[2], 10) || 1), lot: f[3] || '', date: '' } : null;
+    }).filter(Boolean);
+    importItems(items, 'from link');
+    if (items.length && q.get('print') === '1') setTimeout(() => window.print(), 300);
+  }
+})();
+
+renderCatalog();
+renderOrder();
+</script>
+</body>
+</html>
