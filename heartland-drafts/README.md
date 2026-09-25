@@ -6,12 +6,12 @@ Work through the checklist top to bottom in the Cowork session.
 ## Implementation checklist
 
 ### Day 1
-- [ ] **Remove Retatrutide and Tirzepatide from the live site entirely.** WordPress won't do this
-      from here. Trash every product with either name (including the blend), plus the
-      `/peptide-calculator/retatrutide/` and `/peptide-calculator/tirzepatide/` pages and the
-      `retatrutide-*` / `tirzepatide-*` blog posts. Then 301-redirect those URLs to
-      `/peptide-calculator/` or `/shop/` (Rank Math → Redirections), remove them from menus and
-      widgets, clear the cache, and use GSC → Removals to drop them from search results.
+- [ ] **Remove the Retatrutide and Tirzepatide products from the live site.** WordPress won't do
+      this from here. Trash every product with either name (including the blend), plus the
+      `/peptide-calculator/retatrutide/` and `/peptide-calculator/tirzepatide/` pages. Then
+      301-redirect those URLs to `/peptide-calculator/` or `/shop/` (Rank Math → Redirections),
+      remove them from menus and widgets, and clear the cache. **Keep the blog posts** about
+      both compounds, but edit out any "buy" buttons or links to the deleted product pages.
 - [ ] **Stock status:** the live site shows bac water, BPC-157 and others as
       "Back soon · Join waitlist". Per the owner, set every product to available and in stock
       (per the order sheet). The drafts assume that and never mention stock.
