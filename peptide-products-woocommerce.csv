@@ -1,7 +1,7 @@
 Type,SKU,Name,Published,Is featured?,Visibility in catalog,Short description,Tax status,In stock?,Stock,Backorders allowed?,Regular price,Categories,Tags,Meta: _supplier_cost
-simple,RT10,Retatrutide 10mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,149.99,Research Peptides,never-coming,60
-simple,RT20,Retatrutide 20mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,324.99,Research Peptides,never-coming,130
-simple,RT30,Retatrutide 30mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,499.99,Research Peptides,never-coming,200
+simple,RT10,Retatrutide 10mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,149.99,Research Peptides,,60
+simple,RT20,Retatrutide 20mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,324.99,Research Peptides,,130
+simple,RT30,Retatrutide 30mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,499.99,Research Peptides,,200
 simple,TSM10,Tesamorelin 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,8,0,349.99,Research Peptides,,140
 simple,SM5,Semaglutide 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,8,0,74.99,Research Peptides,,30
 simple,BC10,BPC-157 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,10,0,124.99,Research Peptides,,50

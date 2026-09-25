@@ -1,44 +1,61 @@
 <?php
-/* "NEVER COMING" badge for WooCommerce.
-   Any product tagged `never-coming` is greyed out, gets a red NEVER COMING
-   sticker on top, and cannot be added to the cart, even through a direct
-   add-to-cart link. Install with the Code Snippets plugin (Run everywhere)
-   or paste into the child theme's functions.php.                        */
+/* Retatrutide: not for sale.
+   Every product whose name contains "Retatrutide" is greyed out, shows a
+   red NEVER COMING sticker, and cannot be added to the cart, even through
+   a direct add-to-cart link. No other product is touched.
+   Install with the Code Snippets plugin (Run everywhere) or paste into the
+   child theme's functions.php.                                            */
 
-function mbl_is_never_coming( $product_id ) {
-	return has_term( 'never-coming', 'product_tag', $product_id );
+function mbl_is_retatrutide( $product ) {
+	if ( ! $product instanceof WC_Product ) {
+		$product = wc_get_product( $product );
+	}
+	if ( ! $product ) {
+		return false;
+	}
+	if ( $product->get_parent_id() ) {
+		$product = wc_get_product( $product->get_parent_id() ) ?: $product;
+	}
+	return stripos( $product->get_name(), 'retatrutide' ) !== false;
 }
 
 // Block purchase, including direct ?add-to-cart= URLs.
 add_filter( 'woocommerce_is_purchasable', function ( $purchasable, $product ) {
-	$id = $product->get_parent_id() ?: $product->get_id();
-	return mbl_is_never_coming( $id ) ? false : $purchasable;
+	return mbl_is_retatrutide( $product ) ? false : $purchasable;
 }, 10, 2 );
 
-// Replace the "Out of stock" text with the label.
+add_filter( 'woocommerce_add_to_cart_validation', function ( $passed, $product_id ) {
+	if ( mbl_is_retatrutide( $product_id ) ) {
+		wc_add_notice( 'Retatrutide is not available.', 'error' );
+		return false;
+	}
+	return $passed;
+}, 10, 2 );
+
+// Replace the stock line under the price with "Never Coming".
 add_filter( 'woocommerce_get_stock_html', function ( $html, $product ) {
-	return mbl_is_never_coming( $product->get_id() )
+	return mbl_is_retatrutide( $product )
 		? '<p class="stock mbl-never-coming-text">Never Coming</p>'
 		: $html;
 }, 10, 2 );
 
 // Class used by the CSS below, on shop cards and the product page.
 add_filter( 'woocommerce_post_class', function ( $classes, $product ) {
-	if ( mbl_is_never_coming( $product->get_id() ) ) {
+	if ( mbl_is_retatrutide( $product ) ) {
 		$classes[] = 'mbl-never-coming';
 	}
 	return $classes;
 }, 10, 2 );
 
-// Badge on top of the product image (shop grid and single product).
-$mbl_badge = function () {
+// Red sticker over the product image (shop grid and single product).
+$mbl_sticker = function () {
 	global $product;
-	if ( $product && mbl_is_never_coming( $product->get_id() ) ) {
+	if ( $product && mbl_is_retatrutide( $product ) ) {
 		echo '<span class="mbl-never-coming-badge">NEVER COMING</span>';
 	}
 };
-add_action( 'woocommerce_before_shop_loop_item_title', $mbl_badge, 9 );
-add_action( 'woocommerce_before_single_product_summary', $mbl_badge, 5 );
+add_action( 'woocommerce_before_shop_loop_item_title', $mbl_sticker, 9 );
+add_action( 'woocommerce_before_single_product_summary', $mbl_sticker, 5 );
 
 add_action( 'wp_head', function () {
 	echo '<style>
