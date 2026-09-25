@@ -1,0 +1,39 @@
+Type,SKU,Name,Published,Is featured?,Visibility in catalog,Short description,Tax status,In stock?,Stock,Backorders allowed?,Regular price,Categories,Tags,Meta: _supplier_cost
+simple,RT10,Retatrutide 10mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,149.99,Research Peptides,never-coming,60
+simple,RT20,Retatrutide 20mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,324.99,Research Peptides,never-coming,130
+simple,RT30,Retatrutide 30mg,1,0,visible,NEVER COMING. For laboratory research use only. Not for human or veterinary use.,taxable,0,0,0,499.99,Research Peptides,never-coming,200
+simple,TSM10,Tesamorelin 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,8,0,349.99,Research Peptides,,140
+simple,SM5,Semaglutide 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,8,0,74.99,Research Peptides,,30
+simple,BC10,BPC-157 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,10,0,124.99,Research Peptides,,50
+simple,BT10,TB-500 (Thymosin Beta-4) 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,4,0,274.99,Research Peptides,,110
+simple,KLOW80,KLOW Blend 80mg (BPC-157 10 + TB-500 10),1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,424.99,Blends,,170
+simple,BBG70,BBG Blend 70mg (BPC-157 10 + TB-500 10),1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,399.99,Blends,,160
+simple,BB10,BPC-157 + TB-500 Blend 10mg (5+5),1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,237.99,Blends,,95
+simple,BA10,Bacteriostatic Water 10ml,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,100,0,24.99,Supplies,,10
+simple,SMO10,Sermorelin 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,14,0,237.99,Research Peptides,,95
+simple,SMO5,Sermorelin 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,4,0,149.99,Research Peptides,,60
+simple,SM2,Semaglutide 2mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,4,0,69.99,Research Peptides,,28
+simple,SM10,Semaglutide 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,6,0,112.99,Research Peptides,,45
+simple,TR10,Tirzepatide 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,8,0,112.99,Research Peptides,,45
+simple,TR20,Tirzepatide 20mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,4,0,174.99,Research Peptides,,70
+simple,BC5,BPC-157 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,6,0,99.99,Research Peptides,,40
+simple,CU50,GHK-Cu (Copper Peptide) 50mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,8,0,69.99,Research Peptides,,28
+simple,IP10,Ipamorelin 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,4,0,137.99,Research Peptides,,55
+simple,IP5,Ipamorelin 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,99.99,Research Peptides,,40
+simple,CD5,CJC-1295 with DAC 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,324.99,Research Peptides,,130
+simple,CGL10,Cagrilintide 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,362.99,Research Peptides,,145
+simple,KP5,KPV 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,112.99,Research Peptides,,45
+simple,MS10,MOTS-c 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,149.99,Research Peptides,,60
+simple,XA10,Semax 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,174.99,Research Peptides,,70
+simple,SK10,Selank 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,174.99,Research Peptides,,70
+simple,P41,PT-141 (Bremelanotide) 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,124.99,Research Peptides,,50
+simple,ML10,MT-2 (Melanotan II) 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,112.99,Research Peptides,,45
+simple,NJ500,NAD+ 500mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,174.99,Research Peptides,,70
+simple,NJ1000,NAD+ 1000mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,224.99,Research Peptides,,90
+simple,CP10,CJC-1295 + Ipamorelin Blend 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,224.99,Blends,,90
+simple,CND5,CJC-1295 no DAC 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,174.99,Research Peptides,,70
+simple,TA5,Thymosin Alpha-1 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,212.99,Research Peptides,,85
+simple,TA10,Thymosin Alpha-1 10mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,1,0,337.99,Research Peptides,,135
+simple,DS5,DSIP 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,99.99,Research Peptides,,40
+simple,5AD,AOD-9604 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,2,0,212.99,Research Peptides,,85
+simple,G65,GHRP-6 5mg,1,0,visible,For laboratory research use only. Not for human or veterinary use.,taxable,1,1,0,74.99,Research Peptides,,30
