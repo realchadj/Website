@@ -85,9 +85,9 @@ function computeQuote() {
 function renderTabs() {
   $('#tabs').innerHTML = CATALOG.categories.map(c => `
     <button class="tab${c.id === state.categoryId ? ' is-active' : ''}"
-            data-cat="${c.id}" type="button" role="tab"
+            data-cat="${esc(c.id)}" type="button" role="tab"
             aria-selected="${c.id === state.categoryId}">
-      ${c.name}
+      ${esc(c.name)}
       ${countInCategory(c.id) ? `<span class="tab-badge">${countInCategory(c.id)}</span>` : ''}
     </button>`).join('');
 }
@@ -101,17 +101,17 @@ function renderTests() {
   $('#tests').innerHTML = cat.tests.map(t => {
     const on = state.selected.has(t.code);
     return `
-      <label class="test${on ? ' is-on' : ''}" for="t-${t.code}">
-        <input type="checkbox" id="t-${t.code}" data-code="${t.code}" ${on ? 'checked' : ''}>
+      <label class="test${on ? ' is-on' : ''}" for="t-${esc(t.code)}">
+        <input type="checkbox" id="t-${esc(t.code)}" data-code="${esc(t.code)}" ${on ? 'checked' : ''}>
         <span class="test-body">
           <span class="test-head">
-            <span class="test-name">${t.name}</span>
+            <span class="test-name">${esc(t.name)}</span>
             <span class="test-price">${money(t.price)}<small>/sample</small></span>
           </span>
-          <span class="test-detail">${t.detail}</span>
+          <span class="test-detail">${esc(t.detail)}</span>
           <span class="test-meta">
-            <span class="chip">${t.code}</span>
-            <span class="chip chip-quiet">${t.method}</span>
+            <span class="chip">${esc(t.code)}</span>
+            <span class="chip chip-quiet">${esc(t.method)}</span>
             <span class="chip chip-quiet">${t.tat} business days</span>
           </span>
         </span>
@@ -122,11 +122,11 @@ function renderTests() {
 function renderTurnaround() {
   $('#turnaround').innerHTML = CATALOG.turnaround.map(t => `
     <label class="radio${t.id === state.turnaroundId ? ' is-on' : ''}">
-      <input type="radio" name="tat" value="${t.id}" ${t.id === state.turnaroundId ? 'checked' : ''}>
+      <input type="radio" name="tat" value="${esc(t.id)}" ${t.id === state.turnaroundId ? 'checked' : ''}>
       <span>
-        <strong>${t.name}</strong>
+        <strong>${esc(t.name)}</strong>
         ${t.multiplier !== 1 ? `<em>+${Math.round((t.multiplier - 1) * 100)}%</em>` : '<em>included</em>'}
-        <small>${t.note}</small>
+        <small>${esc(t.note)}</small>
       </span>
     </label>`).join('');
 }
@@ -134,11 +134,11 @@ function renderTurnaround() {
 function renderAddOns() {
   $('#addons').innerHTML = CATALOG.addOns.map(a => `
     <label class="radio${state.addOns.has(a.id) ? ' is-on' : ''}">
-      <input type="checkbox" data-addon="${a.id}" ${state.addOns.has(a.id) ? 'checked' : ''}>
+      <input type="checkbox" data-addon="${esc(a.id)}" ${state.addOns.has(a.id) ? 'checked' : ''}>
       <span>
-        <strong>${a.name}</strong>
+        <strong>${esc(a.name)}</strong>
         <em>${a.price === 0 ? 'no charge' : money(a.price) + (a.perSample ? ' /sample' : '')}</em>
-        <small>${a.detail}</small>
+        <small>${esc(a.detail)}</small>
       </span>
     </label>`).join('');
 }
@@ -159,16 +159,16 @@ function renderQuote() {
 
   const rows = [];
   q.tests.forEach(t => rows.push(
-    line(`${t.code} · ${t.name}`, `${money(t.price)} × ${q.n} sample${q.n > 1 ? 's' : ''}`, t.price * q.n)
+    line(`${esc(t.code)} · ${esc(t.name)}`, `${money(t.price)} × ${q.n} sample${q.n > 1 ? 's' : ''}`, t.price * q.n)
   ));
   if (q.rushAmount > 0) rows.push(
-    line(`${q.turnaround.name} turnaround`, `+${Math.round((q.turnaround.multiplier - 1) * 100)}% on testing`, q.rushAmount)
+    line(`${esc(q.turnaround.name)} turnaround`, `+${Math.round((q.turnaround.multiplier - 1) * 100)}% on testing`, q.rushAmount)
   );
   if (q.discountAmount > 0) rows.push(
-    line(`Volume discount — ${q.tier.label}`, `−${Math.round(q.tier.discount * 100)}%`, -q.discountAmount, 'credit')
+    line(`Volume discount — ${esc(q.tier.label)}`, `−${Math.round(q.tier.discount * 100)}%`, -q.discountAmount, 'credit')
   );
   q.addOnLines.forEach(a => rows.push(
-    line(a.name, a.perSample ? `${money(a.price)} × ${q.n}` : 'per order', a.amount)
+    line(esc(a.name), a.perSample ? `${money(a.price)} × ${q.n}` : 'per order', a.amount)
   ));
   if (q.minimumApplied) rows.push(
     line('Minimum order adjustment', `Orders are billed at a ${money(CATALOG.minimumOrder)} minimum`,
@@ -187,7 +187,7 @@ function renderQuote() {
   const next = CATALOG.volumeBreaks.find(b => q.n < b.min);
   $('#nudge').innerHTML = next
     ? `Add ${next.min - q.n} more sample${next.min - q.n > 1 ? 's' : ''} to reach
-       <strong>${next.label}</strong> and save ${Math.round(next.discount * 100)}%.`
+       <strong>${esc(next.label)}</strong> and save ${Math.round(next.discount * 100)}%.`
     : '';
 }
 
@@ -344,21 +344,21 @@ function buildPrintable() {
   const c = readCustomer();
   const ref = quoteReference();
   const rows = q.tests.map(t => `
-    <tr><td>${t.code}</td><td>${t.name}<br><small>${t.method}</small></td>
+    <tr><td>${esc(t.code)}</td><td>${esc(t.name)}<br><small>${esc(t.method)}</small></td>
         <td class="r">${money(t.price)}</td><td class="r">${q.n}</td>
         <td class="r">${money(t.price * q.n)}</td></tr>`).join('');
 
   const extras = [
-    q.rushAmount > 0 ? `<tr><td colspan="4">${q.turnaround.name} turnaround</td><td class="r">${money(q.rushAmount)}</td></tr>` : '',
-    q.discountAmount > 0 ? `<tr><td colspan="4">Volume discount — ${q.tier.label}</td><td class="r">−${money(q.discountAmount)}</td></tr>` : '',
-    ...q.addOnLines.map(a => `<tr><td colspan="4">${a.name}</td><td class="r">${money(a.amount)}</td></tr>`),
+    q.rushAmount > 0 ? `<tr><td colspan="4">${esc(q.turnaround.name)} turnaround</td><td class="r">${money(q.rushAmount)}</td></tr>` : '',
+    q.discountAmount > 0 ? `<tr><td colspan="4">Volume discount — ${esc(q.tier.label)}</td><td class="r">−${money(q.discountAmount)}</td></tr>` : '',
+    ...q.addOnLines.map(a => `<tr><td colspan="4">${esc(a.name)}</td><td class="r">${money(a.amount)}</td></tr>`),
     q.minimumApplied ? `<tr><td colspan="4">Minimum order adjustment</td><td class="r">${money(CATALOG.minimumOrder - q.subtotal)}</td></tr>` : ''
   ].join('');
 
   $('#print-area').innerHTML = `
     <div class="doc">
       <header class="doc-head">
-        <div><h1>${CONFIG.labName}</h1><p>Quotation &amp; Chain of Custody</p></div>
+        <div><h1>${esc(CONFIG.labName)}</h1><p>Quotation &amp; Chain of Custody</p></div>
         <div class="r"><strong>${ref}</strong><br>
           ${new Date().toLocaleDateString('en-US', { dateStyle: 'long' })}</div>
       </header>
@@ -367,7 +367,7 @@ function buildPrintable() {
           <p>${esc(c.name) || '&nbsp;'}<br>${esc(c.company)}<br>${esc(c.email)}<br>${esc(c.phone)}</p></div>
         <div><h3>Sample details</h3>
           <p>Samples: ${q.n}<br>Matrix: ${esc(c.matrix) || '—'}<br>
-             Turnaround: ${q.turnaround.name}<br>Project/PO: ${esc(c.projectRef) || '—'}</p></div>
+             Turnaround: ${esc(q.turnaround.name)}<br>Project/PO: ${esc(c.projectRef) || '—'}</p></div>
       </section>
       <table class="doc-table">
         <thead><tr><th>Code</th><th>Analysis</th><th class="r">Unit</th><th class="r">Qty</th><th class="r">Amount</th></tr></thead>
@@ -388,7 +388,10 @@ function buildPrintable() {
   window.print();
 }
 
-const esc = s => String(s || '').replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+/* Everything interpolated into HTML goes through esc — customer input always,
+   catalog text too, so a stray '<' in a test name can't break the page.    */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
 /* ------------------------------------------------------------ persistence */
 
@@ -412,12 +415,18 @@ function loadDraft() {
     if (!raw) return;
     const d = JSON.parse(raw);
     (d.codes || []).forEach(code => { const t = findTest(code); if (t) state.selected.set(code, t); });
-    if (d.sampleCount) state.sampleCount = d.sampleCount;
-    if (d.turnaroundId) state.turnaroundId = d.turnaroundId;
-    if (Array.isArray(d.addOns)) state.addOns = new Set(d.addOns);
-    if (d.customer) Object.entries(d.customer).forEach(([k, v]) => {
+    // Storage is shared across the origin, so the draft is untrusted input:
+    // keep only values the catalog and the form could have produced.
+    const n = parseInt(d.sampleCount, 10);
+    if (n >= 1 && n <= 9999) state.sampleCount = n;
+    if (CATALOG.turnaround.some(t => t.id === d.turnaroundId)) state.turnaroundId = d.turnaroundId;
+    if (Array.isArray(d.addOns))
+      state.addOns = new Set(d.addOns.filter(id => CATALOG.addOns.some(a => a.id === id)));
+    const fields = ['name', 'company', 'email', 'phone', 'matrix', 'projectRef', 'notes'];
+    if (d.customer && typeof d.customer === 'object') fields.forEach(k => {
+      const v = d.customer[k];
       const el = $('#f-' + ({ projectRef: 'project' }[k] || k));
-      if (el && v) el.value = v;
+      if (el && typeof v === 'string' && v) el.value = v.slice(0, 5000);
     });
     if ($('#samples')) $('#samples').value = state.sampleCount;
   } catch { /* corrupt draft — start clean rather than break the page */ }
