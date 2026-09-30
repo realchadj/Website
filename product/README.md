@@ -138,6 +138,11 @@ node test.mjs
   but only list what you're actually accredited or qualified to run.
 - **Taxes** are excluded and mentioned as such in the footer. If you need to
   collect them, add the rule in `computeQuote()` in `assets/app.js`.
+- **It ships with a Content-Security-Policy** (the meta tag in `index.html`)
+  that lets only the page's own scripts run. If you add analytics, a chat
+  widget or any other third-party script, add its origin to `script-src` —
+  otherwise the browser will block it. `node build-standalone.mjs` pins the
+  inlined scripts by hash, so rebuild `standalone.html` after any edit.
 - **This quotes, it does not charge.** There's no payment processing. If you
   want card payment on submission, a Stripe Payment Link keyed to the total is
   the shortest path.

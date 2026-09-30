@@ -121,6 +121,20 @@ put('__PRODUCT_B64__', zip.toString('base64'));
 put('__STANDALONE_B64__', standalone.toString('base64'));
 put('__ZIP_KB__', Math.round(zip.length / 1024));
 
+/* The Content-Security-Policy allows exactly the inline scripts this build
+   produced, by hash, so a script injected into the page any other way will
+   not run. Data blocks (the payloads, JSON-LD) are not executed and are not
+   listed. Hashed last, after every other value is in place.                 */
+const scriptHashes = [...html.matchAll(/<script(\s[^>]*)?>([\s\S]*?)<\/script>/g)]
+  .filter(([, attrs = '']) => !/\bsrc=/.test(attrs) &&
+    (!/\btype=/.test(attrs) || /\btype="(text|application)\/javascript"/.test(attrs)))
+  .map(([, , body]) => `'sha256-${createHash('sha256').update(body).digest('base64')}'`);
+if (!scriptHashes.length) {
+  console.error('Refusing to build: found no inline script to allow in the CSP.');
+  process.exit(1);
+}
+put('__CSP_SCRIPT_HASHES__', scriptHashes.join(' '));
+
 if (/__[A-Z_]+__/.test(html)) {
   console.error('Refusing to build: a placeholder was left unreplaced —',
                 html.match(/__[A-Z_]+__/)[0]);

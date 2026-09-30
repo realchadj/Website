@@ -135,6 +135,75 @@ async function open({ txs = [], priceOk = true, explorerOk = true } = {}) {
   await page.close();
 }
 
+/* ---------------------------------------------------------------- security */
+{
+  // The CSP must stop a script injected after load; only the hashed one runs.
+  const { page } = await open({ txs: { current: [] } });
+  await page.evaluate(() => {
+    const s = document.createElement('script');
+    s.textContent = 'window.__injected = true';
+    document.body.appendChild(s);
+  });
+  check('CSP blocks injected script', await page.evaluate(() => window.__injected === true), 'false');
+  await page.close();
+}
+{
+  // A stored order that pays someone else must not be resumed.
+  const txs = { current: [] };
+  const { page } = await open({ txs });
+  await page.evaluate(() => localStorage.setItem('labquote.order.v1', JSON.stringify({
+    amount: 131579, seen: [], address: '1BoatSLRHtKNngkdXEeobR76b53LETtpyT',
+    usdRate: 60000, createdAt: Date.now(), expiresAt: Date.now() + 600000 })));
+  await page.reload();
+  await page.waitForTimeout(350);
+  check('tampered stored order ignored', await page.locator('#stage-pay').isVisible(), 'false');
+  check('tampered stored order discarded',
+        await page.evaluate(() => localStorage.getItem('labquote.order.v1')), 'null');
+  await page.close();
+}
+{
+  // A price feed off by orders of magnitude must not produce an order.
+  const page = await browser.newPage();
+  await page.route('**/api/v1/prices', r => r.fulfill({ json: { USD: 0.5 } }));
+  await page.route('**/api/address/**', r => r.fulfill({ json: [] }));
+  await page.route('https://fonts.googleapis.com/**', r => r.abort());
+  await page.goto(store);
+  await page.click('#start');
+  await page.waitForTimeout(400);
+  check('implausible rate refused', await page.locator('#stage-manual').isVisible(), 'true');
+  await page.close();
+}
+{
+  // Framed by another site, the checkout stays disabled.
+  const { readFileSync } = await import('node:fs');
+  const page = await browser.newPage();
+  await page.route('https://shop.test/**', r =>
+    r.fulfill({ contentType: 'text/html', body: readFileSync(new URL('./index.html', import.meta.url)) }));
+  await page.route('https://evil.test/**', r =>
+    r.fulfill({ contentType: 'text/html', body: '<iframe src="https://shop.test/" width="900" height="900"></iframe>' }));
+  await page.route('**/api/v1/prices', r => r.fulfill({ json: { USD: RATE } }));
+  await page.route('https://fonts.googleapis.com/**', r => r.abort());
+  await page.goto('https://evil.test/');
+  await page.waitForTimeout(500);
+  const frame = page.frames().find(f => f.url().startsWith('https://shop.test'));
+  check('checkout disabled when framed',
+        frame ? await frame.locator('#start').isDisabled() : 'navigated away', 'true');
+  await page.close();
+}
+{
+  // The demo runs under its own pinned CSP with no violations.
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  page.on('console', m => { if (m.type() === 'error' && !/net::ERR_|Failed to load/.test(m.text())) errors.push(m.text()); });
+  await page.route('https://fonts.googleapis.com/**', r => r.abort());
+  await page.goto(new URL('./demo/index.html', import.meta.url).href);
+  await page.waitForTimeout(300);
+  check('demo renders under CSP', await page.locator('.tab').count() > 0, 'true');
+  check('demo has no CSP errors', errors.length, 0);
+  await page.close();
+}
+
 await browser.close();
 console.log(fail ? `\n${fail} FAILING` : '\nAll storefront checks passed.');
 process.exit(fail ? 1 : 0);

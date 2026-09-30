@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- GitHub Pages cannot send response headers, so the policy ships as a meta
+     tag. The build fills in the hash of the checkout script: it is the only
+     code allowed to run, and it may only talk to the price feed and the two
+     block explorers. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src __CSP_SCRIPT_HASHES__; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://mempool.space https://blockstream.info; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <title>Lab Quoting Software — Instant Quote &amp; Sample Intake Tool</title>
 <meta name="description" content="Self-hosted lab quoting software for analytical and testing labs: customers build itemised quotes in seconds and submit samples online. Full source, $79 one-time, paid in Bitcoin.">
 <link rel="canonical" href="https://realchadj.github.io/Website/">
@@ -290,8 +296,9 @@ a{color:var(--accent)}
           <div class="status bad"><span class="dot"></span>
             <span>This page can't reach the Bitcoin network from your browser right now, so it
               can't confirm payment automatically.</span></div>
-          <p class="fineprint" style="padding:0">Email the seller with your transaction ID and
-            they'll send the files directly. Don't pay until you've heard back.</p>
+          <p class="fineprint" style="padding:0">Email
+            <a href="mailto:midwestbiolabs@proton.me?subject=Instant%20Quote%20purchase">midwestbiolabs@proton.me</a>
+            and we'll arrange payment and send the files directly. Don't pay until you've heard back.</p>
         </div>
       </section>
 
@@ -344,7 +351,8 @@ const SHOP = {
 
   pollMs: 20000,        // explorer politeness; 20s is well inside rate limits
   windowMin: 30,        // how long a locked-in rate stays valid
-  confirmations: 0      // 0 = unlock on sight in the mempool. See README.
+  confirmations: 0,     // 0 = unlock on sight in the mempool. See README.
+  rateBounds: [1000, 10000000]   // USD/BTC outside this is treated as a bad feed
 };
 
 const $ = s => document.querySelector(s);
@@ -352,6 +360,7 @@ const KEY = 'labquote.order.v1';
 let order = null, timer = null, apiIndex = 0;
 
 const sats = btc => Math.round(btc * 1e8);
+const isTxid = t => typeof t === 'string' && /^[0-9a-f]{64}$/.test(t);
 const toBtc = s => (s / 1e8).toFixed(8);
 
 /* ---------------------------------------------------------------- pricing */
@@ -361,7 +370,11 @@ async function fetchRate() {
     const r = await fetch(SHOP.priceApi, { cache: 'no-store' });
     if (!r.ok) throw new Error(r.status);
     const j = await r.json();
-    if (!j.USD || typeof j.USD !== 'number') throw new Error('no USD field');
+    /* A feed that is wrong by orders of magnitude would have the buyer send
+       far too much. Refuse anything outside a generous plausible band and
+       fall back to the manual path instead.                               */
+    if (typeof j.USD !== 'number' || !Number.isFinite(j.USD) ||
+        j.USD < SHOP.rateBounds[0] || j.USD > SHOP.rateBounds[1]) throw new Error('implausible rate');
     return j.USD;
   } catch { return null; }
 }
@@ -382,7 +395,7 @@ async function existingTxids(address) {
       if (!r.ok) throw new Error(r.status);
       const txs = await r.json();
       if (!Array.isArray(txs)) throw new Error('unexpected payload');
-      return txs.map(t => t.txid);
+      return txs.map(t => t && t.txid).filter(isTxid);
     } catch { /* try the next explorer */ }
   }
   return null;
@@ -463,9 +476,10 @@ function matchPayment(txs, ord) {
   if (!Array.isArray(txs)) return null;
   const seen = new Set(ord.seen || []);
   for (const tx of txs) {
+    if (!tx || !isTxid(tx.txid)) continue;  // malformed explorer entry
     if (seen.has(tx.txid)) continue;        // predates this order
-    const paid = (tx.vout || []).some(o =>
-      o.scriptpubkey_address === ord.address && o.value === ord.amount);
+    const paid = Array.isArray(tx.vout) && tx.vout.some(o =>
+      o && o.scriptpubkey_address === SHOP.address && o.value === ord.amount);
     if (!paid) continue;
     const confirmed = tx.status && tx.status.confirmed;
     if (SHOP.confirmations > 0 && !confirmed) continue;
@@ -484,7 +498,7 @@ function deliver(hit) {
   $('#done-note').textContent = hit.confirmed
     ? 'Confirmed on-chain. Thank you.'
     : 'Seen in the mempool and not yet confirmed in a block — your files are below regardless.';
-  localStorage.removeItem(KEY);
+  try { localStorage.removeItem(KEY); } catch {}
   $('#stage-done').scrollIntoView({ behavior: 'smooth', block: 'center' });
   handOver('product-payload', 'quote-desk.zip', 'application/zip');
 }
@@ -517,6 +531,20 @@ function showManual() {
   $('#stage-manual').hidden = false;
 }
 
+/* Storage is shared by every page on this origin (all of the owner's GitHub
+   Pages projects live on one host), so a stored order is untrusted input. It
+   is only resumed if it pays this build's address an amount this page could
+   have generated — never an address or amount read back from storage.      */
+function validOrder(o) {
+  if (!o || typeof o !== 'object') return false;
+  if (o.address !== SHOP.address) return false;
+  if (!Number.isSafeInteger(o.amount) || o.amount < 1000 || o.amount > 1e8) return false;
+  if (!Array.isArray(o.seen) || !o.seen.every(isTxid)) return false;
+  if (typeof o.expiresAt !== 'number' ||
+      o.expiresAt > Date.now() + SHOP.windowMin * 60000) return false;
+  return true;
+}
+
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(order)); } catch {} };
 
 function restore() {
@@ -524,7 +552,7 @@ function restore() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return false;
     const o = JSON.parse(raw);
-    if (!o || o.expiresAt < Date.now()) { localStorage.removeItem(KEY); return false; }
+    if (!validOrder(o) || o.expiresAt < Date.now()) { localStorage.removeItem(KEY); return false; }
     order = o;
     renderPayStage();
     poll();
@@ -533,10 +561,23 @@ function restore() {
   } catch { return false; }
 }
 
+/* The page cannot send X-Frame-Options from GitHub Pages, so it refuses to
+   run the checkout inside someone else's frame, where an overlay could put a
+   different address or amount over ours.                                   */
+function framed() {
+  try { return window.top !== window.self; } catch { return true; }
+}
+
 async function init() {
-  $('#addr').value = SHOP.address;
   $('#usd').textContent = '$' + SHOP.priceUsd;
   $('#foot-price').textContent = `$${SHOP.priceUsd} one-time · full source`;
+  if (framed()) {
+    try { window.top.location.replace(window.location.href); } catch {}
+    $('#rate').textContent = 'Open this page directly to buy — checkout is disabled inside a frame.';
+    $('#start').disabled = true;
+    return;
+  }
+  $('#addr').value = SHOP.address;
 
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
     const input = document.getElementById(b.dataset.copy);

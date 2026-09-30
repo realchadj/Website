@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Only this page's own scripts may run. connect-src allows any https
+       endpoint so CONFIG.endpoint (Formspree, Basin, your server) works;
+       build-standalone.mjs swaps 'self' for the hashes of the inlined code. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https:; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Midwest Biolabs Quote Desk</title>
   <meta name="description" content="Price your analytical testing instantly and submit samples online — no waiting on a callback.">
   <link rel="preconnect" href="https://fonts.googleapis.com">

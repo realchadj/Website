@@ -77,6 +77,11 @@ Read this before relying on it for real money.
 - **There are no refunds.** Bitcoin payments are irreversible and there is no
   mechanism here to send anything back. The storefront says so plainly on the
   page, which is the honest way to sell this way.
+- **Security headers come from the page, not the host.** GitHub Pages can't
+  send response headers, so the Content-Security-Policy is a meta tag whose
+  script hashes the build fills in. If you edit the checkout script, rebuild —
+  a hand-edited `index.html` will have its own script blocked. See
+  `SECURITY.md` for the full list of protections.
 - **Income is still income.** Being paid in Bitcoin does not change that it's
   taxable revenue in most jurisdictions. Keep the transaction records.
 
@@ -85,17 +90,20 @@ Read this before relying on it for real money.
 ## Tests
 
 ```
-node test-store.mjs            # storefront — 22 checks
+node test-store.mjs            # storefront — 30 checks
 cd product && node test.mjs    # the product — 22 checks
 ```
 
-Both need `npm install playwright` first, and both run fully offline: the
+Both need `npm install` first, and both run fully offline: the
 storefront tests stub the block explorer and the price feed, so they never
 touch a real API or a real address. They cover the cases that actually lose
 money — underpayment, payment to a different address, and a pre-existing
 transaction attempting to settle a fresh order — alongside explorer and
 price-feed outages, which must fall back to the manual path rather than
-opening an order that can never settle.
+opening an order that can never settle. The security checks confirm the CSP
+blocks injected script, a tampered saved order is discarded, an implausible
+rate is refused, the checkout won't run inside a frame, and the demo runs
+cleanly under its own policy.
 
 ---
 
