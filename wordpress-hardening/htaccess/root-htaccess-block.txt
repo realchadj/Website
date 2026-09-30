@@ -1,0 +1,47 @@
+# BEGIN HBL Hardening
+# Paste this whole block at the TOP of the .htaccess in the WordPress root
+# (the folder holding wp-config.php), ABOVE "# BEGIN WordPress".
+# WordPress only rewrites what sits between its own BEGIN/END markers, so this
+# survives permalink saves. If the site shows "500 Internal Server Error" right
+# after saving, delete the "Options -Indexes" line and see README step 2.
+
+# --- No directory listings: /wp-content/uploads/, /wp-includes/, every folder.
+Options -Indexes
+
+# --- Don't print the Apache version on error pages.
+ServerSignature Off
+
+# --- Files that reveal versions or secrets. They come back with every core or
+# plugin update, so blocking them here beats deleting them.
+<FilesMatch "^(readme\.html|readme\.txt|license\.txt|changelog\.txt|wp-config-sample\.php|wp-config\.php|debug\.log|error_log|php_errorlog|\.user\.ini|\.htaccess|\.htpasswd)$">
+	Require all denied
+</FilesMatch>
+<FilesMatch "\.(bak|old|orig|save|swp|sql|sql\.gz|log)$">
+	Require all denied
+</FilesMatch>
+
+# --- wp-includes and wp-admin/includes are code, never pages.
+# (WordPress.org "Hardening WordPress" rules. Single-site only.)
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /
+	RewriteRule ^wp-admin/includes/ - [F,L]
+	RewriteRule !^wp-includes/ - [S=3]
+	RewriteRule ^wp-includes/[^/]+\.php$ - [F,L]
+	RewriteRule ^wp-includes/js/tinymce/langs/.+\.php - [F,L]
+	RewriteRule ^wp-includes/theme-compat/ - [F,L]
+</IfModule>
+
+# --- Security headers. Applies to PDFs and images too, not just pages.
+<IfModule mod_headers.c>
+	# HTTPS only for a year. Deliberately no includeSubDomains/preload: add those
+	# only once every subdomain (mail., shop., etc.) is confirmed on HTTPS.
+	Header always set Strict-Transport-Security "max-age=31536000"
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), usb=()"
+	Header always unset X-Powered-By
+	Header unset X-Powered-By
+</IfModule>
+# END HBL Hardening

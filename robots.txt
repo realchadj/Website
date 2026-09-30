@@ -5,6 +5,7 @@ User-agent: *
 Disallow: /store/
 Disallow: /product/
 Disallow: /dist/
+Disallow: /wordpress-hardening/
 Allow: /
 
 Sitemap: https://realchadj.github.io/Website/sitemap.xml

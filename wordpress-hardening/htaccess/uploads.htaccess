@@ -1,0 +1,8 @@
+# Save as wp-content/uploads/.htaccess
+# Uploads are media and PDFs. Nothing in here should ever run as code: this
+# stops an uploaded webshell (the usual payload of a File Manager or form-upload
+# exploit) from executing even if one gets in.
+Options -Indexes
+<FilesMatch "\.(?i:php[0-9]?|phtml|phar|pht|phps|cgi|pl|py|sh)$">
+	Require all denied
+</FilesMatch>
