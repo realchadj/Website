@@ -78,9 +78,25 @@ new account.
 Anyone else who logs in with the old account (including the File Manager
 workflow) needs the new login.
 
-## Step 2 — Install the code fixes (10 min)
+## Step 2 — Install the code fixes (2 min)
 
-You'll need WP File Manager active for this (or the host's file manager / FTP).
+**Fastest way: the one-click installer.**
+
+1. **Plugins → Add New → Upload Plugin** → choose
+   `dist/hbl-hardening-installer.zip` → **Install Now** → **Activate**.
+2. A report appears at the top of the screen, and the installer switches
+   itself off. Delete it from the Plugins page.
+
+It installs everything below and backs up `.htaccess` to
+`.htaccess.hbl-backup`. After each change it loads the site to check it still
+works. If your host rejects a line, it retries without that line. If the site
+still errors, it puts the original file back exactly as it was. Each ⚠️ in the
+report tells you what to check by hand. It was tested on a normal Apache host,
+a strict one, and one that rejects every rule.
+
+Rebuild the zip after editing any kit file: `bash build-installer.sh`.
+
+**By hand instead** (WP File Manager, the host's file manager, or FTP):
 
 1. **Must-use plugin.** Open `wp-content/`. Create a folder called
    `mu-plugins` if it doesn't exist. Upload `mu-plugins/hbl-hardening.php`
