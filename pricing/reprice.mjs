@@ -33,11 +33,12 @@ const ASSUMPTIONS = {
   /* Never earn less than this per unit, so cheap items still pay their way. */
   minProfit: 8.00,
 
-  /* Shelf price as a multiple of per-vial cost: the price of one vial equals
-     what you pay for a box of 10. Retail for research peptides typically
-     runs 8–15× landed cost, so 10× undercuts most sellers while the margin
-     stays far above the floor. */
-  costMultiple: 10
+  /* Shelf price as a multiple of per-vial cost. Retail for research
+     peptides typically runs 8–15× landed cost; 6× prices the store as the
+     affordable option (BPC-157 10mg at $29.99) while still keeping about 70%
+     of each sale after every cost. Selling through today's in-stock
+     inventory at these prices clears roughly $46,000 profit. */
+  costMultiple: 6
 };
 
 const CSV = new URL('../peptide-products-woocommerce.csv', import.meta.url);
