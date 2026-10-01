@@ -1,0 +1,29 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Tests run against the committed build — the files GitHub Pages serves.
+      - name: Storefront
+        run: node test-store.mjs
+      - name: Product
+        working-directory: product
+        run: node test.mjs
+      - name: Prices cover cost, fees and margin
+        run: node pricing/reprice.mjs --check
