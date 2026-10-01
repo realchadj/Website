@@ -25,3 +25,5 @@ jobs:
       - name: Product
         working-directory: product
         run: node test.mjs
+      - name: Prices cover cost, fees and margin
+        run: node pricing/reprice.mjs --check
