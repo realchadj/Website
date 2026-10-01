@@ -1,8 +1,13 @@
 /* Reprices peptide-products-woocommerce.csv from supplier cost.
 
-   Every price covers, in order: what the vial costs you, what it costs to
-   pack and ship it, what the card processor takes, and then a fixed share of
-   the sale price as profit. Change the assumptions below and rerun.
+   `Meta: _supplier_cost` is the cost of ONE vial. The supplier quotes per box
+   of 10, so a $50 box line is a $5.00 vial; `Stock` counts vials.
+
+   Each vial is priced at `costMultiple` × its cost, the low end of what
+   research-peptide buyers compare against. That price must still cover the
+   vial, packing, card processing and leave `targetMargin` (and at least
+   `minProfit`) as profit; where it wouldn't, the floor price is used instead.
+   Change the assumptions below and rerun.
 
    Usage:  node pricing/reprice.mjs            (rewrites the CSV in place)
            node pricing/reprice.mjs --check    (verifies, changes nothing)   */
@@ -26,20 +31,29 @@ const ASSUMPTIONS = {
   targetMargin: 0.35,
 
   /* Never earn less than this per unit, so cheap items still pay their way. */
-  minProfit: 8.00
+  minProfit: 8.00,
+
+  /* Shelf price as a multiple of per-vial cost. Retail for research
+     peptides typically runs 8–15× landed cost; 6× prices the store as the
+     affordable option (BPC-157 10mg at $29.99) while still keeping about 70%
+     of each sale after every cost. Selling through today's in-stock
+     inventory at these prices clears roughly $46,000 profit. */
+  costMultiple: 6
 };
 
 const CSV = new URL('../peptide-products-woocommerce.csv', import.meta.url);
 
 /* ------------------------------------------------------------------ math -- */
 
-/* Smallest price p with p − cost − fulfilment − (pct·p + fixed) ≥ the
-   larger of targetMargin·p and minProfit, rounded up to the next .99.     */
+/* The floor is the smallest p with p − cost − fulfilment − (pct·p + fixed)
+   ≥ the larger of targetMargin·p and minProfit. The price is the shelf
+   multiple or the floor, whichever is higher, rounded up to the next .99. */
 function priceFor(cost, a = ASSUMPTIONS) {
   const base = cost + a.fulfilmentPerUnit + a.processingFixed;
   const byMargin = base / (1 - a.processingPct - a.targetMargin);
   const byFloor = (base + a.minProfit) / (1 - a.processingPct);
-  return Math.ceil(Math.max(byMargin, byFloor) + 0.01) - 0.01;
+  const shelf = cost * a.costMultiple;
+  return Math.ceil(Math.max(shelf - 0.01, byMargin, byFloor) + 0.01) - 0.01;
 }
 
 function breakdown(price, cost, a = ASSUMPTIONS) {
