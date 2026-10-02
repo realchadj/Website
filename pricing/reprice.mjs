@@ -38,7 +38,12 @@ const ASSUMPTIONS = {
      affordable option (BPC-157 10mg at $29.99) while still keeping about 70%
      of each sale after every cost. Selling through today's in-stock
      inventory at these prices clears roughly $46,000 profit. */
-  costMultiple: 6
+  costMultiple: 6,
+
+  /* Mix-and-match volume discount on research vials (not Lab Supplies),
+     applied in the cart by wordpress/peptide-store.php — keep the two in
+     step. The deepest tier must still leave targetMargin after every cost. */
+  volumeTiers: [{ minQty: 3, off: 0.10 }, { minQty: 5, off: 0.15 }]
 };
 
 const CSV = new URL('../peptide-products-woocommerce.csv', import.meta.url);
@@ -95,8 +100,9 @@ const col = name => {
   if (i < 0) throw new Error(`CSV has no "${name}" column`);
   return i;
 };
-const [iSku, iName, iPrice, iCost] =
-  ['SKU', 'Name', 'Regular price', 'Meta: _supplier_cost'].map(col);
+const [iSku, iName, iPrice, iCost, iCat] =
+  ['SKU', 'Name', 'Regular price', 'Meta: _supplier_cost', 'Categories'].map(col);
+const deepest = Math.max(...ASSUMPTIONS.volumeTiers.map(t => t.off));
 
 let bad = 0;
 const report = [];
@@ -113,6 +119,14 @@ for (const r of rows.slice(1)) {
   if (profit < ASSUMPTIONS.minProfit - 1e-9 || margin < ASSUMPTIONS.targetMargin - 1e-9) {
     console.error(`${r[iSku]}: $${now} leaves $${profit.toFixed(2)} — below target`);
     bad++;
+  }
+  if (r[iCat] !== 'Lab Supplies') {
+    const sale = now * (1 - deepest);
+    const d = breakdown(sale, cost);
+    if (d.margin < ASSUMPTIONS.targetMargin - 1e-9) {
+      console.error(`${r[iSku]}: at ${deepest * 100}% volume discount ($${sale.toFixed(2)}) margin is ${(d.margin * 100).toFixed(0)}%`);
+      bad++;
+    }
   }
   if (process.argv.includes('--check') && Math.abs(was - now) > 0.001) {
     console.error(`${r[iSku]}: CSV has $${was}, assumptions give $${now.toFixed(2)}`);

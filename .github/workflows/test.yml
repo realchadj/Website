@@ -27,3 +27,7 @@ jobs:
         run: node test.mjs
       - name: Prices cover cost, fees and margin
         run: node pricing/reprice.mjs --check
+      - name: Catalog content, SEO fields and cross-sells
+        run: node pricing/check-catalog.mjs
+      - name: WordPress store plugin parses
+        run: php -l wordpress/peptide-store.php

@@ -126,3 +126,31 @@ from here, roughly in order of effort:
 The honest expectation: a $79 tool sold to a niche audience needs volume, and
 volume needs distribution. This repo gives you a product that works and a
 checkout that takes money. The part it doesn't give you is customers.
+
+---
+
+## Peptide catalog (WooCommerce)
+
+`peptide-products-woocommerce.csv` imports straight into WooCommerce
+(Products → Import, tick *Update existing products*). Each row carries a
+unique description, category, tags, shipping weight and size, upsells,
+cross-sells (bacteriostatic water on every peptide), and SEO title,
+description and focus keyword for both Rank Math and Yoast. The
+discontinued Retatrutide SKUs are kept as hidden drafts.
+
+`wordpress/peptide-store.php` is the companion plugin; drop it into
+`wp-content/mu-plugins/`. It adds:
+
+- a required 21+ / research-use-only checkbox at checkout (block and classic),
+  with the acknowledgment time saved on the order;
+- mix-and-match volume pricing, 10% off 3+ vials and 15% off 5+, excluding
+  Lab Supplies, with an "add N more to save" nudge in the cart;
+- a *View certificate of analysis* button on any product whose `_coa_url`
+  meta is set (fill the `Meta: _coa_url` column and re-import);
+- a reorder reminder email 35 days after a completed order, skipped if the
+  customer has already reordered, with a signed one-click unsubscribe.
+
+```
+node pricing/reprice.mjs --check      # prices cover costs, and still do at the deepest volume tier
+node pricing/check-catalog.mjs        # content, SEO lengths, cross-sell SKUs, shippability
+```
