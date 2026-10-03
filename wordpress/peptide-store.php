@@ -15,7 +15,8 @@ defined( 'ABSPATH' ) || exit;
 /* Keep these in step with volumeTiers in pricing/reprice.mjs, which checks
    that the deepest tier still leaves the target margin on every product. */
 const PS_VOLUME_TIERS     = [ 5 => 0.15, 3 => 0.10 ];   // min vials => discount, deepest first
-const PS_SUPPLIES_CAT     = 'lab-supplies';             // excluded from the vial count and the discount
+const PS_SUPPLIES_CAT     = 'supplies';                 // category slug excluded from the vial count and the discount (heartlandbiolabs.com uses /product-category/supplies/)
+const PS_FREE_SHIP_BAR    = false;                      // the live theme already shows its own "$X more for free shipping" bar; true adds this plugin's
 const PS_REORDER_DAYS     = 35;
 const PS_ACK_FIELD        = 'peptide-store/ruo-ack';
 const PS_ACK_LABEL        = 'I am 21 or older and a qualified researcher. I am buying these products for laboratory research only, not for human or veterinary use.';
@@ -135,7 +136,7 @@ function ps_volume_nudge() {
 // shipping zone in WooCommerce → Settings → Shipping, so there is nothing to
 // keep in step here. No minimum-amount free shipping method, no bar.
 function ps_free_shipping_min() {
-	if ( ! class_exists( 'WC_Shipping_Zones' ) || ! WC()->customer ) {
+	if ( ! PS_FREE_SHIP_BAR || ! class_exists( 'WC_Shipping_Zones' ) || ! WC()->customer ) {
 		return null;
 	}
 	// Match the zone on the shopper's location (their saved address, or the
