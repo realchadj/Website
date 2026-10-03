@@ -146,10 +146,16 @@ discontinued Retatrutide SKUs are kept as hidden drafts.
 - mix-and-match volume pricing, 10% off 3+ vials and 15% off 5+, excluding
   Lab Supplies, with an "add N more to save" nudge in the cart (a coupon
   replaces the volume discount rather than stacking with it);
+- a free-shipping progress bar in the cart ("You're $X away from free
+  shipping") and a threshold line on product pages, read from the free
+  shipping method's minimum amount in WooCommerce → Settings → Shipping (set
+  one up and it appears; there's nothing to configure in the plugin);
+- brand and MPN added to WooCommerce's Product structured data, which Google
+  lists as recommended for merchant listings;
 - a *View certificate of analysis* button on any product whose `_coa_url`
   meta is set (fill the `Meta: _coa_url` column and re-import);
 - a reorder reminder email 35 days after a completed order, skipped if the
-  customer has already reordered, with a signed unsubscribe link that asks
+  customer has already reordered or the order was refunded, with a signed unsubscribe link that asks
   for a confirm click (so email link scanners can't unsubscribe anyone).
 
 ```
