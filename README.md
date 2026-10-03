@@ -131,6 +131,14 @@ checkout that takes money. The part it doesn't give you is customers.
 
 ## Peptide catalog (WooCommerce)
 
+> **Do not import the CSV into heartlandbiolabs.com as it stands.** The live
+> store sells *variable* products (one product per peptide, with a Strength
+> option and SKUs like `HBL-BPC157-5MG`), at different prices from this file.
+> The CSV holds one *simple* product per size with short SKUs (`BC5`,
+> `BC10`). Matching is by SKU, so importing it would add about 38 duplicate
+> products next to the real ones, at lower prices. The plugin below is safe to
+> install on the live store; the CSV needs remapping to the live SKUs first.
+
 `peptide-products-woocommerce.csv` imports straight into WooCommerce
 (Products → Import, tick *Update existing products*). Each row carries a
 unique description, category, tags, shipping weight and size, upsells,
@@ -144,12 +152,13 @@ discontinued Retatrutide SKUs are kept as hidden drafts.
 - a required 21+ / research-use-only checkbox at checkout (block and classic),
   with the acknowledgment time saved on the order;
 - mix-and-match volume pricing, 10% off 3+ vials and 15% off 5+, excluding
-  Lab Supplies, with an "add N more to save" nudge in the cart (a coupon
+  the Supplies category, with an "add N more to save" nudge in the cart (a coupon
   replaces the volume discount rather than stacking with it);
-- a free-shipping progress bar in the cart ("You're $X away from free
-  shipping") and a threshold line on product pages, read from the free
-  shipping method's minimum amount in WooCommerce → Settings → Shipping (set
-  one up and it appears; there's nothing to configure in the plugin);
+- an optional free-shipping progress bar in the cart ("You're $X away from
+  free shipping") and a threshold line on product pages, read from the free
+  shipping method's minimum amount in WooCommerce → Settings → Shipping. It is
+  off by default (`PS_FREE_SHIP_BAR`) because the live theme already shows its
+  own $200 free-shipping bar, and two would be noise;
 - brand and MPN added to WooCommerce's Product structured data, which Google
   lists as recommended for merchant listings;
 - a *View certificate of analysis* button on any product whose `_coa_url`
