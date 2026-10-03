@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Peptide Store Essentials
- * Description: Research-use acknowledgment at checkout, mix-and-match volume pricing, a COA button on product pages, and reorder reminder emails.
+ * Description: Research-use acknowledgment at checkout, mix-and-match volume pricing, a free-shipping progress bar, a COA button on product pages, richer product structured data, and reorder reminder emails.
  * Version:     1.0.0
  * Requires Plugins: woocommerce
  *
@@ -129,13 +129,81 @@ function ps_volume_nudge() {
 	return '<div class="woocommerce-message ps-volume-nudge">' . esc_html( sprintf( 'Best price unlocked: %d%% off every research vial in this order.', round( $current * 100 ) ) ) . '</div>';
 }
 
+/* ------------------------------------------------ free-shipping progress -- */
+
+// The threshold comes from the free shipping method set up for the cart's
+// shipping zone in WooCommerce → Settings → Shipping, so there is nothing to
+// keep in step here. No minimum-amount free shipping method, no bar.
+function ps_free_shipping_min() {
+	if ( ! class_exists( 'WC_Shipping_Zones' ) || ! WC()->customer ) {
+		return null;
+	}
+	// Match the zone on the shopper's location (their saved address, or the
+	// store's default customer location), which works with an empty cart too.
+	$c    = WC()->customer;
+	$zone = WC_Shipping_Zones::get_zone_matching_package( [
+		'destination' => [
+			'country'  => $c->get_shipping_country(),
+			'state'    => $c->get_shipping_state(),
+			'postcode' => $c->get_shipping_postcode(),
+		],
+	] );
+	foreach ( $zone->get_shipping_methods( true ) as $method ) {
+		if ( 'free_shipping' === $method->id && in_array( $method->get_option( 'requires' ), [ 'min_amount', 'either' ], true ) ) {
+			$min = (float) wc_format_decimal( $method->get_option( 'min_amount' ) );
+			if ( $min > 0 ) {
+				return [ $min, 'yes' === $method->get_option( 'ignore_discounts' ) ];
+			}
+		}
+	}
+	return null;
+}
+
+function ps_free_shipping_nudge() {
+	$cart = WC()->cart;
+	$rule = ps_free_shipping_min();
+	if ( ! $rule || ! $cart || ! $cart->needs_shipping() ) {
+		return '';
+	}
+	[ $min, $ignore_discounts ] = $rule;
+	// Same total WooCommerce's free shipping method compares against.
+	$total = $cart->get_displayed_subtotal();
+	if ( ! $ignore_discounts ) {
+		$total -= $cart->get_discount_total();
+		if ( $cart->display_prices_including_tax() ) {
+			$total -= $cart->get_discount_tax();
+		}
+	}
+	$total = round( $total, wc_get_price_decimals() );
+	if ( $total >= $min ) {
+		return '<div class="woocommerce-message ps-free-shipping">' . esc_html( 'Your order ships free.' ) . '</div>';
+	}
+	$pct = max( 4, min( 100, round( $total / $min * 100 ) ) );
+	return '<div class="woocommerce-info ps-free-shipping">' .
+		wp_kses_post( sprintf( 'You\'re %s away from free shipping.', wc_price( $min - $total ) ) ) .
+		'<div style="background:rgba(0,0,0,.1);border-radius:4px;height:8px;margin-top:8px;overflow:hidden"><div style="background:currentColor;height:100%;width:' . (int) $pct . '%"></div></div>' .
+		'</div>';
+}
+
+function ps_cart_notices() {
+	return ps_free_shipping_nudge() . ps_volume_nudge();
+}
+
 add_action( 'woocommerce_before_cart', function () {
-	echo ps_volume_nudge(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in ps_volume_nudge().
+	echo ps_cart_notices(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in the nudge functions.
 } );
 
 add_filter( 'render_block_woocommerce/cart', function ( $html ) {
-	return ps_volume_nudge() . $html;
+	return ps_cart_notices() . $html;
 } );
+
+// Product pages: state the threshold so it shapes the order before the cart.
+add_action( 'woocommerce_single_product_summary', function () {
+	$rule = ps_free_shipping_min();
+	if ( $rule ) {
+		echo '<p class="ps-free-shipping-note">' . wp_kses_post( sprintf( 'Free shipping on orders over %s.', wc_price( $rule[0] ) ) ) . '</p>';
+	}
+}, 26 );
 
 /* ------------------------------------------------- product page additions -- */
 
@@ -157,6 +225,20 @@ add_action( 'woocommerce_single_product_summary', function () {
 	}
 }, 25 );
 
+/* ------------------------------------------------------ structured data -- */
+
+// WooCommerce's Product schema has no brand, which Google flags as a missing
+// recommended field on merchant listings. The store is the brand.
+add_filter( 'woocommerce_structured_data_product', function ( $markup, $product ) {
+	if ( empty( $markup['brand'] ) ) {
+		$markup['brand'] = [ '@type' => 'Brand', 'name' => get_bloginfo( 'name' ) ];
+	}
+	if ( empty( $markup['mpn'] ) && $product->get_sku() ) {
+		$markup['mpn'] = $product->get_sku();
+	}
+	return $markup;
+}, 10, 2 );
+
 /* ---------------------------------------------------- reorder reminders -- */
 
 add_action( 'woocommerce_order_status_completed', function ( $order_id ) {
@@ -171,7 +253,8 @@ function ps_optout_token( $email ) {
 
 add_action( 'ps_reorder_reminder', function ( $order_id ) {
 	$order = wc_get_order( $order_id );
-	if ( ! $order ) {
+	// Refunded or cancelled since it completed: no reminder.
+	if ( ! $order || 'completed' !== $order->get_status() ) {
 		return;
 	}
 	$email = $order->get_billing_email();
