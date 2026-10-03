@@ -95,6 +95,10 @@ function ps_cart_vials() {
 }
 
 add_action( 'woocommerce_cart_calculate_fees', function ( WC_Cart $cart ) {
+	// Volume pricing and coupons don't stack; a coupon replaces the volume discount.
+	if ( $cart->get_applied_coupons() ) {
+		return;
+	}
 	[ $qty, $subtotal ] = ps_cart_vials();
 	$off = ps_tier_for( $qty );
 	if ( $off > 0 && $subtotal > 0 ) {
@@ -106,6 +110,11 @@ function ps_volume_nudge() {
 	[ $qty ] = ps_cart_vials();
 	if ( $qty < 1 ) {
 		return '';
+	}
+	if ( WC()->cart->get_applied_coupons() ) {
+		return $qty >= min( array_keys( PS_VOLUME_TIERS ) )
+			? '<div class="woocommerce-info ps-volume-nudge">' . esc_html( 'Volume pricing doesn\'t combine with coupons. Remove the coupon to use the volume discount instead.' ) . '</div>'
+			: '';
 	}
 	$current = ps_tier_for( $qty );
 	foreach ( array_reverse( PS_VOLUME_TIERS, true ) as $min => $off ) {
@@ -200,7 +209,7 @@ add_action( 'ps_reorder_reminder', function ( $order_id ) {
 
 	$body = sprintf(
 		'<p>Hi %s,</p><p>It has been about %d days since your last order. If your research is running low, here is what you ordered last time:</p><ul>%s</ul>' .
-		'<p>Volume pricing applies automatically: save 10%% on 3+ research vials and 15%% on 5+.</p>' .
+		'<p>Volume pricing applies automatically: save 10%% on 3+ research vials and 15%% on 5+ (not combinable with coupons).</p>' .
 		'<p style="font-size:12px;color:#777">All products are for laboratory research use only. <a href="%s">Stop reorder reminders</a>.</p>',
 		esc_html( $order->get_billing_first_name() ?: 'there' ),
 		PS_REORDER_DAYS,
@@ -212,11 +221,27 @@ add_action( 'ps_reorder_reminder', function ( $order_id ) {
 	$mailer->send( $email, 'Time to restock your research supplies?', $mailer->wrap_message( 'Running low?', $body ) );
 } );
 
+// The emailed link only shows a confirm button, so mail scanners that open
+// every link can't unsubscribe anyone; the POST does the unsubscribing.
 $ps_optout = function () {
-	$email = isset( $_GET['e'] ) ? sanitize_email( wp_unslash( $_GET['e'] ) ) : '';         // phpcs:ignore WordPress.Security.NonceVerification -- signed by token.
-	$token = isset( $_GET['t'] ) ? sanitize_text_field( wp_unslash( $_GET['t'] ) ) : '';    // phpcs:ignore WordPress.Security.NonceVerification
+	$src   = 'POST' === $_SERVER['REQUEST_METHOD'] ? $_POST : $_GET; // phpcs:ignore WordPress.Security.NonceVerification -- signed by token.
+	$email = isset( $src['e'] ) ? sanitize_email( wp_unslash( $src['e'] ) ) : '';
+	$token = isset( $src['t'] ) ? sanitize_text_field( wp_unslash( $src['t'] ) ) : '';
 	if ( ! $email || ! hash_equals( ps_optout_token( $email ), $token ) ) {
 		wp_die( 'This unsubscribe link is invalid.', 'Unsubscribe', [ 'response' => 400 ] );
+	}
+	if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+		wp_die(
+			sprintf(
+				'<p>Stop reorder reminders to %s?</p><form method="post" action="%s"><input type="hidden" name="action" value="ps_reorder_optout"><input type="hidden" name="e" value="%s"><input type="hidden" name="t" value="%s"><button type="submit">Unsubscribe</button></form>',
+				esc_html( $email ),
+				esc_url( admin_url( 'admin-post.php' ) ),
+				esc_attr( $email ),
+				esc_attr( $token )
+			),
+			'Unsubscribe',
+			[ 'response' => 200 ]
+		);
 	}
 	$list = (array) get_option( 'ps_reorder_optout', [] );
 	if ( ! in_array( strtolower( $email ), $list, true ) ) {
