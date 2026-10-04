@@ -42,6 +42,10 @@ Activate.** It switches on:
 If you don't want volume pricing yet, set `PS_VOLUME_TIERS` to `[]` at the
 top of the file before uploading.
 
+All of the above was tested on a WordPress + WooCommerce + Rank Math test
+site (`wordpress/test/`) before shipping, but your theme and other plugins
+weren't part of it. Hence the check below.
+
 ## 3. Check
 
 Run `node pricing/audit-live.mjs`. With everything applied it should report

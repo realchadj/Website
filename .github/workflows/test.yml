@@ -33,3 +33,27 @@ jobs:
         run: php -l wordpress/peptide-store.php
       - name: Plugin zip matches the plugin source
         run: unzip -p dist/peptide-store.zip peptide-store/peptide-store.php | cmp - wordpress/peptide-store.php
+
+  wordpress-plugin:
+    # The store plugin on a real WordPress + WooCommerce + Rank Math site
+    # (SQLite, pinned versions): schema, cart discounts, imports, reminder
+    # emails, both checkouts in a browser, and no fatals without its dependencies.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_sqlite, sqlite3, mbstring, intl, gd, zip
+          tools: composer
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build the test site
+        run: sh wordpress/test/setup.sh
+      - name: Plugin checks
+        run: sh wordpress/test/checks.sh

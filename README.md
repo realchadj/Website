@@ -182,3 +182,19 @@ matched by ID and touching only its own columns; `catalog/import/README.md`
 says how to apply them. `dist/peptide-store.zip` is the plugin packaged for
 Plugins → Add New → Upload; rebuild it with `wordpress/build-zip.sh` after
 editing the plugin (CI checks the two match).
+
+The plugin is tested on a real WordPress + WooCommerce + Rank Math site
+(SQLite, versions pinned in the script), which CI builds on every push:
+
+```
+sh wordpress/test/setup.sh     # builds and serves the site on :8099
+sh wordpress/test/checks.sh    # 39 checks: schema, cart, imports, emails, both checkouts
+```
+
+They cover the Rank Math brand and strengths fix, volume pricing (and that
+Supplies and coupons are excluded), that each `catalog/import/` file parses
+with WP Admin's column mapping and changes only its own columns, the
+reorder reminder and unsubscribe, the research-use checkbox on the classic
+and block checkouts (including a Store API request that skips the page),
+the out-of-stock shipping line in a browser, and that the site keeps
+working with WooCommerce or Rank Math switched off.
