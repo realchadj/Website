@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Peptide Store Essentials
  * Description: Research-use acknowledgment at checkout, mix-and-match volume pricing, a free-shipping progress bar, a COA button on product pages, brand in product structured data (WooCommerce and Rank Math), no same-day-shipping promise on out-of-stock items, alt text fallback for product images, and reorder reminder emails.
- * Version:     1.2.0
+ * Version:     1.3.0
  * Requires Plugins: woocommerce
  *
  * Install: copy this file to wp-content/mu-plugins/ (always on) or zip it
@@ -277,12 +277,54 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 	}
 	foreach ( $data as $key => $entity ) {
 		$types = is_array( $entity ) ? (array) ( $entity['@type'] ?? [] ) : [];
-		if ( in_array( 'Product', $types, true ) && empty( $entity['brand'] ) ) {
+		if ( ! in_array( 'Product', $types, true ) ) {
+			continue;
+		}
+		if ( empty( $entity['brand'] ) ) {
 			$data[ $key ]['brand'] = [ '@type' => 'Brand', 'name' => get_bloginfo( 'name' ) ];
+		}
+		// A hand-written "Available in 2mg, 5mg, and 10mg." goes stale when a
+		// strength is dropped; rewrite it from the variations actually on sale.
+		$strengths = ps_strengths_on_sale( get_queried_object_id() );
+		if ( $strengths && ! empty( $entity['description'] ) ) {
+			$data[ $key ]['description'] = preg_replace( '/Available in (?:[^.]|\.(?=\d))*\./', 'Available in ' . $strengths . '.', $entity['description'] );
 		}
 	}
 	return $data;
 }, 99 );
+
+// "5mg and 10mg" from a variable product's published variations, smallest first.
+function ps_strengths_on_sale( $product_id ) {
+	$product = wc_get_product( $product_id );
+	if ( ! $product || ! $product->is_type( 'variable' ) ) {
+		return '';
+	}
+	$sizes = [];
+	foreach ( $product->get_children() as $child_id ) {
+		$variation = wc_get_product( $child_id );
+		if ( $variation && 'publish' === $variation->get_status() ) {
+			$size = $variation->get_attribute( 'pa_strength' );
+			if ( '' !== $size ) {
+				$sizes[ $size ] = (float) $size * ( false !== stripos( $size, 'mcg' ) ? 0.001 : 1 );
+			}
+		}
+	}
+	asort( $sizes );
+	$sizes = array_keys( $sizes );
+	$last  = array_pop( $sizes );
+	return $sizes ? implode( ', ', $sizes ) . ' and ' . $last : (string) $last;
+}
+
+// The theme's product FAQ reads "tested by HPLC for purity (target
+// COA-verified purity)", a placeholder that never got its figure. Drop the
+// parenthesis until the theme is fixed; each lot's purity is on its COA.
+add_action( 'template_redirect', function () {
+	if ( is_singular( [ 'product', 'page' ] ) ) {
+		ob_start( function ( $html ) {
+			return str_replace( ' (target COA-verified purity)', '', $html );
+		} );
+	}
+} );
 
 /* ---------------------------------------------------- reorder reminders -- */
 
