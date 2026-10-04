@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Peptide Store Essentials
  * Description: Research-use acknowledgment at checkout, mix-and-match volume pricing, a free-shipping progress bar, a COA button on product pages, richer product structured data, and reorder reminder emails.
- * Version:     1.0.0
+ * Version:     1.1.0
  * Requires Plugins: woocommerce
  *
  * Install: copy this file to wp-content/mu-plugins/ (always on) or zip it
@@ -239,6 +239,22 @@ add_filter( 'woocommerce_structured_data_product', function ( $markup, $product 
 	}
 	return $markup;
 }, 10, 2 );
+
+// Rank Math replaces WooCommerce's schema with its own, so on a Rank Math
+// site (heartlandbiolabs.com is one) the filter above never runs and the
+// Product goes out with no brand. Add it to Rank Math's graph as well.
+add_filter( 'rank_math/json_ld', function ( $data ) {
+	if ( ! is_array( $data ) || ! is_product() ) {
+		return $data;
+	}
+	foreach ( $data as $key => $entity ) {
+		$types = is_array( $entity ) ? (array) ( $entity['@type'] ?? [] ) : [];
+		if ( in_array( 'Product', $types, true ) && empty( $entity['brand'] ) ) {
+			$data[ $key ]['brand'] = [ '@type' => 'Brand', 'name' => get_bloginfo( 'name' ) ];
+		}
+	}
+	return $data;
+}, 99 );
 
 /* ---------------------------------------------------- reorder reminders -- */
 

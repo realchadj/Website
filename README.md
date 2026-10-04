@@ -170,4 +170,13 @@ discontinued Retatrutide SKUs are kept as hidden drafts.
 ```
 node pricing/reprice.mjs --check      # prices cover costs, and still do at the deepest volume tier
 node pricing/check-catalog.mjs        # content, SEO lengths, cross-sell SKUs, shippability
+node pricing/audit-live.mjs           # the live store: missing SKUs, price inversions, stock, thin copy
 ```
+
+The live store uses Rank Math, which replaces WooCommerce's product schema,
+so the plugin adds the brand to Rank Math's graph too.
+
+`catalog/LIVE-AUDIT.md` lists what the live audit found, in priority order.
+`catalog/live-sku-fix.csv` sets SKUs on the seven variations that have none.
+It matches rows by ID and changes only the SKU, so it's safe to import with
+*Update existing products* ticked.
