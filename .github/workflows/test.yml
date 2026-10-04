@@ -31,3 +31,5 @@ jobs:
         run: node pricing/check-catalog.mjs
       - name: WordPress store plugin parses
         run: php -l wordpress/peptide-store.php
+      - name: Plugin zip matches the plugin source
+        run: unzip -p dist/peptide-store.zip peptide-store/peptide-store.php | cmp - wordpress/peptide-store.php

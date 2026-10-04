@@ -4,29 +4,31 @@ Source: the store's public WooCommerce Store API (38 products, 81 variations)
 and the rendered BPC-157 and Glutathione product pages. Re-run any time with
 `node pricing/audit-live.mjs`.
 
-Ordered by money at stake. "Repo" means this pull request fixes it; "Admin"
-means it takes a change in WP Admin; "Theme" means it's in
-`heartland-bio-labs-v2`, which isn't in this repo.
+Ordered by money at stake. "Import" means a file in `catalog/import/` fixes it; "Plugin" means
+`dist/peptide-store.zip` (1.2.0) fixes it once uploaded; "Admin" means it
+still takes a change in WP Admin; "Theme" means it's in
+`heartland-bio-labs-v2`, which isn't in this repo. How to apply both is in
+`catalog/import/README.md`.
 
 ## Fix this week
 
 | # | Problem | Why it costs money | Fix | Where |
 |---|---|---|---|---|
-| 1 | **Tesamorelin 5mg ($87.00) costs more than 10mg ($79.99).** | Nobody should ever buy the 5mg, and anyone who notices wonders what else is wrong. | Swap the prices, or set 5mg to about $47. | Admin |
-| 2 | **Semaglutide 20mg is $315.00**, while 10mg is $64.99 ($15.75/mg vs $6.50/mg). | Probably a typo for $115 or $125. It's out of stock now, so it'll be wrong the day it comes back. | Correct the price before restocking. | Admin |
-| 3 | **CJC-1295 with DAC 10mg is $135.00**, while 5mg is $52.99 ($13.50/mg vs $10.60/mg). | Same as above. The 10mg is out of stock. | Check the intended price. | Admin |
-| 4 | **7 variations have no SKU**: Cagrilintide 10mg, DSIP 5mg, Semaglutide 2mg, Sermorelin 5mg and 10mg, Thymosin Alpha-1 5mg and 10mg. | These are the newest products. The offers in their schema, any Merchant Center or ad feed, and your inventory reports go out without an identifier. | Import `catalog/live-sku-fix.csv` (Products → Import, tick *Update existing products*). It only sets those 7 SKUs, matched by ID, using the store's `HBL-NAME-STRENGTH` pattern. | Repo |
-| 5 | **The Product schema has no `brand`.** | Google lists brand as recommended for merchant listings. The plugin added it through WooCommerce's schema filter, but Rank Math replaces that schema, so it never ran on this site. | Plugin 1.1.0 also adds brand to Rank Math's schema. | Repo |
-| 6 | **Out-of-stock product pages still say "Same-day shipping if you order today"** (seen on Glutathione, where every strength is out of stock). | It's a broken promise right next to an unavailable product. | Show that line only when `$product->is_in_stock()`. | Theme |
+| 1 | **Tesamorelin 5mg ($87.00) costs more than 10mg ($79.99).** | Nobody should ever buy the 5mg, and anyone who notices wonders what else is wrong. | `2-prices.csv` sets 5mg to $47.99 ($9.60/mg, above the 10mg's $8.00/mg). | Import |
+| 2 | **Semaglutide 20mg is $315.00**, while 10mg is $64.99 ($15.75/mg vs $6.50/mg). | Probably a typo for $115 or $125. It's out of stock now, so it'll be wrong the day it comes back. | `2-prices.csv` sets it to $119.99 ($6.00/mg). Supplier cost is about $4.50 per 10mg, so the margin is still wide. | Import |
+| 3 | **CJC-1295 with DAC 10mg is $135.00**, while 5mg is $52.99 ($13.50/mg vs $10.60/mg). | Same as above. The 10mg is out of stock. | `2-prices.csv` sets it to $99.99 ($10.00/mg). Supplier cost is about $13 per 5mg. | Import |
+| 4 | **7 variations have no SKU**: Cagrilintide 10mg, DSIP 5mg, Semaglutide 2mg, Sermorelin 5mg and 10mg, Thymosin Alpha-1 5mg and 10mg. | These are the newest products. The offers in their schema, any Merchant Center or ad feed, and your inventory reports go out without an identifier. | `1-skus.csv` sets only those 7 SKUs, matched by ID, using the store's `HBL-NAME-STRENGTH` pattern. | Import |
+| 5 | **The Product schema has no `brand`.** | Google lists brand as recommended for merchant listings. The plugin added it through WooCommerce's schema filter, but Rank Math replaces that schema, so it never ran on this site. | The plugin adds brand to Rank Math's schema too. | Plugin |
+| 6 | **Out-of-stock product pages still say "Same-day shipping if you order today"** (seen on Glutathione, where every strength is out of stock). | It's a broken promise right next to an unavailable product. | The plugin hides that line on out-of-stock products, and on a variable product whenever the chosen strength is out of stock. A theme fix would be cleaner, but this works now. | Plugin |
 
 ## Fix this month
 
 | # | Problem | Fix | Where |
 |---|---|---|---|
-| 7 | **15 thin descriptions** (800–1,050 characters, against 3,500–5,000 on the strong pages): Glutathione, GHRP-2, GHRP-6, Adamax, MOTS-c, AOD-9604, Kisspeptin, Oxytocin, Epithalon, L-Carnitine, AICAR, 5-Amino-1MQ, LIPO-C, IGF-1 LR3 and PEG MGF. GHRP-6, MOTS-c and AOD-9604 are **in stock**, so start with those. | Bring them up to the BPC-157 page's structure: overview, research context, specifications, handling and storage, FAQs and further reading. | Admin |
+| 7 | **15 thin descriptions** (800–1,050 characters, against 3,500–5,000 on the strong pages): Glutathione, GHRP-2, GHRP-6, Adamax, MOTS-c, AOD-9604, Kisspeptin, Oxytocin, Epithalon, L-Carnitine, AICAR, 5-Amino-1MQ, LIPO-C, IGF-1 LR3 and PEG MGF. GHRP-6, MOTS-c and AOD-9604 are **in stock**, so start with those. | `3-descriptions.csv` rewrites those three (3,500–3,700 characters each, BPC-157 structure, links only to pages that exist). The other 12 are out of stock; write them before restocking. | Import (3), Admin (12) |
 | 8 | **"target COA-verified purity"** appears in the FAQ ("tested by HPLC for purity (target COA-verified purity)") and in the BPC-157 schema description. It reads like a find-and-replace leftover. | Put the real figure back, e.g. "≥99% by HPLC". | Theme / Rank Math |
-| 9 | **The BPC-157 title says "(2-10mg)" and the schema description says "Available in 2mg, 5mg, and 10mg"**, but only 5mg and 10mg exist. | Change the Rank Math title and description to "5–10mg". | Admin |
-| 10 | **5 product images have no alt text**: Thymosin Alpha-1 (2), DSIP, Cagrilintide and Sermorelin. These are also the newest products. | Use the same pattern as the others: "<Name> <strength> 3D vial mockup". | Admin |
+| 9 | **The BPC-157 title says "(2-10mg)" and the schema description says "Available in 2mg, 5mg, and 10mg"**, but only 5mg and 10mg exist. | `4-bpc157-title.csv` fixes the title. The "2mg" in the schema description comes from Rank Math's schema settings for that product; change it there. | Import + Admin |
+| 10 | **5 product images have no alt text**: Thymosin Alpha-1 (2), DSIP, Cagrilintide and Sermorelin. These are also the newest products. | The plugin falls back to the product name when alt is empty. Set real alt text in the Media Library when convenient: "<Name> <strength> 3D vial mockup". | Plugin + Admin |
 | 11 | **No variation has a shipping weight.** | This is harmless while shipping is a flat rate or free over $200. Add weights before switching to carrier-calculated rates. | Admin |
 | 12 | **Partial stock gaps on best-sellers**: TB-500 5mg, KPV 10mg, KLOW 5mg, BPC-157 + TB-500 10mg, GLOW 5mg and Bac Water 30ml. | Check that the default strength each product opens on is one that's in stock. It is today; the audit fails if that changes. | Admin |
 

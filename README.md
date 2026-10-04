@@ -177,6 +177,8 @@ The live store uses Rank Math, which replaces WooCommerce's product schema,
 so the plugin adds the brand to Rank Math's graph too.
 
 `catalog/LIVE-AUDIT.md` lists what the live audit found, in priority order.
-`catalog/live-sku-fix.csv` sets SKUs on the seven variations that have none.
-It matches rows by ID and changes only the SKU, so it's safe to import with
-*Update existing products* ticked.
+`catalog/import/` holds the fixes as small WooCommerce import files, each
+matched by ID and touching only its own columns; `catalog/import/README.md`
+says how to apply them. `dist/peptide-store.zip` is the plugin packaged for
+Plugins → Add New → Upload; rebuild it with `wordpress/build-zip.sh` after
+editing the plugin (CI checks the two match).

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Peptide Store Essentials
- * Description: Research-use acknowledgment at checkout, mix-and-match volume pricing, a free-shipping progress bar, a COA button on product pages, richer product structured data, and reorder reminder emails.
- * Version:     1.1.0
+ * Description: Research-use acknowledgment at checkout, mix-and-match volume pricing, a free-shipping progress bar, a COA button on product pages, brand in product structured data (WooCommerce and Rank Math), no same-day-shipping promise on out-of-stock items, alt text fallback for product images, and reorder reminder emails.
+ * Version:     1.2.0
  * Requires Plugins: woocommerce
  *
  * Install: copy this file to wp-content/mu-plugins/ (always on) or zip it
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 /* Keep these in step with volumeTiers in pricing/reprice.mjs, which checks
    that the deepest tier still leaves the target margin on every product. */
-const PS_VOLUME_TIERS     = [ 5 => 0.15, 3 => 0.10 ];   // min vials => discount, deepest first
+const PS_VOLUME_TIERS     = [ 5 => 0.15, 3 => 0.10 ];   // min vials => discount, deepest first; [] turns volume pricing off
 const PS_SUPPLIES_CAT     = 'supplies';                 // category slug excluded from the vial count and the discount (heartlandbiolabs.com uses /product-category/supplies/)
 const PS_FREE_SHIP_BAR    = false;                      // the live theme already shows its own "$X more for free shipping" bar; true adds this plugin's
 const PS_REORDER_DAYS     = 35;
@@ -109,7 +109,7 @@ add_action( 'woocommerce_cart_calculate_fees', function ( WC_Cart $cart ) {
 
 function ps_volume_nudge() {
 	[ $qty ] = ps_cart_vials();
-	if ( $qty < 1 ) {
+	if ( $qty < 1 || ! PS_VOLUME_TIERS ) {
 		return '';
 	}
 	if ( WC()->cart->get_applied_coupons() ) {
@@ -213,7 +213,7 @@ add_action( 'woocommerce_single_product_summary', function () {
 	if ( ! $product instanceof WC_Product ) {
 		return;
 	}
-	if ( ps_counts_toward_volume( $product->get_id() ) ) {
+	if ( PS_VOLUME_TIERS && ps_counts_toward_volume( $product->get_id() ) ) {
 		$parts = [];
 		foreach ( array_reverse( PS_VOLUME_TIERS, true ) as $min => $off ) {
 			$parts[] = sprintf( '<strong>%d+ vials: save %d%%</strong>', $min, round( $off * 100 ) );
@@ -225,6 +225,34 @@ add_action( 'woocommerce_single_product_summary', function () {
 		printf( '<p class="ps-coa"><a class="button" href="%s" target="_blank" rel="noopener">View certificate of analysis</a></p>', esc_url( $coa ) );
 	}
 }, 25 );
+
+// The theme's "Same-day shipping if you order today" line shows even when
+// nothing can be ordered. Hide it on out-of-stock products, and on a variable
+// product whenever the chosen strength is out of stock.
+add_action( 'wp_footer', function () {
+	if ( ! is_product() ) {
+		return;
+	}
+	?>
+	<style>.product.outofstock .hbl-delivery-countdown{display:none}</style>
+	<script>
+	window.jQuery && jQuery( function ( $ ) {
+		$( '.variations_form' )
+			.on( 'found_variation', function ( e, v ) { $( '.hbl-delivery-countdown' ).toggle( !! v.is_in_stock ); } )
+			.on( 'reset_data', function () { $( '.hbl-delivery-countdown' ).show(); } );
+	} );
+	</script>
+	<?php
+} );
+
+// Product images with no alt text fall back to the product name, so they
+// still describe themselves to screen readers and image search.
+add_filter( 'wp_get_attachment_image_attributes', function ( $attr ) {
+	if ( '' === trim( $attr['alt'] ?? '' ) && function_exists( 'is_product' ) && is_product() ) {
+		$attr['alt'] = wp_strip_all_tags( get_the_title( get_queried_object_id() ) );
+	}
+	return $attr;
+} );
 
 /* ------------------------------------------------------ structured data -- */
 
@@ -309,11 +337,12 @@ add_action( 'ps_reorder_reminder', function ( $order_id ) {
 
 	$body = sprintf(
 		'<p>Hi %s,</p><p>It has been about %d days since your last order. If your research is running low, here is what you ordered last time:</p><ul>%s</ul>' .
-		'<p>Volume pricing applies automatically: save 10%% on 3+ research vials and 15%% on 5+ (not combinable with coupons).</p>' .
+		'%s' .
 		'<p style="font-size:12px;color:#777">All products are for laboratory research use only. <a href="%s">Stop reorder reminders</a>.</p>',
 		esc_html( $order->get_billing_first_name() ?: 'there' ),
 		PS_REORDER_DAYS,
 		$items,
+		PS_VOLUME_TIERS ? '<p>Volume pricing applies automatically: save 10% on 3+ research vials and 15% on 5+ (not combinable with coupons).</p>' : '',
 		esc_url( $optout )
 	);
 
