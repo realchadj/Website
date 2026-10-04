@@ -23,6 +23,24 @@ Nothing else on those products, or any other product, is touched.
 If you'd rather set different prices, edit `2-prices.csv` before importing,
 or skip it and change the three variations by hand.
 
+### Or apply them with one command
+
+`catalog/apply-live.mjs` makes the same changes through the WooCommerce
+REST API. It first reads every field it's about to change and shows the
+before → after. With `--apply` it saves the current values to
+`catalog/backups/`, then writes them. It needs a WordPress application
+password for an administrator (Users → Profile → Application Passwords):
+
+```
+WP_USER=… WP_APP_PASSWORD=… node catalog/apply-live.mjs            # dry run
+WP_USER=… WP_APP_PASSWORD=… node catalog/apply-live.mjs --apply    # backup, then write
+node catalog/apply-live.mjs --restore catalog/backups/<file>.json --apply   # undo
+```
+
+If any product or variation ID is missing, or a variation belongs to a
+different product, it stops before writing anything. Running it again
+after it succeeds changes nothing.
+
 ## 2. Install the plugin
 
 **Plugins → Add New → Upload Plugin → `dist/peptide-store.zip` → Install →
