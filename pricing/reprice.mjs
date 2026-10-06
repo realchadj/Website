@@ -5,67 +5,20 @@
 
    Each vial is priced at `costMultiple` × its cost, the low end of what
    research-peptide buyers compare against. That price must still cover the
-   vial, packing, card processing and leave `targetMargin` (and at least
-   `minProfit`) as profit; where it wouldn't, the floor price is used instead.
-   Change the assumptions below and rerun.
+   vial, card processing, fulfilment, overhead and the discount, and leave
+   `targetMargin` (and at least `minProfit`) as profit; where it wouldn't,
+   the floor price is used instead. The assumptions live in model.mjs;
+   change them there and rerun. reprice-live.mjs prices the live store
+   from the same model.
 
    Usage:  node pricing/reprice.mjs            (rewrites the CSV in place)
            node pricing/reprice.mjs --check    (verifies, changes nothing)   */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const ASSUMPTIONS = {
-  /* Card processing. Stripe, Square and PayPal don't accept research
-     peptides, so this is a high-risk merchant account's typical rate. */
-  processingPct: 0.05,      // 5% of the sale
-  processingFixed: 0.30,    // + $0.30 per transaction
-
-  /* Per-unit cost to get a vial out the door: label, vial box, padded or
-     insulated mailer share, packing time. Shipping itself is charged to the
-     buyer at checkout and isn't included. */
-  fulfilmentPerUnit: 3.00,
-
-  /* Profit left after cost, fulfilment and processing, as a share of price.
-     35% is a healthy specialty-retail margin and lands most items in the
-     range buyers compare against. */
-  targetMargin: 0.35,
-
-  /* Never earn less than this per unit, so cheap items still pay their way. */
-  minProfit: 8.00,
-
-  /* Shelf price as a multiple of per-vial cost. Retail for research
-     peptides typically runs 8–15× landed cost; 6× prices the store as the
-     affordable option (BPC-157 10mg at $29.99) while still keeping about 70%
-     of each sale after every cost. Selling through today's in-stock
-     inventory at these prices clears roughly $46,000 profit. */
-  costMultiple: 6,
-
-  /* Mix-and-match volume discount on research vials (not Lab Supplies),
-     applied in the cart by wordpress/peptide-store.php — keep the two in
-     step. The deepest tier must still leave targetMargin after every cost. */
-  volumeTiers: [{ minQty: 3, off: 0.10 }, { minQty: 5, off: 0.15 }]
-};
+import { ASSUMPTIONS, priceFor, breakdown } from './model.mjs';
 
 const CSV = new URL('../peptide-products-woocommerce.csv', import.meta.url);
-
-/* ------------------------------------------------------------------ math -- */
-
-/* The floor is the smallest p with p − cost − fulfilment − (pct·p + fixed)
-   ≥ the larger of targetMargin·p and minProfit. The price is the shelf
-   multiple or the floor, whichever is higher, rounded up to the next .99. */
-function priceFor(cost, a = ASSUMPTIONS) {
-  const base = cost + a.fulfilmentPerUnit + a.processingFixed;
-  const byMargin = base / (1 - a.processingPct - a.targetMargin);
-  const byFloor = (base + a.minProfit) / (1 - a.processingPct);
-  const shelf = cost * a.costMultiple;
-  return Math.ceil(Math.max(shelf - 0.01, byMargin, byFloor) + 0.01) - 0.01;
-}
-
-function breakdown(price, cost, a = ASSUMPTIONS) {
-  const fees = price * a.processingPct + a.processingFixed;
-  const profit = price - cost - a.fulfilmentPerUnit - fees;
-  return { fees, profit, margin: profit / price };
-}
 
 /* ------------------------------------------------------------------- csv -- */
 
@@ -121,10 +74,9 @@ for (const r of rows.slice(1)) {
     bad++;
   }
   if (r[iCat] !== 'Lab Supplies') {
-    const sale = now * (1 - deepest);
-    const d = breakdown(sale, cost);
+    const d = breakdown(now, cost, deepest);
     if (d.margin < ASSUMPTIONS.targetMargin - 1e-9) {
-      console.error(`${r[iSku]}: at ${deepest * 100}% volume discount ($${sale.toFixed(2)}) margin is ${(d.margin * 100).toFixed(0)}%`);
+      console.error(`${r[iSku]}: at the ${deepest * 100}% volume tier margin is ${(d.margin * 100).toFixed(0)}%`);
       bad++;
     }
   }

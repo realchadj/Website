@@ -1,0 +1,82 @@
+id	parent	product	strength	price	in_stock
+84	82	5-Amino-1MQ	5mg	75.00	0
+86	82	5-Amino-1MQ	10mg	130.00	0
+88	82	5-Amino-1MQ	50mg	215.00	0
+91	89	Adamax	5mg	59.00	0
+93	89	Adamax	10mg	105.00	0
+95	94	AICAR	2mg	29.00	0
+96	94	AICAR	5mg	49.00	0
+97	94	AICAR	10mg	79.00	0
+99	94	AICAR	50mg	179.00	0
+101	94	AICAR	100mg	295.00	0
+104	102	AOD-9604	2mg	29.00	0
+106	102	AOD-9604	5mg	44.99	1
+108	102	AOD-9604	10mg	85.00	0
+118	114	BPC-157	5mg	41.00	1
+120	114	BPC-157	10mg	79.00	1
+123	121	BPC-157 + TB-500 (Dual Peptide Blend)	5mg/5mg	80.00	1
+125	121	BPC-157 + TB-500 (Dual Peptide Blend)	10mg/10mg	145.00	0
+3427	3426	Cagrilintide	10mg	135.00	1
+141	139	CJC-1295 + Ipamorelin (Dual Blend)	2mg/2mg	45.00	0
+143	139	CJC-1295 + Ipamorelin (Dual Blend)	5mg/5mg	79.99	1
+130	126	CJC-1295 (No DAC)	5mg (No DAC)	44.99	1
+132	126	CJC-1295 (No DAC)	10mg (No DAC)	74.99	1
+826	825	CJC-1295 with DAC	2mg	39.00	0
+827	825	CJC-1295 with DAC	5mg	52.99	1
+828	825	CJC-1295 with DAC	10mg	135.00	0
+3606	3605	DSIP (Delta Sleep-Inducing Peptide)	5mg	39.00	1
+146	144	Epithalon	10mg	55.00	0
+148	144	Epithalon	50mg	179.00	0
+151	149	GHK-Cu	25mg	39.00	0
+153	149	GHK-Cu	50mg	54.99	1
+155	149	GHK-Cu	100mg	95.00	0
+158	156	GHRP-2	5mg	35.00	0
+160	156	GHRP-2	10mg	59.00	0
+162	156	GHRP-2	15mg	85.00	0
+165	163	GHRP-6	5mg	27.99	1
+167	163	GHRP-6	10mg	52.00	0
+170	168	GLOW (BPC-157 + TB-500 + GHK-Cu Triple Blend)	5mg/5mg/50mg	125.00	0
+172	168	GLOW (BPC-157 + TB-500 + GHK-Cu Triple Blend)	10mg/10mg/50mg	159.99	1
+175	173	Glutathione (Reduced L-Glutathione)	600mg	55.00	0
+177	173	Glutathione (Reduced L-Glutathione)	1200mg	99.00	0
+179	173	Glutathione (Reduced L-Glutathione)	1500mg	125.00	0
+182	180	IGF-1 LR3	100mcg	49.00	0
+184	180	IGF-1 LR3	1000mcg	139.00	0
+187	185	Ipamorelin	2mg	25.00	0
+189	185	Ipamorelin	5mg	44.00	1
+191	185	Ipamorelin	10mg	64.99	1
+194	192	Kisspeptin (Kisspeptin-10)	5mg	49.00	0
+196	192	Kisspeptin (Kisspeptin-10)	10mg	85.00	0
+199	197	KLOW (BPC-157 + TB-500 + GHK-Cu + KPV Quad Blend)	5mg/5mg/50mg/10mg	140.00	0
+201	197	KLOW (BPC-157 + TB-500 + GHK-Cu + KPV Quad Blend)	10mg/10mg/50mg/10mg	149.99	1
+204	202	KPV	5mg	39.00	1
+206	202	KPV	10mg	69.00	0
+209	207	L-Carnitine	500mg	35.00	0
+211	207	L-Carnitine	1000mg	65.00	0
+214	212	LIPO-C	10ml	35.00	0
+217	215	MOTS-c	10mg	69.99	1
+224	222	MT-2 (Melanotan II)	10mg	42.99	1
+227	225	NAD+ (Nicotinamide Adenine Dinucleotide)	100mg	29.00	0
+229	225	NAD+ (Nicotinamide Adenine Dinucleotide)	500mg	93.00	1
+231	225	NAD+ (Nicotinamide Adenine Dinucleotide)	1000mg	169.00	1
+234	232	Oxytocin	5mg	55.00	0
+236	232	Oxytocin	10mg	95.00	0
+239	237	PEG MGF	2mg	49.00	0
+241	237	PEG MGF	10mg	189.00	0
+246	242	PT-141 (Bremelanotide)	10mg	44.99	1
+111	109	Reconstitution Solution (Bacteriostatic Water)	10ml	9.00	1
+113	109	Reconstitution Solution (Bacteriostatic Water)	30ml	19.00	0
+261	257	Selank	10mg	48.99	1
+3429	262	Semaglutide	2mg	29.99	1
+264	262	Semaglutide	5mg	39.99	1
+266	262	Semaglutide	10mg	64.99	1
+268	262	Semaglutide	20mg	315.00	0
+273	269	Semax	10mg	54.99	1
+3424	3423	Sermorelin	5mg	49.00	1
+3425	3423	Sermorelin	10mg	79.99	1
+276	274	TB-500	5mg	45.00	0
+278	274	TB-500	10mg	85.00	1
+281	279	Tesamorelin	5mg	87.00	0
+283	279	Tesamorelin	10mg	79.99	1
+3603	3602	Thymosin Alpha-1	5mg	59.00	1
+3604	3602	Thymosin Alpha-1	10mg	79.99	1
