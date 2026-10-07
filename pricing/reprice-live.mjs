@@ -4,8 +4,11 @@
 
    Costs come from peptide-products-woocommerce.csv (one vial each). A live
    strength with no cost row is costed from the nearest strength of the same
-   product, pro rata by content. A product with no cost row at all is left
-   alone and listed.
+   product, erring high either way: a bigger vial pro rata by content (real
+   bigger vials are cheaper per mg), a smaller vial at SMALLER_COST of the
+   known one (the cost sheet's half- and fifth-size vials run 0.62–0.80 of
+   the full size). A product with no cost row at all is left alone and
+   listed.
 
    A price is only ever lowered: where the model says a live price is too
    low, it's reported, not raised. Within a product, a bigger vial never
@@ -16,7 +19,7 @@
            node pricing/reprice-live.mjs live.tsv        (another snapshot) */
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { ASSUMPTIONS, priceFor, floorFor, breakdown, up99, down99 } from './model.mjs';
+import { priceFor, breakdown, deepestOff, up99, down99 } from './model.mjs';
 
 const here = new URL('.', import.meta.url);
 const COSTS = new URL('../peptide-products-woocommerce.csv', here);
@@ -36,9 +39,7 @@ const SKU_TO_LIVE = {
   DS5: [3605, '5mg'], '5AD': [102, '5mg'], G65: [163, '5mg'],
 };
 
-/* Prices chosen against named competitors rather than by the model. They
-   still have to clear the model's floor; the model wins where it is lower. */
-const OVERRIDES = { 201: 99.99, 199: 84.99, 172: 89.99, 170: 74.99 };
+const SMALLER_COST = 0.8;   // a smaller vial's cost as a share of the nearest known bigger one
 
 const SUPPLIES = new Set([109]);   // no volume discount on Lab Supplies
 
@@ -87,7 +88,8 @@ function costFor(parent, strength) {
   if (exact) return { cost: exact.cost, how: 'cost sheet' };
   const qty = amount(strength);
   const nearest = rows.reduce((a, b) => Math.abs(b.qty - qty) < Math.abs(a.qty - qty) ? b : a);
-  return { cost: nearest.cost * qty / nearest.qty, how: `pro rata from ${nearest.strength}` };
+  if (qty > nearest.qty) return { cost: nearest.cost * qty / nearest.qty, how: `pro rata from ${nearest.strength}` };
+  return { cost: nearest.cost * SMALLER_COST, how: `${SMALLER_COST} × ${nearest.strength}` };
 }
 
 /* ----------------------------------------------------------------- live -- */
@@ -104,22 +106,21 @@ const skipped = [], tooLow = [], rows = [];
 for (const [parent, vars] of byParent) {
   vars.sort((a, b) => a.qty - b.qty);
   if (!known.has(parent)) { skipped.push(vars[0].product); continue; }
+  const off = SUPPLIES.has(parent) ? 0 : deepestOff();
   let prev = null;
   for (const v of vars) {
     const { cost, how } = costFor(parent, v.strength);
-    const floor = up99(floorFor(cost));
-    let want = Math.min(priceFor(cost), OVERRIDES[v.id] ?? Infinity, v.live);
-    if (want < floor) want = floor;
+    const floor = priceFor(cost, off);   // covers everything even on the deepest tier
+    let want = Math.min(floor, v.live);
     // Hold the bigger vial to the smaller one's per-mg price, and above its price.
     if (prev && !v.strength.includes('/')) want = Math.min(want, down99(prev.price / prev.qty * v.qty));
     if (prev && want <= prev.price) want = up99(prev.price + 0.01);
     want = Math.max(want, floor);
     if (v.live < floor - 1e-9) tooLow.push({ ...v, cost, floor });
-    const off = SUPPLIES.has(parent) ? ASSUMPTIONS.discountPct : Math.max(...ASSUMPTIONS.volumeTiers.map(t => t.off));
     const worst = breakdown(want, cost, off);
-    if (worst.profit < ASSUMPTIONS.minProfit - 1e-9 && want > v.live)
-      throw new Error(`${v.product} ${v.strength}: $${want} leaves $${worst.profit.toFixed(2)} at the ${off * 100}% tier`);
-    rows.push({ ...v, cost, how, price: want, full: breakdown(want, cost), worst });
+    if (worst.left < -1e-9 && want > v.live)
+      throw new Error(`${v.product} ${v.strength}: $${want} is $${(-worst.left).toFixed(2)} short at the ${off * 100}% tier`);
+    rows.push({ ...v, cost, how, price: want, full: breakdown(want, cost), worst, off });
     prev = { price: want, qty: v.qty };
   }
 }
@@ -129,12 +130,11 @@ for (const [parent, vars] of byParent) {
 const changed = rows.filter(r => r.live - r.price >= 1);   // a cut under $1 isn't worth a reimport
 const pad = (s, n) => String(s).padEnd(n);
 const usd = n => ('$' + n.toFixed(2)).padStart(9);
-console.log(pad('Product', 34) + pad('Strength', 20) + '     Cost     Live      New   Profit  Margin  @tier');
+console.log(pad('Product', 34) + pad('Strength', 20) + '     Cost     Live      New     Fees  Reserve     Left  @tier');
 for (const r of rows) {
   console.log(pad(r.product.replace(/\s*\(.*\)$/, '').slice(0, 33), 34) + pad(r.strength, 20) + usd(r.cost) + usd(r.live) +
-    (r.price < r.live ? usd(r.price) : '     same') + usd(r.full.profit) +
-    `  ${(r.full.margin * 100).toFixed(0)}%`.padStart(6) + `  ${(r.worst.margin * 100).toFixed(0)}%`.padStart(7) +
-    (r.how === 'cost sheet' ? '' : `   (cost ${r.how})`));
+    (r.price < r.live ? usd(r.price) : '     same') + usd(r.full.fees) + usd(r.full.reserve) + usd(r.full.left) +
+    (r.off ? usd(r.worst.left) : '      n/a') + (r.how === 'cost sheet' ? '' : `   (cost ${r.how})`));
 }
 if (tooLow.length) {
   console.log(`\nBelow the model's floor on the live store (left as they are):`);

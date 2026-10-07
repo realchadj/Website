@@ -14,18 +14,20 @@ still takes a change in WP Admin; "Theme" means it's in
 
 | # | Problem | Why it costs money | Fix | Where |
 |---|---|---|---|---|
-| 1 | **Tesamorelin 5mg ($87.00) costs more than 10mg ($79.99).** | Nobody should ever buy the 5mg, and anyone who notices wonders what else is wrong. | `2-prices.csv` sets 5mg to $41.99 ($8.40/mg, against the 10mg's $8.00/mg). | Import |
-| 2 | **Semaglutide 20mg is $315.00**, while 10mg is $64.99 ($15.75/mg vs $6.50/mg). | Probably a typo for $115 or $125. It's out of stock now, so it'll be wrong the day it comes back. | `2-prices.csv` sets it to $52.99 ($2.65/mg, in step with the 10mg's new $26.99). Supplier cost is about $9 per 20mg. | Import |
-| 3 | **CJC-1295 with DAC 10mg is $135.00**, while 5mg is $52.99 ($13.50/mg vs $10.60/mg). | Same as above. The 10mg is out of stock. | `2-prices.csv` sets it to $104.99, the 5mg's per-mg price and the least the pricing model allows on a $26 vial. | Import |
+| 1 | **Tesamorelin 5mg ($87.00) costs more than 10mg ($79.99).** | Nobody should ever buy the 5mg, and anyone who notices wonders what else is wrong. | `2-prices.csv` reprices every strength from cost: 5mg becomes $23.99 and 10mg $28.99. | Import |
+| 2 | **Semaglutide 20mg is $315.00**, while 10mg is $64.99 ($15.75/mg vs $6.50/mg). | Probably a typo for $115 or $125. It's out of stock now, so it'll be wrong the day it comes back. | `2-prices.csv` sets it to $20.99, costed at twice the 10mg's $4.50, in step with the 10mg's new $12.99. | Import |
+| 3 | **CJC-1295 with DAC 10mg is $135.00**, while 5mg is $52.99 ($13.50/mg vs $10.60/mg). | Same as above. The 10mg is out of stock. | `2-prices.csv` sets it to $48.99, costed at twice the 5mg's $13, against the 5mg's new $26.99. | Import |
 | 4 | **7 variations have no SKU**: Cagrilintide 10mg, DSIP 5mg, Semaglutide 2mg, Sermorelin 5mg and 10mg, Thymosin Alpha-1 5mg and 10mg. | These are the newest products. The offers in their schema, any Merchant Center or ad feed, and your inventory reports go out without an identifier. | `1-skus.csv` sets only those 7 SKUs, matched by ID, using the store's `HBL-NAME-STRENGTH` pattern. | Import |
 | 5 | **The Product schema has no `brand`.** | Google lists brand as recommended for merchant listings. The plugin added it through WooCommerce's schema filter, but Rank Math replaces that schema, so it never ran on this site. | The plugin adds brand to Rank Math's schema too. | Plugin |
 | 6 | **Out-of-stock product pages still say "Same-day shipping if you order today"** (seen on Glutathione, where every strength is out of stock). | It's a broken promise right next to an unavailable product. | The plugin hides that line on out-of-stock products, and on a variable product whenever the chosen strength is out of stock. A theme fix would be cleaner, but this works now. | Plugin |
 
-Beyond those three, `2-prices.csv` now lowers 44 prices across the
-catalog: the live store was priced at 8-10x vial cost (BPC-157 10mg $79.00
-on a $5.00 vial, GLOW $159.99 on $16.00), well above the 6x the pricing
-model targets and above most competitors. `pricing/reprice-live.mjs`
-generates the file and prints every price with its margin.
+Beyond those three, `2-prices.csv` now lowers all 52 prices with a cost
+on file, an average cut of $54: the live store was priced at 8-10x vial
+cost (BPC-157 10mg $79.00 on a $5.00 vial, GLOW $159.99 on $16.00). Each
+is now the lowest .99 that covers the vial, fulfilment, 10% card
+processing and a 20% reserve, even on the 15% volume tier (BPC-157 10mg
+$13.99, GLOW $31.99). `pricing/reprice-live.mjs` generates the file and
+prints every price with what it leaves.
 
 ## Fix this month
 

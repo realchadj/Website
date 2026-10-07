@@ -168,7 +168,7 @@ discontinued Retatrutide SKUs are kept as hidden drafts.
   for a confirm click (so email link scanners can't unsubscribe anyone).
 
 ```
-node pricing/reprice.mjs --check      # prices cover costs, and still do at the deepest volume tier
+node pricing/reprice.mjs --check      # prices cover cost, processing and the reserve, and still do at the deepest volume tier
 node pricing/check-catalog.mjs        # content, SEO lengths, cross-sell SKUs, shippability
 node pricing/audit-live.mjs           # the live store: missing SKUs, price inversions, stock, thin copy
 node pricing/reprice-live.mjs         # reprice the live store from cost into catalog/import/2-prices.csv
